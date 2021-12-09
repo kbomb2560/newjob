@@ -11,10 +11,10 @@ import {
   Avatar,
   CssBaseline,
 } from "@material-ui/core";
-import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons'
+import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
 import { withRouter } from "react-router-dom";
 //import classnames from "classnames";
-import CardContent from '@material-ui/core/CardContent';
+import CardContent from "@material-ui/core/CardContent";
 // styles
 import useStyles from "./styles";
 
@@ -38,23 +38,28 @@ function Login(props) {
   //var [loginValue, setLoginValue] = useState("admin@flatlogic.com"); //user email
   //var [passwordValue, setPasswordValue] = useState("password"); //password
 
-  var [loginValue, setLoginValue] = useState(""); //user รหัสนักศึกษา
-  var [passwordValue, setPasswordValue] = useState(""); //password ววดดปปปป
+  var [loginValue, setLoginValue] = useState("561202175103"); //user รหัสนักศึกษา
+  var [passwordValue, setPasswordValue] = useState("26082536"); //password ววดดปปปป
 
   return (
-    <Grid container component='main' className={classes.root}>
-    <CssBaseline />
-<Container component={Paper} elevation={5} maxWidth='xs' className={classes.container}>
-      				<div className={classes.div}>
-					<Avatar className={classes.avatar}>
-						<LockOutlinedIcon />
-					</Avatar>
-        
+    <Grid container component="main" className={classes.root}>
+      <CssBaseline />
+      <Container
+        component={Paper}
+        elevation={5}
+        maxWidth="xs"
+        className={classes.container}
+      >
+        <div className={classes.div}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+
           <React.Fragment>
             <Typography variant="h1" className={classes.greeting}>
               Login เข้าตอบแบบสอบถาม
             </Typography>
-            
+
             <Fade in={error}>
               <Typography color="secondary" className={classes.errorMessage}>
                 รหัสนักศึกษา/รหัสผ่าน ไม่ถูกต้อง หรือไม่พบข้อมูลในระบบ
@@ -74,7 +79,6 @@ function Login(props) {
               placeholder="รหัสประจำตัวนักศึกษา"
               type="email"
               inputProps={{ maxLength: 12 }}
-
               fullWidth
             />
             <TextField
@@ -108,7 +112,7 @@ function Login(props) {
                       passwordValue,
                       props.history,
                       setIsLoading,
-                      setError,
+                      setError
                     )
                   }
                   fullWidth
@@ -119,13 +123,14 @@ function Login(props) {
                 >
                   เข้าสู่ระบบ
                 </Button>
-              )}              
+              )}
             </div>
           </React.Fragment>
-        <Typography color="secondary" className={classes.copyright}>   
-          © 2014-{new Date().getFullYear()} , ภาวะการมีงานทำของบัณฑิต - ม.รภ.พช.
-        </Typography>
-      </div>
+          <Typography color="secondary" className={classes.copyright}>
+            © 2014-{new Date().getFullYear()} , ภาวะการมีงานทำของบัณฑิต -
+            ม.รภ.พช.
+          </Typography>
+        </div>
       </Container>
     </Grid>
   );

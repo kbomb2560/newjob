@@ -36,7 +36,7 @@
     "react-toastify": "^7.0.3",
     "reactstrap": "^8.10.0",
     "recharts": "^2.0.4",
-    "tinycolor2": "^1.4.2"    
+    "tinycolor2": "^1.4.2"
   },
   "scripts": {
     "start": "set PORT=3003 && react-scripts start",

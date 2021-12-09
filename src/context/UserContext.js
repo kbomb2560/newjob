@@ -62,10 +62,10 @@ function creatStudents(
   password,
   history,
   setIsLoading,
-  setError,
+  setError
 ) {
   //const BASE_URL = "http://academic.pcru.ac.th/dev/php-jwt-auth/api/signin.php";
-  const BASE_URL = "http://academic.pcru.ac.th/dev/login.php";
+  const BASE_URL = "http://academic.pcru.ac.th/job-api/login.php";
   //.post(BASE_URL, { usr: login, pwd: password })
 
   //console.log("errx");
@@ -78,12 +78,12 @@ function creatStudents(
         //console.log(response);
         //console.log(response.status);
         //console.log(response.data.status);
-        if (response.data.status === true && response.data.id.status === true) {
+        if (response.data.status === true && response.data.id === true) {
           setTimeout(() => {
             localStorage.setItem("id_token", 1);
             localStorage.setItem(
               "dataAuth",
-              JSON.stringify(response.data.id.data),
+              JSON.stringify(response.data.std_id)
             );
             //localStorage.setItem("StudentData", response.data.id.data);
             setError(false);
@@ -127,7 +127,7 @@ function creatStudents(
 // ######### Login ##########
 function loginUser(dispatch, login, password, history, setIsLoading, setError) {
   //const BASE_URL = "http://academic.pcru.ac.th/dev/php-jwt-auth/api/signin.php";
-  const BASE_URL = "http://academic.pcru.ac.th/dev/login.php";
+  const BASE_URL = "http://academic.pcru.ac.th/job-api/login.php";
   //.post(BASE_URL, { usr: login, pwd: password })
 
   //console.log("errx");
@@ -137,15 +137,15 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
     axios
       .get(`${BASE_URL}?usr=${login}&&pwd=${password}`)
       .then(function (response) {
-        //console.log(response);
-        //console.log(response.status);
-        //console.log(response.data.status);
-        if (response.data.status === true && response.data.id.status === true) {
+        console.log(response);
+        console.log(response.status);
+        console.log(response.data.status);
+        if (response.data.status === true && response.data.id === true) {
           setTimeout(() => {
             localStorage.setItem("id_token", 1);
             localStorage.setItem(
               "dataAuth",
-              JSON.stringify(response.data.id.data),
+              JSON.stringify(response.data.std_id)
             );
             //localStorage.setItem("StudentData", response.data.id.data);
             setError(false);
