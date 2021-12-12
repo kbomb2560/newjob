@@ -1,16 +1,8 @@
 //import { CenterFocusStrong } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/styles";
-import fondo from "../../assets/images/fondo.png";
+
 export default makeStyles((theme) => ({
-  root: {
-    backgroundImage: `url(${fondo})`,
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    height: "100vh",
-  },
   container: {
-    /*
     height: "100vh",
     width: "100vw",
     display: "flex",
@@ -19,16 +11,6 @@ export default makeStyles((theme) => ({
     position: "absolute",
     top: 0,
     left: 0,
-    */
-
-    opacity: "0.7",
-    //height: '60%',
-    //marginTop: theme.spacing(10),
-    [theme.breakpoints.down(400 + theme.spacing(2) + 2)]: {
-      marginTop: 0,
-      width: "100%",
-      height: "70%",
-    },
   },
   logotypeContainer: {
     backgroundColor: theme.palette.primary.main,
@@ -72,7 +54,7 @@ export default makeStyles((theme) => ({
   form: {
     //width: 320,
     width: "100%",
-    marginTop: theme.spacing(1),
+    padding: "7px 14px",
   },
   tab: {
     fontWeight: 400,
@@ -80,7 +62,6 @@ export default makeStyles((theme) => ({
   },
   greeting: {
     fontWeight: 500,
-    //color:'secondary',
     textAlign: "center",
     marginTop: theme.spacing(4),
   },
@@ -145,6 +126,7 @@ export default makeStyles((theme) => ({
   },
   textField: {
     borderBottomColor: theme.palette.background.light,
+    padding: "0 30px",
   },
   formButtons: {
     width: "100%",
@@ -157,24 +139,14 @@ export default makeStyles((theme) => ({
     textTransform: "none",
     fontWeight: 400,
   },
+  btninline: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#222",
+  },
   loginLoader: {
     marginLeft: theme.spacing(4),
-  },
-  div: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  button: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  pos: {
-    marginBottom: 12,
   },
   copyright: {
     marginTop: theme.spacing(4),

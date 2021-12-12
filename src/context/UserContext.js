@@ -89,12 +89,13 @@ function creatStudents(
             setError(false);
             setIsLoading(false);
             dispatch({ type: "LOGIN_SUCCESS" });
-            history.push("/app/dashboard");
+            //history.push("/app/dashboard");
+            history.push("/app/job");
           }, 2000);
         } else {
           //username ผิด
           //password ผิด
-          console.log("wrong username");
+          //console.log("wrong username");
           //dispatch({ type: "LOGIN_FAILURE" });
           setError(true);
           setIsLoading(false);
@@ -103,8 +104,8 @@ function creatStudents(
       .catch(function (error) {
         if (error.response) {
           setError(true);
-          console.log(error.response.data.message);
-          console.log(error.response.data.status);
+          //console.log(error.response.data.message);
+          //console.log(error.response.data.status);
           //console.log(error.response.headers);
         } else if (error.request) {
           setError(true);
@@ -115,7 +116,7 @@ function creatStudents(
         }
       });
   } catch (error) {
-    console.log("err");
+    //console.log("err");
     dispatch({ type: "LOGIN_FAILURE" });
     setError(true);
     setIsLoading(false);
@@ -137,9 +138,9 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
     axios
       .get(`${BASE_URL}?usr=${login}&&pwd=${password}`)
       .then(function (response) {
-        console.log(response);
-        console.log(response.status);
-        console.log(response.data.status);
+        //console.log(response);
+        //console.log(response.status);
+        //console.log(response.data.status);
         if (response.data.status === true && response.data.id === true) {
           setTimeout(() => {
             localStorage.setItem("id_token", 1);
@@ -151,12 +152,13 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
             setError(false);
             setIsLoading(false);
             dispatch({ type: "LOGIN_SUCCESS" });
-            history.push("/app/dashboard");
+            //history.push("/app/dashboard");
+            history.push("/app/job");
           }, 2000);
         } else {
           //username ผิด
           //password ผิด
-          console.log("wrong username");
+          //console.log("wrong username");
           //dispatch({ type: "LOGIN_FAILURE" });
           setError(true);
           setIsLoading(false);

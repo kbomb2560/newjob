@@ -68,89 +68,23 @@ export default function Header(props) {
   var [isSearchOpen, setSearchOpen] = useState(false);
   var rememberMe = localStorage.getItem("dataAuth");
   //const user = rememberMe ? localStorage.getItem("dataStudent") : "";
+
   var studentsData = JSON.parse(rememberMe);
+  /* 
   var studentsFullname =
     studentsData.PREFIX_NAME +
     "" +
     studentsData.FIRST_NAME +
     " " +
     studentsData.LAST_NAME;
+    */
   //console.log(studentsData.STD_CODE);
   //console.log(studentsData.USER_TYPE);
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar className={classes.toolbar}>
-        <IconButton
-          color="inherit"
-          onClick={() => toggleSidebar(layoutDispatch)}
-          className={classNames(
-            classes.headerMenuButtonSandwich,
-            classes.headerMenuButtonCollapse,
-          )}
-        >
-          {layoutState.isSidebarOpened ? (
-            <ArrowBackIcon
-              classes={{
-                root: classNames(
-                  classes.headerIcon,
-                  classes.headerIconCollapse,
-                ),
-              }}
-            />
-          ) : (
-            <MenuIcon
-              classes={{
-                root: classNames(
-                  classes.headerIcon,
-                  classes.headerIconCollapse,
-                ),
-              }}
-            />
-          )}
-        </IconButton>
-        <Typography variant="h6" weight="medium" className={classes.logotype}>
-          ระบบเก็บชั่วโมงนักศึกษาทุน
-        </Typography>
         <div className={classes.grow} />
-        <div
-          className={classNames(classes.search, {
-            [classes.searchFocused]: isSearchOpen,
-          })}
-        >
-          <div
-            className={classNames(classes.searchIcon, {
-              [classes.searchIconOpened]: isSearchOpen,
-            })}
-            onClick={() => setSearchOpen(!isSearchOpen)}
-          >
-            <SearchIcon classes={{ root: classes.headerIcon }} />
-          </div>
-          <InputBase
-            placeholder="Search…"
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput,
-            }}
-          />
-        </div>
-        <IconButton
-          color="inherit"
-          aria-haspopup="true"
-          aria-controls="mail-menu"
-          onClick={(e) => {
-            setNotificationsMenu(e.currentTarget);
-            setIsNotificationsUnread(false);
-          }}
-          className={classes.headerMenuButton}
-        >
-          <Badge
-            badgeContent={isNotificationsUnread ? notifications.length : null}
-            color="warning"
-          >
-            <NotificationsIcon classes={{ root: classes.headerIcon }} />
-          </Badge>
-        </IconButton>
 
         <IconButton
           aria-haspopup="true"
@@ -189,20 +123,6 @@ export default function Header(props) {
           classes={{ paper: classes.profileMenu }}
           disableAutoFocusItem
         >
-          <div className={classes.profileMenuUser}>
-            <Typography variant="h4" weight="medium">
-              {studentsFullname}
-            </Typography>
-          </div>
-          <MenuItem
-            className={classNames(
-              classes.profileMenuItem,
-              classes.headerMenuItem,
-            )}
-          >
-            <AccountIcon className={classes.profileMenuIcon} /> ข้อมูลส่วนตัว
-          </MenuItem>
-
           <div className={classes.profileMenuUser}>
             <Typography
               className={classes.profileMenuLink}

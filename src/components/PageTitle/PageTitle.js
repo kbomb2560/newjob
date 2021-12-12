@@ -11,7 +11,7 @@ export default function PageTitle(props) {
 
   return (
     <div className={classes.pageTitleContainer}>
-      <Typography className={classes.typo} variant="h1" size="sm">
+      <Typography className={classes.typo} variant="h3" size="sm">
         {props.title}
       </Typography>
       {props.button && props.button}
