@@ -51,6 +51,11 @@ const useStyles = makeStyles((theme) => ({
     //color: theme.palette.text.primary,
     color: "#FE6B8B",
   },
+  typename: {
+    //color: theme.palette.text.hint,
+    //color: theme.palette.text.primary,
+    color: "#8C2BFF",
+  },
 }));
 
 const dataStudents = Joi.object({
@@ -117,9 +122,15 @@ const GraduateList = (props) => {
           if (response.data.status === true && response.data.success === 1) {
             setTimeout(() => {
               console.log("xx");
-              console.log(response.data.bunditSTD);
+              console.log("5555=", response.data.bunditSTD.STD_FNAME);
               setIsLoading(false);
               setData(response.data.bunditSTD); //รับค่า result
+              //-- set ค่าให้กับตัวแปร Joi --//
+              setValue("STD_CODE", response.data.bunditSTD.STD_ID);
+
+              //-- จบส่วนของการ set ค่าให้กับตัวแปร Joi --//
+
+              console.log("xxx=", response.data.bunditSTD.STD_ID);
               //localStorage.setItem("StudentData", response.data.id.data);
               //setError(false);
               //setIsLoading(false);
@@ -203,350 +214,291 @@ const GraduateList = (props) => {
     } else {
       content = (
         <div>
-          {data.map((val, index) => {
-            return (
-              <div key={index} className={classes.root}>
-                <Typography className={classes.typo} variant="h3" size="sm">
-                  ตอนที่ 1 ข้อมูลทั่วไป
-                </Typography>
-                <Grid container spacing={0.5}>
-                  <Grid item xs={12} sm={6}>
-                    <p className="category text-primary">
-                      1. สถานศึกษา :{" "}
-                      <small className={classes.typo}>
-                        {"มหาวิทยาลัยราชภัฏเพชรบูรณ์"}
-                      </small>
-                    </p>
-                    <p className="category text-primary">
-                      2. ชื่อ-สกุล :{" "}
-                      <small className={classes.typo}>
-                        {val.PREFIX_NAME +
-                          " " +
-                          val.STD_FNAME +
-                          " " +
-                          val.STD_LNAME}
-                      </small>
-                    </p>
-                    <p className="category text-primary">
+          <form onSubmit={handleSubmit(handleSubmitAdd)}>
+            <div className={classes.root}>
+              <Typography className={classes.typo} variant="h3" size="sm">
+                ตอนที่ 1 ข้อมูลทั่วไป
+              </Typography>
+              <Grid container spacing={0.5}>
+                <Grid item xs={12} sm={6}>
+                  <div className="col-md-12">
+                    <label className="control-label">1. สถานศึกษา : </label>
+                    <small className={classes.typo}>
+                      {"มหาวิทยาลัยราชภัฏเพชรบูรณ์"}
+                    </small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">2. ชื่อ-สกุล : </label>
+                    <small className={classes.typename}>
+                      {data.PREFIX_NAME +
+                        "" +
+                        data.STD_FNAME +
+                        " " +
+                        data.STD_LNAME}
+                    </small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">
                       3. เลขประจำตัวประชาชน :{" "}
-                      <small className={classes.typo}>{val.CITIZEN_ID}</small>
-                    </p>
-                    <p className="category text-primary">
+                    </label>
+                    <small className={classes.typo}>{data.CITIZEN_ID}</small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">
                       4. เลขประจำตัวนักศึกษา :{" "}
-                      <small className={classes.typo}>{val.STD_ID}</small>
-                    </p>
-                    <p className="category text-primary">
+                    </label>
+                    <small className={classes.typo}>{data.STD_ID}</small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">
                       5. วัน/เดือน/ปี เกิด :{" "}
-                      <small className={classes.typo}>{val.BIRTHDAY}</small>
-                    </p>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <p className="category text-primary">
-                      6. สาขา :{" "}
-                      <small className={classes.typo}>
-                        {val.UNI_PROGRAM_NAME}
-                      </small>
-                    </p>
-                    <p className="category text-primary">
-                      7. คณะ :{" "}
-                      <small className={classes.typo}>{val.FAC_NAME}</small>
-                    </p>
-                    <p className="category text-primary">
+                    </label>
+                    <small className={classes.typo}>{data.BIRTHDAY}</small>
+                  </div>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <div className="col-md-12">
+                    <label className="control-label">6. สาขา : </label>
+                    <small className={classes.typo}>
+                      {data.UNI_PROGRAM_NAME}
+                    </small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">7. คณะ : </label>
+                    <small className={classes.typo}>{data.FAC_NAME}</small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">
                       8. สำเร็จการศึกษาหลักสูตร :{" "}
-                      <small className={classes.typo}>{val.CURR_NAME}</small>
-                    </p>
-                    <p className="category text-primary">
+                    </label>
+                    <small className={classes.typo}>{data.CURR_NAME}</small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">
                       9. คะแนนเฉลี่ยตลอดหลักสูตร (GPA) :{" "}
-                      <small className={classes.typo}>{val.GPA}</small>
-                    </p>
-                  </Grid>
+                    </label>
+                    <small className={classes.typo}>{data.GPA}</small>
+                  </div>
+                </Grid>
+              </Grid>
+
+              <Typography className={classes.typo} variant="h5" size="sm">
+                ที่อยู่ปัจจุบัน
+              </Typography>
+
+              <Grid container spacing={0.5}>
+                <Grid item xs={12} sm={4}>
+                  <div className="col-md-12">
+                    <label className="control-label">เลขที่ </label>
+                    <small className={classes.typo}>{data.HOMEADD}</small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">หมู่ </label>
+                    <small className={classes.typo}>{data.MOO}</small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">ซอย </label>
+                    <small className={classes.typo}>{data.SOI}</small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">ถนน </label>
+                    <small className={classes.typo}>{data.STREET}</small>
+                  </div>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <div className="col-md-12">
+                    <label className="control-label">ตำบล </label>
+                    <small className={classes.typo}>{data.TUMBOL}</small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">อำเภอ </label>
+                    <small className={classes.typo}>{data.AMPHUR}</small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">จังหวัด </label>
+                    <small className={classes.typo}>{data.PROVINCE_NAME}</small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">รหัสไปรษณีย์ </label>
+                    <small className={classes.typo}>{data.ZIPCODE}</small>
+                  </div>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <div className="col-md-12">
+                    <label className="control-label">โทรศัพท์(แก้ไขได้) </label>
+                    <small className={classes.typo}>
+                      {data.MOBILE_CONTACT}
+                    </small>
+                  </div>
+                  <div className="col-md-12">
+                    <label className="control-label">E-mail </label>
+                    <small className={classes.typo}>{data.EMAIL}</small>
+                  </div>
+                </Grid>
+              </Grid>
+
+              <Typography className={classes.typo} variant="h5" size="sm">
+                ที่อยู่ปัจจุบัน
+              </Typography>
+
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={2} md={2} lg={2}>
+                  <TextField
+                    {...register("TERM_YEAR")}
+                    variant="outlined"
+                    label="ภาค/ปีการศึกษา"
+                    fullWidth
+                    error={!!errors.TERM_YEAR}
+                    helperText={errors.TERM_YEAR?.message}
+                    InputProps={{
+                      readOnly: false,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={10} md={10} lg={10}>
+                  <InputLabel
+                    shrink
+                    id="demo-simple-select-placeholder-label-label"
+                  >
+                    ประเภททุน
+                  </InputLabel>
+                  <Select
+                    {...register("SCH_NAME")}
+                    error={!!errors.SCH_NAME}
+                    helperText={errors.SCH_NAME?.message}
+                    defaultValue={"0"}
+                  >
+                    <MenuItem value={"0"}>
+                      <em>-เลือกประเภททุนที่ได้รับ-</em>
+                    </MenuItem>
+                    <MenuItem value={"1"}>ทุนเรียนดี</MenuItem>
+                    <MenuItem value={"2"}>ทุนความสามารถพิเศษ</MenuItem>
+                    <MenuItem value={"3"}>ทุนสร้างชื่อเสียง</MenuItem>
+                  </Select>
                 </Grid>
 
-                <Typography className={classes.typo} variant="h5" size="sm">
-                  ที่อยู่ปัจจุบัน
-                </Typography>
-                <form onSubmit={handleSubmit(handleSubmitAdd)}>
-                  <Grid container spacing={0.5}>
-                    <Grid item xs={12} sm={6}>
-                      <div className="row">
-                        <div className="col-sm-12">
-                          <div className="row">
-                            <div className="col-md-2">
-                              <div className="form-group label-floating">
-                                <label className="control-label">เลขที่</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  defaultValue="<?php echo $u_house_number; ?>"
-                                  disabled
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-2">
-                              <div className="form-group label-floating">
-                                <label className="control-label">หมู่</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  defaultValue="<?php echo $u_moo; ?>"
-                                  disabled
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group label-floating">
-                                <label className="control-label">ถนน</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  defaultValue="<?php echo $u_street; ?>"
-                                  disabled
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group label-floating">
-                                <label className="control-label">ตำบล</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  defaultValue="<?php echo $u_subdistrictnameth; ?>"
-                                  disabled
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-md-2">
-                              <div className="form-group label-floating">
-                                <label className="control-label">อำเภอ</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  defaultValue="<?php echo $u_districtnameth; ?>"
-                                  disabled
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-3">
-                              <div className="form-group label-floating">
-                                <label className="control-label">จังหวัด</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  defaultValue="<?php echo $u_proviceth; ?>"
-                                  disabled
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-2">
-                              <div className="form-group label-floating">
-                                <label className="control-label">
-                                  รหัสไปรษณีย์
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  defaultValue="<?php echo $u_zipcode; ?>"
-                                  disabled
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-2">
-                              <div className="form-group label-floating">
-                                <label className="control-label text-success">
-                                  โทรศัพท์ (แก้ไขได้)
-                                </label>
-                                <input
-                                  type="text"
-                                  name="std_telephone_edit"
-                                  className="form-control"
-                                  defaultValue="<?php echo $u_telephone; ?>"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-3">
-                              <div className="form-group label-floating">
-                                <label className="control-label">E-mail</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  defaultValue="<?php echo $u_email; ?>"
-                                  disabled
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="clearfix" />
-                        </div>
-                      </div>
-                    </Grid>
-                  </Grid>
+                <Grid item xs={12} sm={2} md={2} lg={2}>
+                  <TextField
+                    {...register("STD_CODE")}
+                    variant="outlined"
+                    label="รหัสนักศึกษา"
+                    fullWidth
+                    error={!!errors.STD_CODE}
+                    helperText={errors.STD_CODE?.message}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={2} md={2} lg={2}>
+                  <TextField
+                    {...register("PREFIX_NAME")}
+                    variant="outlined"
+                    label="คำนำหน้า"
+                    fullWidth
+                    error={!!errors.PREFIX_NAME}
+                    helperText={errors.PREFIX_NAME?.message}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3} md={3} lg={3}>
+                  <TextField
+                    {...register("FIRST_NAME")}
+                    variant="outlined"
+                    label="ชื่อ"
+                    fullWidth
+                    error={!!errors.FIRST_NAME}
+                    helperText={errors.FIRST_NAME?.message}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3} md={3} lg={3}>
+                  <TextField
+                    {...register("LAST_NAME")}
+                    variant="outlined"
+                    label="นามสกุล"
+                    fullWidth
+                    error={!!errors.LAST_NAME}
+                    helperText={errors.LAST_NAME?.message}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} md={4} lg={4}>
+                  <TextField
+                    {...register("FAC_NAME")}
+                    variant="outlined"
+                    label="ชื่อคณะ"
+                    fullWidth
+                    error={!!errors.FAC_NAME}
+                    helperText={errors.FAC_NAME?.message}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8} md={8} lg={8}>
+                  <TextField
+                    {...register("MAJOR_NAME")}
+                    variant="outlined"
+                    label="ชื่อสาขาวิชา"
+                    fullWidth
+                    error={!!errors.MAJOR_NAME}
+                    helperText={errors.MAJOR_NAME?.message}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
 
-                  <Typography className={classes.typo} variant="h5" size="sm">
-                    ที่อยู่ปัจจุบัน
-                  </Typography>
-
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={2} md={2} lg={2}>
-                      <TextField
-                        {...register("TERM_YEAR")}
-                        variant="outlined"
-                        label="ภาค/ปีการศึกษา"
-                        fullWidth
-                        error={!!errors.TERM_YEAR}
-                        helperText={errors.TERM_YEAR?.message}
-                        InputProps={{
-                          readOnly: false,
-                        }}
+                <TextField
+                  {...register("FAC_CODE")}
+                  type="hidden"
+                  error={!!errors.FAC_CODE}
+                  helperText={errors.FAC_CODE?.message}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <TextField
+                  {...register("ADMIN_ID")}
+                  type="hidden"
+                  error={!!errors.ADMIN_ID}
+                  helperText={errors.ADMIN_ID?.message}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <TextField
+                  {...register("MAJOR_CODE")}
+                  type="hidden"
+                  error={!!errors.MAJOR_CODE}
+                  helperText={errors.MAJOR_CODE?.message}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <Grid item xs={12}>
+                  <div>
+                    {isAddLoading ? (
+                      <CircularProgress
+                        size={26}
+                        className={classes.loginLoader}
+                        color="secondary"
                       />
-                    </Grid>
-                    <Grid item xs={12} sm={10} md={10} lg={10}>
-                      <InputLabel
-                        shrink
-                        id="demo-simple-select-placeholder-label-label"
-                      >
-                        ประเภททุน
-                      </InputLabel>
-                      <Select
-                        {...register("SCH_NAME")}
-                        error={!!errors.SCH_NAME}
-                        helperText={errors.SCH_NAME?.message}
-                        defaultValue={"0"}
-                      >
-                        <MenuItem value={"0"}>
-                          <em>-เลือกประเภททุนที่ได้รับ-</em>
-                        </MenuItem>
-                        <MenuItem value={"1"}>ทุนเรียนดี</MenuItem>
-                        <MenuItem value={"2"}>ทุนความสามารถพิเศษ</MenuItem>
-                        <MenuItem value={"3"}>ทุนสร้างชื่อเสียง</MenuItem>
-                      </Select>
-                    </Grid>
-
-                    <Grid item xs={12} sm={2} md={2} lg={2}>
-                      <TextField
-                        {...register("STD_CODE")}
-                        variant="outlined"
-                        label="รหัสนักศึกษา"
-                        fullWidth
-                        error={!!errors.STD_CODE}
-                        helperText={errors.STD_CODE?.message}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={2} md={2} lg={2}>
-                      <TextField
-                        {...register("PREFIX_NAME")}
-                        variant="outlined"
-                        label="คำนำหน้า"
-                        fullWidth
-                        error={!!errors.PREFIX_NAME}
-                        helperText={errors.PREFIX_NAME?.message}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={3} md={3} lg={3}>
-                      <TextField
-                        {...register("FIRST_NAME")}
-                        variant="outlined"
-                        label="ชื่อ"
-                        fullWidth
-                        error={!!errors.FIRST_NAME}
-                        helperText={errors.FIRST_NAME?.message}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={3} md={3} lg={3}>
-                      <TextField
-                        {...register("LAST_NAME")}
-                        variant="outlined"
-                        label="นามสกุล"
-                        fullWidth
-                        error={!!errors.LAST_NAME}
-                        helperText={errors.LAST_NAME?.message}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4} md={4} lg={4}>
-                      <TextField
-                        {...register("FAC_NAME")}
-                        variant="outlined"
-                        label="ชื่อคณะ"
-                        fullWidth
-                        error={!!errors.FAC_NAME}
-                        helperText={errors.FAC_NAME?.message}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={8} md={8} lg={8}>
-                      <TextField
-                        {...register("MAJOR_NAME")}
-                        variant="outlined"
-                        label="ชื่อสาขาวิชา"
-                        fullWidth
-                        error={!!errors.MAJOR_NAME}
-                        helperText={errors.MAJOR_NAME?.message}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </Grid>
-
-                    <TextField
-                      {...register("FAC_CODE")}
-                      type="hidden"
-                      error={!!errors.FAC_CODE}
-                      helperText={errors.FAC_CODE?.message}
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                    <TextField
-                      {...register("ADMIN_ID")}
-                      type="hidden"
-                      error={!!errors.ADMIN_ID}
-                      helperText={errors.ADMIN_ID?.message}
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                    <TextField
-                      {...register("MAJOR_CODE")}
-                      type="hidden"
-                      error={!!errors.MAJOR_CODE}
-                      helperText={errors.MAJOR_CODE?.message}
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                    <Grid item xs={12}>
-                      <div>
-                        {isAddLoading ? (
-                          <CircularProgress
-                            size={26}
-                            className={classes.loginLoader}
-                            color="secondary"
-                          />
-                        ) : (
-                          <Controls.Button type="submit" text="บันทึกข้อมูล" />
-                        )}
-                      </div>
-                    </Grid>
-                  </Grid>
-                </form>
-              </div>
-            );
-          })}
+                    ) : (
+                      <Controls.Button type="submit" text="บันทึกข้อมูล" />
+                    )}
+                  </div>
+                </Grid>
+              </Grid>
+            </div>
+          </form>
         </div>
       );
     }
