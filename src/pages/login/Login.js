@@ -14,12 +14,10 @@ import {
 import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
 import { withRouter } from "react-router-dom";
 //import classnames from "classnames";
-import CardContent from "@material-ui/core/CardContent";
 // styles
 import useStyles from "./styles";
 
 // logo
-import logo from "./logopng.png";
 
 // context
 import { useUserDispatch, loginUser } from "../../context/UserContext";
@@ -38,8 +36,8 @@ function Login(props) {
   //var [loginValue, setLoginValue] = useState("admin@flatlogic.com"); //user email
   //var [passwordValue, setPasswordValue] = useState("password"); //password
 
-  var [loginValue, setLoginValue] = useState("561202175103"); //user รหัสนักศึกษา
-  var [passwordValue, setPasswordValue] = useState("26082536"); //password ววดดปปปป
+  var [loginValue, setLoginValue] = useState("571102057117"); //user รหัสนักศึกษา
+  var [passwordValue, setPasswordValue] = useState("06092535"); //password ววดดปปปป
 
   return (
     <Grid container component="main" className={classes.root}>

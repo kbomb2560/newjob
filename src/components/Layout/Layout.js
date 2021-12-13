@@ -12,7 +12,7 @@ import useStyles from "./styles";
 
 // components
 import Header from "../Header";
-import Sidebar from "../Sidebar";
+//import Sidebar from "../Sidebar";
 
 // pages
 

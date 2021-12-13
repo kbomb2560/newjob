@@ -1,12 +1,6 @@
 import React, { useState } from "react";
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  InputBase,
-  Menu,
-  MenuItem,
-} from "@material-ui/core";
+import { AppBar, Toolbar, IconButton, Menu, MenuItem } from "@material-ui/core";
+/*
 import {
   Menu as MenuIcon,
   NotificationsNone as NotificationsIcon,
@@ -14,21 +8,17 @@ import {
   Search as SearchIcon,
   ArrowBack as ArrowBackIcon,
 } from "@material-ui/icons";
-import classNames from "classnames";
-
+*/
+import { Person as AccountIcon } from "@material-ui/icons";
 // styles
 import useStyles from "./styles";
 
 // components
-import { Badge, Typography } from "../Wrappers";
+import { Typography } from "../Wrappers";
 import Notification from "../Notification/Notification";
 
 // context
-import {
-  useLayoutState,
-  useLayoutDispatch,
-  toggleSidebar,
-} from "../../context/LayoutContext";
+//import { useLayoutState, useLayoutDispatch } from "../../context/LayoutContext";
 import { useUserDispatch, signOut } from "../../context/UserContext";
 
 const notifications = [
@@ -57,19 +47,18 @@ export default function Header(props) {
   var classes = useStyles();
 
   // global
-  var layoutState = useLayoutState();
-  var layoutDispatch = useLayoutDispatch();
+  //var layoutState = useLayoutState();
+  //var layoutDispatch = useLayoutDispatch();
   var userDispatch = useUserDispatch();
 
   // local
   var [notificationsMenu, setNotificationsMenu] = useState(null);
-  var [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
+  //var [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
   var [profileMenu, setProfileMenu] = useState(null);
-  var [isSearchOpen, setSearchOpen] = useState(false);
-  var rememberMe = localStorage.getItem("dataAuth");
+  //var [isSearchOpen, setSearchOpen] = useState(false);
+  //var rememberMe = localStorage.getItem("dataAuth");
   //const user = rememberMe ? localStorage.getItem("dataStudent") : "";
 
-  var studentsData = JSON.parse(rememberMe);
   /* 
   var studentsFullname =
     studentsData.PREFIX_NAME +
