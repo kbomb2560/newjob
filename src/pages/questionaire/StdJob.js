@@ -98,43 +98,30 @@ const dataStudents = Joi.object({
   //สำหรับข้อมูลผู้สำเร็จการศึกษา
   TELEPHONEUPDATE: Joi.string().required(),
   //สำหรับฟอร์ม qn
-
-  //TERM_YEAR: Joi.string().required(),
-
-  //STD_CODE: Joi.number().positive().integer().required(),
-  /* 
-  //std_code: Joi.string().required(),
-  PREFIX_NAME: Joi.string().required(),
-  FIRST_NAME: Joi.string().required(),
-  LAST_NAME: Joi.string().required(),
-  FAC_CODE: Joi.string().required(),
-  FAC_NAME: Joi.string().required(),
-  MAJOR_CODE: Joi.string().required(),
-  MAJOR_NAME: Joi.string().required(),
-  ADMIN_ID: Joi.string().required(),
-  SCH_NAME: Joi.string()
-    .regex(/^[1-3]/)
-    .required(),
-    */
   GENDER_ID_CHECK: Joi.string(),
-
-  CURRPROVINCE: Joi.string()
+  STD_ID: Joi.string(),
+  REF_QN_PROVINCE_ID: Joi.string()
     .regex(/^[1-99]/)
     .required(),
   QN_MILITARY_STATUS: Joi.any().when("GENDER_ID_CHECK", {
     is: "1",
-    then: Joi.string()
-      .regex(/^[0-1]/)
-      .required(),
+    then: Joi.string().pattern(new RegExp("^[0-1]")).required(),
   }),
   /*    
   QN_MILITARY_STATUS: Joi.string()
     .regex(/^[0-1]/)
     .required(),
-*/
+*/ /*
   QN_ORDINATE_STATUS: Joi.string()
-    .regex(/^[1-5]/)
+    .pattern(new RegExp("^[1-2]"))
+    //.regex(/^[1-5]/)
     .required(),
+    */
+  QN_ORDINATE_STATUS: Joi.any().when("GENDER_ID_CHECK", {
+    is: "1",
+    then: Joi.string().pattern(new RegExp("^[1-5]")).required(),
+  }),
+
   QN_WORK_STATUS: Joi.string()
     .regex(/^[1-7]/)
     .required()
@@ -166,6 +153,10 @@ const GraduateList = (props) => {
   const [isShow, setIsShow] = useState(false);
   //ซ่อนแสดงการเกณฑ์ทหาร
   const [isShowMILITARY, setIsShowMILITARY] = useState(false);
+  //ซ่อนแสดงการบวช
+  const [isShowORDINATE, setisShowORDINATE] = useState(false);
+  //check QN
+  const [refProvinceID, setrefProvinceID] = useState();
   //
   const [secondary, setSecondary] = useState(false);
   const classes = useStyles();
@@ -202,18 +193,93 @@ const GraduateList = (props) => {
           //console.log(response.data);
           if (response.data.status === true && response.data.success === 1) {
             setTimeout(() => {
+              ///ตรวจสอบข้อมูลการตอบแบบสอบถาม//
+
+              //----------------------------
+
+              const BASE_URL_QN =
+                "http://academic.pcru.ac.th/job-api/qn-checkstd-end.php";
+              try {
+                //setError(false);
+                //setIsLoading(true);
+                axios
+                  .get(`${BASE_URL_QN}?std_code=${studentsData}`)
+                  .then(function (res) {
+                    //console.log(response);
+                    //console.log(response.data);
+                    if (res.data.status === true && res.data.success === 1) {
+                      setTimeout(() => {
+                        ///ตรวจสอบข้อมูลการตอบแบบสอบถาม//
+                        //
+                        //console.log("xx");
+                        console.log("std=", res.data.QuestionaireSTD.STD_ID);
+                        setIsLoading(false);
+                        //-- set ค่าให้กับตัวแปร Joi --//
+                        setValue(
+                          "REF_QN_PROVINCE_ID",
+                          res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
+                        );
+                        /*
+                        setrefProvinceID(
+                          res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
+                        );
+                        */
+                        console.log(
+                          "province =",
+                          res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
+                        );
+                        //-- จบส่วนของการ set ค่าให้กับตัวแปร Joi --//
+
+                        //console.log("xxx=", response.data.bunditSTD.STD_ID);
+                        //localStorage.setItem("StudentData", response.data.id.data);
+                        //setError(false);
+                        //setIsLoading(false);
+                        //history.push("/app/dashboard");
+                      }, 1000);
+                    } else {
+                      //username ผิด
+                      //password ผิด
+                      console.log("wrong data");
+                      //dispatch({ type: "LOGIN_FAILURE" });
+                      //setError(true);
+                      //setIsLoading(false);
+                    }
+                  })
+                  .catch(function (error) {
+                    setIsError(true);
+                    if (error.response) {
+                      //console.log(error.response.headers);
+                    } else if (error.request) {
+                      //setError(true);
+                      //console.log(error.request);
+                    } else {
+                      //setError(true);
+                      //console.log("Error", error.message);
+                    }
+                  });
+              } catch (error) {
+                console.log("err");
+              }
+
+              //----------------------------
+
+              //
+
               //console.log("xx");
               //console.log("5555=", response.data.bunditSTD.STD_FNAME);
               setIsLoading(false);
               if (response.data.bunditSTD.GENDER_ID === "1") {
                 setIsShowMILITARY(true);
+                setisShowORDINATE(true);
               } else {
                 setIsShowMILITARY(false);
+                setisShowORDINATE(false);
               }
               setData(response.data.bunditSTD); //รับค่า result
 
               //-- set ค่าให้กับตัวแปร Joi --//
               //setValue("STD_CODE", response.data.bunditSTD.STD_ID);
+              setValue("STD_ID", response.data.bunditSTD.STD_ID);
               setValue(
                 "TELEPHONEUPDATE",
                 response.data.bunditSTD.MOBILE_CONTACT
@@ -349,14 +415,16 @@ const GraduateList = (props) => {
 
   //
 
-  //ประเภทงานที่ทำ สำหรับแสดงซ่อน textbox กรณีตอบอื่นๆ
+  //การเกณฑ์ทหาร สำหรับแสดงซ่อน textbox กรณีตอบอื่นๆฃ
   const handleChange_MILITARY = (e) => {
     e.preventDefault(); // prevent the default action
     if (e.target.value === "1") {
       setIsShowMILITARY(true); //แสดง TextBox
+      setisShowORDINATE(true);
     } else {
       setValue("QN_MILITARY_STATUS", ""); //กำหนดค่าว่าง
       setIsShowMILITARY(false); //ซ่อน TextBox
+      setisShowORDINATE(false);
     }
   };
 
@@ -374,15 +442,15 @@ const GraduateList = (props) => {
   ///console.log((Date.now() + 48 * 60 * 60 * 1000))
   const handleSubmitAdd = async (data) => {
     //e.preventDefault();
-    console.log(data);
+    //console.log(data);
     //setIsAddLoading(true);
     //reset();
-    return;
+    //return;
     try {
       console.log(data);
       //const result = await axios.post(`end-point`,values);
       const result = await axios.post(
-        `http://academic.pcru.ac.th/job-dev/job-add.php`,
+        `http://academic.pcru.ac.th/job-api/qn-add-end.php`,
         data
       );
       if (result) {
@@ -390,11 +458,10 @@ const GraduateList = (props) => {
         setTimeout(() => {
           //setIsAddLoading(false);
           //แจ้งบันทึก
-
           //
-          props.onclose();
-          props.loadRecords();
-        }, 500);
+          //props.onclose();
+          //props.loadRecords();
+        }, 2000);
 
         // success
         //loading false
@@ -576,22 +643,23 @@ const GraduateList = (props) => {
                     <small className={classes.typo}>
                       <FormControl fullWidth error>
                         <Select
-                          {...register("CURRPROVINCE")}
-                          error={!!errors.CURRPROVINCE}
+                          {...register("REF_QN_PROVINCE_ID")}
+                          error={!!errors.REF_QN_PROVINCE_ID}
                           defaultValue={"0"}
                           fullWidth
+                          value={refProvinceID}
                         >
                           <MenuItem value={"0"}>
                             <em>-เลือกจังหวัด-</em>
                           </MenuItem>
                           {province.map((item, index) => (
-                            <MenuItem key={index} value={item.id}>
+                            <MenuItem key={index} value={item.code}>
                               {item.name_th}
                             </MenuItem>
                           ))}
                         </Select>
                         <FormHelperText>
-                          {errors.CURRPROVINCE?.message}
+                          {errors.REF_QN_PROVINCE_ID?.message}
                         </FormHelperText>
                       </FormControl>
                     </small>
@@ -645,54 +713,54 @@ const GraduateList = (props) => {
                     </div>
                   </Grid>
                 ) : null}
-
-                <Grid item xs={12} sm={4}>
-                  <div className="col-md-6">
-                    <ListItem disableGutters={true}>
-                      <ListItemIcon>
-                        <Icon
-                          className="fa fa-eye"
+                {isShowORDINATE ? (
+                  <Grid item xs={12} sm={4}>
+                    <div className="col-md-6">
+                      <ListItem disableGutters={true}>
+                        <ListItemIcon>
+                          <Icon
+                            className="fa fa-eye"
+                            style={{ color: orange[500], fontSize: 30 }}
+                          />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="สถานะการเป็นนักบวชปัจจุบัน"
+                          secondary={secondary ? "Secondary text" : null}
                           style={{ color: orange[500], fontSize: 30 }}
                         />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="สถานะการเป็นนักบวชปัจจุบัน"
-                        secondary={secondary ? "Secondary text" : null}
-                        style={{ color: orange[500], fontSize: 30 }}
-                      />
-                    </ListItem>
+                      </ListItem>
 
-                    <small className={classes.typo}>
-                      <FormControl fullWidth error>
-                        <Select
-                          {...register("QN_ORDINATE_STATUS")}
-                          error={!!errors.QN_ORDINATE_STATUS}
-                          defaultValue={"0"}
-                          fullWidth
-                        >
-                          <MenuItem value={"0"}>
-                            <em>-เลือกสถานะการเป็นนักบวช-</em>
-                          </MenuItem>
-                          {ordinate.map((item, index) => (
-                            <MenuItem
-                              key={index}
-                              value={item.ORDINATE_STATUS_ID}
-                              style={{ whiteSpace: "normal" }}
-                            >
-                              {item.ORDINATE_STATUS_ID}
-                              {". "}
-                              {item.ORDINATE_STATUS_NAME}
+                      <small className={classes.typo}>
+                        <FormControl fullWidth error>
+                          <Select
+                            {...register("QN_ORDINATE_STATUS")}
+                            error={!!errors.QN_ORDINATE_STATUS}
+                            defaultValue={"0"}
+                            fullWidth
+                          >
+                            <MenuItem value={"0"}>
+                              <em>-เลือกสถานะการเป็นนักบวช-</em>
                             </MenuItem>
-                          ))}
-                        </Select>
-                        <FormHelperText>
-                          {errors.QN_ORDINATE_STATUS?.message}
-                        </FormHelperText>
-                      </FormControl>
-                    </small>
-                  </div>
-                </Grid>
-
+                            {ordinate.map((item, index) => (
+                              <MenuItem
+                                key={index}
+                                value={item.ORDINATE_STATUS_ID}
+                                style={{ whiteSpace: "normal" }}
+                              >
+                                {item.ORDINATE_STATUS_ID}
+                                {". "}
+                                {item.ORDINATE_STATUS_NAME}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          <FormHelperText>
+                            {errors.QN_ORDINATE_STATUS?.message}
+                          </FormHelperText>
+                        </FormControl>
+                      </small>
+                    </div>
+                  </Grid>
+                ) : null}
                 <Grid item xs={12} sm={4}>
                   <div className="col-md-6">
                     <ListItem disableGutters={true}>
@@ -819,6 +887,15 @@ const GraduateList = (props) => {
                   readOnly: true,
                 }}
                 onChange={handleChange_MILITARY}
+              />
+              <TextField
+                {...register("STD_ID")}
+                type="hidden"
+                error={!!errors.STD_ID}
+                helperText={errors.STD_ID?.message}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
               <Grid container spacing={0}>
                 <Grid item xs={12}>
