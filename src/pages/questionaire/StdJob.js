@@ -29,7 +29,7 @@ import { listOrdinate } from "../../services/listEndPointService";
 import { listWorkstatus } from "../../services/listEndPointService";
 import { listOccupType } from "../../services/listEndPointService";
 import { exist } from "joi";
-
+import Notification from "../../components/Dialogs/Notification";
 import {
   green,
   orange,
@@ -156,7 +156,8 @@ const GraduateList = (props) => {
   //ซ่อนแสดงการบวช
   const [isShowORDINATE, setisShowORDINATE] = useState(false);
   //check QN
-  const [refProvinceID, setrefProvinceID] = useState();
+  const [refProvinceID, setrefProvinceID] = useState(""); //<--------------(Like this).
+
   //
   const [secondary, setSecondary] = useState(false);
   const classes = useStyles();
@@ -174,7 +175,11 @@ const GraduateList = (props) => {
   } = useForm({
     resolver: joiResolver(dataStudents),
   });
-
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
   const retrieveTutorials = () => {
     var rememberMe = localStorage.getItem("dataAuth");
     //const user = rememberMe ? localStorage.getItem("dataStudent") : "";
@@ -197,69 +202,7 @@ const GraduateList = (props) => {
 
               //----------------------------
 
-              const BASE_URL_QN =
-                "http://academic.pcru.ac.th/job-api/qn-checkstd-end.php";
-              try {
-                //setError(false);
-                //setIsLoading(true);
-                axios
-                  .get(`${BASE_URL_QN}?std_code=${studentsData}`)
-                  .then(function (res) {
-                    //console.log(response);
-                    //console.log(response.data);
-                    if (res.data.status === true && res.data.success === 1) {
-                      setTimeout(() => {
-                        ///ตรวจสอบข้อมูลการตอบแบบสอบถาม//
-                        //
-                        //console.log("xx");
-                        console.log("std=", res.data.QuestionaireSTD.STD_ID);
-                        setIsLoading(false);
-                        //-- set ค่าให้กับตัวแปร Joi --//
-                        setValue(
-                          "REF_QN_PROVINCE_ID",
-                          res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
-                        );
-                        /*
-                        setrefProvinceID(
-                          res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
-                        );
-                        */
-                        console.log(
-                          "province =",
-                          res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
-                        );
-                        //-- จบส่วนของการ set ค่าให้กับตัวแปร Joi --//
-
-                        //console.log("xxx=", response.data.bunditSTD.STD_ID);
-                        //localStorage.setItem("StudentData", response.data.id.data);
-                        //setError(false);
-                        //setIsLoading(false);
-                        //history.push("/app/dashboard");
-                      }, 1000);
-                    } else {
-                      //username ผิด
-                      //password ผิด
-                      console.log("wrong data");
-                      //dispatch({ type: "LOGIN_FAILURE" });
-                      //setError(true);
-                      //setIsLoading(false);
-                    }
-                  })
-                  .catch(function (error) {
-                    setIsError(true);
-                    if (error.response) {
-                      //console.log(error.response.headers);
-                    } else if (error.request) {
-                      //setError(true);
-                      //console.log(error.request);
-                    } else {
-                      //setError(true);
-                      //console.log("Error", error.message);
-                    }
-                  });
-              } catch (error) {
-                console.log("err");
-              }
+              //end Ordinate_status
 
               //----------------------------
 
@@ -323,11 +266,89 @@ const GraduateList = (props) => {
   };
   useEffect(retrieveTutorials, []);
 
+  ///
+  useEffect(() => {
+    loadCheckQN();
+  }, []);
+  /** */
+  const loadCheckQN = () => {
+    var rememberMeX = localStorage.getItem("dataAuth");
+    //const user = rememberMe ? localStorage.getItem("dataStudent") : "";
+    var studentsDataQN = JSON.parse(rememberMeX);
+    const BASE_URL_QN =
+      "http://academic.pcru.ac.th/job-api/qn-checkstd-end.php";
+    try {
+      //setError(false);
+      //setIsLoading(true);
+      axios
+        .get(`${BASE_URL_QN}?std_code=${studentsDataQN}`)
+        .then(function (res) {
+          //console.log(response);
+          //console.log(response.data);
+          if (res.data.status === true && res.data.success === 1) {
+            setTimeout(() => {
+              ///ตรวจสอบข้อมูลการตอบแบบสอบถาม//
+              //
+              //console.log("xx");
+              console.log("std=", res.data.QuestionaireSTD.STD_ID);
+              setIsLoading(false);
+              //-- set ค่าให้กับตัวแปร Joi --//
+
+              setValue(
+                "REF_QN_PROVINCE_ID",
+                res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
+              ); /*
+              setrefProvinceID(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
+              */
+              /*
+            setrefProvinceID(
+              res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
+            );
+            */
+              console.log(
+                "province =",
+                res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
+              );
+              //-- จบส่วนของการ set ค่าให้กับตัวแปร Joi --//
+              console.log("มีข้อมูลนี้ตอบแบบสอบถามแล้ว");
+              //console.log("xxx=", response.data.bunditSTD.STD_ID);
+              //localStorage.setItem("StudentData", response.data.id.data);
+              //setError(false);
+              //setIsLoading(false);
+              //history.push("/app/dashboard");
+            }, 1000);
+          } else {
+            //username ผิด
+            //password ผิด
+            console.log("ไม่พบข้อมูล");
+            //dispatch({ type: "LOGIN_FAILURE" });
+            //setError(true);
+            //setIsLoading(false);
+          }
+        })
+        .catch(function (error) {
+          setIsError(true);
+          if (error.response) {
+            //console.log(error.response.headers);
+          } else if (error.request) {
+            //setError(true);
+            //console.log(error.request);
+          } else {
+            //setError(true);
+            //console.log("Error", error.message);
+          }
+        });
+    } catch (error) {
+      console.log("err");
+    }
+  };
+
   ///load province
   const [province, setProvince] = useState([]);
   useEffect(() => {
     loadData();
   }, []);
+
   const loadData = () => {
     listProvince()
       .then((res) => {
@@ -451,17 +472,23 @@ const GraduateList = (props) => {
       //const result = await axios.post(`end-point`,values);
       const result = await axios.post(
         `http://academic.pcru.ac.th/job-api/qn-add-end.php`,
-        data
+        data,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       if (result) {
         console.log("success");
         setTimeout(() => {
+          setNotify({
+            isOpen: true,
+            message: "บันทึกข้อมูลเรียบร้อยแล้ว",
+            type: "success",
+          });
           //setIsAddLoading(false);
           //แจ้งบันทึก
           //
           //props.onclose();
           //props.loadRecords();
-        }, 2000);
+        }, 1000);
 
         // success
         //loading false
@@ -473,6 +500,11 @@ const GraduateList = (props) => {
       }
     } catch (error) {
       console.log("error");
+      setNotify({
+        isOpen: true,
+        message: "การบันทึกข้อมูลผิดพลาดกรุณาติดต่อผู้ดูแลระบบ",
+        type: "warning",
+      });
       //setIsAddLoading(false);
       //loading false
       //error true
@@ -647,7 +679,6 @@ const GraduateList = (props) => {
                           error={!!errors.REF_QN_PROVINCE_ID}
                           defaultValue={"0"}
                           fullWidth
-                          value={refProvinceID}
                         >
                           <MenuItem value={"0"}>
                             <em>-เลือกจังหวัด-</em>
@@ -933,6 +964,7 @@ const GraduateList = (props) => {
           </Card>
         </Col>
       </Paper>
+      <Notification notify={notify} setNotify={setNotify} />
     </>
   );
 };
