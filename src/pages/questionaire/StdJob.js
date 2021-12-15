@@ -105,7 +105,10 @@ const dataStudents = Joi.object({
     .required(),
   QN_MILITARY_STATUS: Joi.any().when("GENDER_ID_CHECK", {
     is: "1",
-    then: Joi.string().pattern(new RegExp("^[0-1]")).required(),
+    then: Joi.string()
+      .pattern(new RegExp("^[0-1]"))
+      .required()
+      .label("กรุณาเลือกสถานภาพ"),
   }),
   /*    
   QN_MILITARY_STATUS: Joi.string()
