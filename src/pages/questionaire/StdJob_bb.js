@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 import axios from "axios";
 //import StudentsListComp from "./StudentsList";
 import { Col, Card, CardBody } from "reactstrap";
@@ -131,7 +132,6 @@ const dataStudents = Joi.object({
 });
 
 const GraduateList = (props) => {
-  const [value, setVal] = useState("");
   //ซ่อนแสดงประเภทงานที่ทำ
   const [isShow, setIsShow] = useState(false);
   //ซ่อนแสดงการเกณฑ์ทหาร
@@ -329,21 +329,20 @@ const GraduateList = (props) => {
   ///จังหวัด//
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([{ label: "Loading ...", value: "" }]);
-
+  const [value, setValue] = useState();
   useEffect(() => {
     let unmounted = false;
     async function getCharacters() {
-      //const response = await fetch("https://swapi.dev/api/people");
       const response = await axios.get(
         "http://academic.pcru.ac.th/job-api/provinces-end.php"
       );
-      const body = await response.data.provinceSTD;
-      console.log("ccc> ", body);
+      const body = await response.json();
+      console.log("oo=>", body);
       if (!unmounted) {
         setItems(
-          body.map(({ code, name_th }) => ({
-            label: name_th,
-            value: code,
+          body.results.map(({ name }) => ({
+            label: name,
+            value: name,
           }))
         );
         setLoading(false);
@@ -356,7 +355,19 @@ const GraduateList = (props) => {
   }, []);
   //====================================
   ///
+
   ///load province
+  useEffect(() => {
+    register({ name: "xProvince" });
+  }, [register]);
+
+  const fetchDataProvince = async () => {
+    const res = await axios.get(
+      "http://academic.pcru.ac.th/job-api/provinces-end.php"
+    );
+    return res.data;
+  };
+
   const [province, setProvince] = useState([]);
   useEffect(() => {
     loadData();
@@ -373,6 +384,20 @@ const GraduateList = (props) => {
         console.log(err);
       });
   };
+
+  //
+  const resDataProvince = useQuery(
+    ["dataProvince"],
+    () => fetchDataProvince()
+    /*
+  {
+    refetchOnWindowFocus: false,
+    enabled: props.open,
+  }
+  */
+  );
+  console.log("xxx=>", resDataProvince);
+
   //end loadprovince
 
   ///load military_status
@@ -685,21 +710,19 @@ const GraduateList = (props) => {
                       />
                     </ListItem>
 
+                    {/* ///
+ข้อมูล
+/// */}
+
                     <small className={classes.typo}>
                       <FormControl fullWidth error>
-                        {/* xxxxxx */}
                         <Select
                           disabled={loading}
                           value={value}
-                          onChange={(e) => setVal(e.currentTarget.value)}
+                          onChange={(e) => setValue(e.currentTarget.value)}
                         >
-                          {items.map(({ label, value }) => (
-                            <option key={value} value={value}>
-                              {label}
-                            </option>
-                          ))}
+                          ...
                         </Select>
-
                         <Select
                           {...register("REF_QN_PROVINCE_ID")}
                           error={!!errors.REF_QN_PROVINCE_ID}

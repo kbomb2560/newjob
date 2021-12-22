@@ -29,16 +29,21 @@ import * as serviceWorker from "./serviceWorker";
 import { LayoutProvider } from "./context/LayoutContext";
 import { UserProvider } from "./context/UserContext";
 
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+const queryClient = new QueryClient();
+
 ReactDOM.render(
   <LayoutProvider>
     <UserProvider>
       <ThemeProvider theme={Themes.default}>
         <CssBaseline />
-        <App />
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
       </ThemeProvider>
     </UserProvider>
   </LayoutProvider>,
-  document.getElementById("root"),
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

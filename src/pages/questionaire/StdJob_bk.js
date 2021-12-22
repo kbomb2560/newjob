@@ -131,7 +131,6 @@ const dataStudents = Joi.object({
 });
 
 const GraduateList = (props) => {
-  const [value, setVal] = useState("");
   //ซ่อนแสดงประเภทงานที่ทำ
   const [isShow, setIsShow] = useState(false);
   //ซ่อนแสดงการเกณฑ์ทหาร
@@ -325,37 +324,7 @@ const GraduateList = (props) => {
       console.log("err");
     }
   };
-  //====================================
-  ///จังหวัด//
-  const [loading, setLoading] = useState(true);
-  const [items, setItems] = useState([{ label: "Loading ...", value: "" }]);
 
-  useEffect(() => {
-    let unmounted = false;
-    async function getCharacters() {
-      //const response = await fetch("https://swapi.dev/api/people");
-      const response = await axios.get(
-        "http://academic.pcru.ac.th/job-api/provinces-end.php"
-      );
-      const body = await response.data.provinceSTD;
-      console.log("ccc> ", body);
-      if (!unmounted) {
-        setItems(
-          body.map(({ code, name_th }) => ({
-            label: name_th,
-            value: code,
-          }))
-        );
-        setLoading(false);
-      }
-    }
-    getCharacters();
-    return () => {
-      unmounted = true;
-    };
-  }, []);
-  //====================================
-  ///
   ///load province
   const [province, setProvince] = useState([]);
   useEffect(() => {
@@ -687,19 +656,6 @@ const GraduateList = (props) => {
 
                     <small className={classes.typo}>
                       <FormControl fullWidth error>
-                        {/* xxxxxx */}
-                        <Select
-                          disabled={loading}
-                          value={value}
-                          onChange={(e) => setVal(e.currentTarget.value)}
-                        >
-                          {items.map(({ label, value }) => (
-                            <option key={value} value={value}>
-                              {label}
-                            </option>
-                          ))}
-                        </Select>
-
                         <Select
                           {...register("REF_QN_PROVINCE_ID")}
                           error={!!errors.REF_QN_PROVINCE_ID}
