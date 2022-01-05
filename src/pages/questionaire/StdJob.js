@@ -131,6 +131,7 @@ const dataStudents = Joi.object({
 });
 
 const GraduateList = (props) => {
+  const [provid, setProvid] = useState("0");
   const [value, setVal] = useState("");
   //ซ่อนแสดงประเภทงานที่ทำ
   const [isShow, setIsShow] = useState(false);
@@ -276,11 +277,13 @@ const GraduateList = (props) => {
               console.log("std=", res.data.QuestionaireSTD.STD_ID);
               setIsLoading(false);
               //-- set ค่าให้กับตัวแปร Joi --//
-
+              //setVal(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
+              setProvid(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
               setValue(
                 "REF_QN_PROVINCE_ID",
                 res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
               ); /*
+              
               setrefProvinceID(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
               */
               /*
@@ -338,7 +341,7 @@ const GraduateList = (props) => {
         "http://academic.pcru.ac.th/job-api/provinces-end.php"
       );
       const body = await response.data.provinceSTD;
-      console.log("ccc> ", body);
+      //console.log("ccc> ", body);
       if (!unmounted) {
         setItems(
           body.map(({ code, name_th }) => ({
@@ -687,34 +690,25 @@ const GraduateList = (props) => {
 
                     <small className={classes.typo}>
                       <FormControl fullWidth error>
-                        {/* xxxxxx */}
-                        <Select
-                          disabled={loading}
-                          value={value}
-                          onChange={(e) => setVal(e.currentTarget.value)}
-                        >
-                          {items.map(({ label, value }) => (
-                            <option key={value} value={value}>
-                              {label}
-                            </option>
-                          ))}
-                        </Select>
-
+                        {/* xxxจังหวัดxxx */}
                         <Select
                           {...register("REF_QN_PROVINCE_ID")}
                           error={!!errors.REF_QN_PROVINCE_ID}
-                          defaultValue={"0"}
-                          fullWidth
+                          disabled={loading}
+                          defaultValue={provid}
+                          value={provid}
+                          onChange={(e) => setProvid(e.target.value)}
                         >
-                          <MenuItem value={"0"}>
+                          <MenuItem value={provid}>
                             <em>-เลือกจังหวัด-</em>
                           </MenuItem>
-                          {province.map((item, index) => (
-                            <MenuItem key={index} value={item.code}>
-                              {item.name_th}
+                          {items.map(({ label, value }) => (
+                            <MenuItem key={value} value={value}>
+                              {label}
                             </MenuItem>
                           ))}
                         </Select>
+
                         <FormHelperText>
                           {errors.REF_QN_PROVINCE_ID?.message}
                         </FormHelperText>
