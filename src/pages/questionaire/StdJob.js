@@ -30,6 +30,8 @@ import { listWorkstatus } from "../../services/listEndPointService";
 import { listOccupType } from "../../services/listEndPointService";
 import { exist } from "joi";
 import Notification from "../../components/Dialogs/Notification";
+
+import SelectProvince from "../../components/Forms/Selects";
 import {
   green,
   orange,
@@ -99,6 +101,8 @@ const dataStudents = Joi.object({
   TELEPHONEUPDATE: Joi.string().required(),
   //สำหรับฟอร์ม qn
   GENDER_ID_CHECK: Joi.string(),
+  CITIZEN_ID: Joi.string(),
+  UNIV_ID: Joi.string(),
   STD_ID: Joi.string(),
   REF_QN_PROVINCE_ID: Joi.string()
     .regex(/^[1-99]/)
@@ -131,7 +135,9 @@ const dataStudents = Joi.object({
 });
 
 const GraduateList = (props) => {
+  //จังหวัด
   const [provid, setProvid] = useState("0");
+
   const [value, setVal] = useState("");
   //ซ่อนแสดงประเภทงานที่ทำ
   const [isShow, setIsShow] = useState(false);
@@ -207,6 +213,8 @@ const GraduateList = (props) => {
               //-- set ค่าให้กับตัวแปร Joi --//
               //setValue("STD_CODE", response.data.bunditSTD.STD_ID);
               setValue("STD_ID", response.data.bunditSTD.STD_ID);
+              setValue("CITIZEN_ID", response.data.bunditSTD.CITIZEN_ID);
+              setValue("UNIV_ID", response.data.bunditSTD.UNIV_ID);
               setValue(
                 "TELEPHONEUPDATE",
                 response.data.bunditSTD.MOBILE_CONTACT
@@ -335,8 +343,7 @@ const GraduateList = (props) => {
 
   useEffect(() => {
     let unmounted = false;
-    async function getCharacters() {
-      //const response = await fetch("https://swapi.dev/api/people");
+    async function getProvinceID() {
       const response = await axios.get(
         "http://academic.pcru.ac.th/job-api/provinces-end.php"
       );
@@ -352,7 +359,7 @@ const GraduateList = (props) => {
         setLoading(false);
       }
     }
-    getCharacters();
+    getProvinceID();
     return () => {
       unmounted = true;
     };
@@ -479,7 +486,7 @@ const GraduateList = (props) => {
   ///console.log((Date.now() + 48 * 60 * 60 * 1000))
   const handleSubmitAdd = async (data) => {
     //e.preventDefault();
-    //console.log(data);
+    console.log(data);
     //setIsAddLoading(true);
     //reset();
     //return;
@@ -526,6 +533,11 @@ const GraduateList = (props) => {
       //error true
       //errorMsg "มีบางอย่างผิดพลาด"
     }
+  };
+
+  const OnchangeSelectProvince = (e) => {
+    setValue("REF_QN_PROVINCE_ID", e.target.value);
+    setProvid(e.target.value);
   };
 
   let content = <Loading msg=" กำลังโหลด..." />;
@@ -687,32 +699,16 @@ const GraduateList = (props) => {
                         style={{ color: green[500], fontSize: 30 }}
                       />
                     </ListItem>
-
                     <small className={classes.typo}>
-                      <FormControl fullWidth error>
-                        {/* xxxจังหวัดxxx */}
-                        <Select
-                          {...register("REF_QN_PROVINCE_ID")}
-                          error={!!errors.REF_QN_PROVINCE_ID}
-                          disabled={loading}
-                          defaultValue={provid}
-                          value={provid}
-                          onChange={(e) => setProvid(e.target.value)}
-                        >
-                          <MenuItem value={provid}>
-                            <em>-เลือกจังหวัด-</em>
-                          </MenuItem>
-                          {items.map(({ label, value }) => (
-                            <MenuItem key={value} value={value}>
-                              {label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-
-                        <FormHelperText>
-                          {errors.REF_QN_PROVINCE_ID?.message}
-                        </FormHelperText>
-                      </FormControl>
+                      <SelectProvince
+                        refs={{ ...register("REF_QN_PROVINCE_ID") }}
+                        error={errors.REF_QN_PROVINCE_ID?.message}
+                        defaultValue={provid}
+                        value={provid}
+                        placeHolder={"เลือกจังหวัด"}
+                        onChange={(e) => OnchangeSelectProvince(e)}
+                        options={items}
+                      />
                     </small>
                   </div>
                 </Grid>
@@ -944,6 +940,24 @@ const GraduateList = (props) => {
                 type="hidden"
                 error={!!errors.STD_ID}
                 helperText={errors.STD_ID?.message}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                {...register("CITIZEN_ID")}
+                type="hidden"
+                error={!!errors.CITIZEN_ID}
+                helperText={errors.CITIZEN_ID?.message}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                {...register("UNIV_ID")}
+                type="hidden"
+                error={!!errors.UNIV_ID}
+                helperText={errors.UNIV_ID?.message}
                 InputProps={{
                   readOnly: true,
                 }}
