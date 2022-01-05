@@ -1,37 +1,37 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 //import StudentsListComp from "./StudentsList";
-import { Col, Card, CardBody } from "reactstrap";
+import { Col, Card, CardBody } from 'reactstrap';
 
-import Loading from "../../components/loading";
+import Loading from '../../components/loading';
 //
 //dialogs//
-import { Grid, CircularProgress, Input, TextField } from "@material-ui/core";
-import { Typography } from "../../components/Wrappers";
-import Controls from "../../components/Dialogs/controls/Controls";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import MenuItem from "@material-ui/core/MenuItem";
+import { Grid, CircularProgress, Input, TextField } from '@material-ui/core';
+import { Typography } from '../../components/Wrappers';
+import Controls from '../../components/Dialogs/controls/Controls';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
 //import Grid from "@material-ui/core/Grid";
-import PageTitle from "../../components/PageTitle/PageTitle";
-import { makeStyles } from "@material-ui/core/styles";
+import PageTitle from '../../components/PageTitle/PageTitle';
+import { makeStyles } from '@material-ui/core/styles';
 
-import Select from "@material-ui/core/Select";
+import Select from '@material-ui/core/Select';
 
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
-import * as Joi from "joi";
+import { useForm } from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
+import * as Joi from 'joi';
 
-import Paper from "@material-ui/core/Paper";
-import { listProvince } from "../../services/listEndPointService";
-import { listMilitary } from "../../services/listEndPointService";
-import { listOrdinate } from "../../services/listEndPointService";
-import { listWorkstatus } from "../../services/listEndPointService";
-import { listOccupType } from "../../services/listEndPointService";
-import { exist } from "joi";
-import Notification from "../../components/Dialogs/Notification";
+import Paper from '@material-ui/core/Paper';
+import { listProvince } from '../../services/listEndPointService';
+import { listMilitary } from '../../services/listEndPointService';
+import { listOrdinate } from '../../services/listEndPointService';
+import { listWorkstatus } from '../../services/listEndPointService';
+import { listOccupType } from '../../services/listEndPointService';
+import { exist } from 'joi';
+import Notification from '../../components/Dialogs/Notification';
 
-import SelectProvince from "../../components/Forms/Selects";
+import SelectProvince from '../../components/Forms/Selects';
 import {
   green,
   orange,
@@ -40,33 +40,33 @@ import {
   pink,
   teal,
   purple,
-} from "@material-ui/core/colors";
-import Icon from "@material-ui/core/Icon";
+} from '@material-ui/core/colors';
+import Icon from '@material-ui/core/Icon';
 //pro
 //import DropDownProvinces from "./dropdownProvinces";
 
 //*** */
 
-import ListItem from "@material-ui/core/ListItem";
+import ListItem from '@material-ui/core/ListItem';
 
-import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 
-import ListItemText from "@material-ui/core/ListItemText";
+import ListItemText from '@material-ui/core/ListItemText';
 
-import FolderIcon from "@material-ui/icons/Folder";
-import List from "@material-ui/core/List";
+import FolderIcon from '@material-ui/icons/Folder';
+import List from '@material-ui/core/List';
 
 //*** */
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
+    display: 'flex',
     //justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
+    flexWrap: 'wrap',
+    '& > *': {
       margin: theme.spacing(0.5),
     },
-    "& > .fa": {
+    '& > .fa': {
       margin: theme.spacing(2),
     },
   },
@@ -82,17 +82,17 @@ const useStyles = makeStyles((theme) => ({
     //boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
     //color: "white",
     //height: 38,
-    padding: "5px 5px 5px 5px",
+    padding: '5px 5px 5px 5px',
   },
   typo: {
     //color: theme.palette.text.hint,
     //color: theme.palette.text.primary,
-    color: "#FE6B8B",
+    color: '#FE6B8B',
   },
   typename: {
     //color: theme.palette.text.hint,
     //color: theme.palette.text.primary,
-    color: "#8C2BFF",
+    color: '#8C2BFF',
   },
 }));
 
@@ -100,45 +100,81 @@ const dataStudents = Joi.object({
   //สำหรับข้อมูลผู้สำเร็จการศึกษา
   TELEPHONEUPDATE: Joi.string().required(),
   //สำหรับฟอร์ม qn
-  GENDER_ID_CHECK: Joi.string(),
+  GENDER_ID: Joi.string(),
   CITIZEN_ID: Joi.string(),
   UNIV_ID: Joi.string(),
   STD_ID: Joi.string(),
   REF_QN_PROVINCE_ID: Joi.string()
     .regex(/^[1-99]/)
     .required(),
-  QN_MILITARY_STATUS: Joi.any().when("GENDER_ID_CHECK", {
-    is: "1",
+  QN_MILITARY_STATUS: Joi.any().when('GENDER_ID', {
+    is: '1',
     then: Joi.string()
-      .pattern(new RegExp("^[0-1]"))
+      .pattern(new RegExp('^[0-1]'))
       .required()
-      .label("กรุณาเลือกสถานภาพทหาร"),
+      .label('กรุณาเลือกสถานภาพทหาร'),
   }),
-  QN_ORDINATE_STATUS: Joi.any().when("GENDER_ID_CHECK", {
-    is: "1",
-    then: Joi.string().pattern(new RegExp("^[1-5]")).required(),
+  QN_ORDINATE_STATUS: Joi.any().when('GENDER_ID', {
+    is: '1',
+    then: Joi.string().pattern(new RegExp('^[1-5]')).required(),
   }),
 
   QN_WORK_STATUS: Joi.string()
     .regex(/^[1-7]/)
     .required()
-    .label("กรุณาเลือกสถานะภาพการมีงานทำ"),
+    .label('กรุณาเลือกสถานะภาพการมีงานทำ'),
 
+  QN_OCCUP_TYPE: Joi.any()
+    .when('QN_WORK_STATUS', {
+      is: '1',
+      then: Joi.string()
+        .regex(/^[00-05]/)
+        .required(),
+    })
+    .when('QN_WORK_STATUS', {
+      is: '2',
+      then: Joi.string()
+        .regex(/^[00-05]/)
+        .required(),
+    })
+    .when('QN_WORK_STATUS', {
+      is: '6',
+      then: Joi.string()
+        .regex(/^[00-05]/)
+        .required(),
+    })
+    .when('QN_WORK_STATUS', {
+      is: '7',
+      then: Joi.string()
+        .regex(/^[00-05]/)
+        .required(),
+    }),
+  /*
   QN_OCCUP_TYPE: Joi.string()
     .regex(/^[00-05]/)
     .required(),
-
-  QN_OCCUP_TYPE_TXT: Joi.any().when("QN_OCCUP_TYPE", {
-    is: "00",
+*/
+  QN_OCCUP_TYPE_TXT: Joi.any().when('QN_OCCUP_TYPE', {
+    is: '00',
     then: Joi.string().required(),
   }),
 });
 
 const GraduateList = (props) => {
   //จังหวัด
-  const [provid, setProvid] = useState("0");
+  const [provid, setProvid] = useState('0');
+  //เกณฑ์ทหาร
+  const [militaryid, setMilitaryID] = useState('9');
+  //นักบวช
+  const [ordinateid, setOrdinateID] = useState('0');
+  //สถานภาพการทำงานปัจจุบัน
+  const [jobstatus, setJobStatus] = useState('0');
 
-  const [value, setVal] = useState("");
+  //const [value, setVal] = useState('');
+
+  ///แสดงซ่อน การมีงานทำข้อ 1-2-6-7
+  const [isShowJob1267, setIsShowJob1267] = useState(false);
+
   //ซ่อนแสดงประเภทงานที่ทำ
   const [isShow, setIsShow] = useState(false);
   //ซ่อนแสดงการเกณฑ์ทหาร
@@ -146,8 +182,9 @@ const GraduateList = (props) => {
   //ซ่อนแสดงการบวช
   const [isShowORDINATE, setisShowORDINATE] = useState(false);
   //check QN
-  const [refProvinceID, setrefProvinceID] = useState(""); //<--------------(Like this).
+  const [refProvinceID, setrefProvinceID] = useState(''); //<--------------(Like this).
 
+  const [genderCk, setGenderCk] = useState('');
   //
   const [secondary, setSecondary] = useState(false);
   const classes = useStyles();
@@ -167,17 +204,17 @@ const GraduateList = (props) => {
   });
   const [notify, setNotify] = useState({
     isOpen: false,
-    message: "",
-    type: "",
+    message: '',
+    type: '',
   });
   const retrieveTutorials = () => {
-    var rememberMe = localStorage.getItem("dataAuth");
+    var rememberMe = localStorage.getItem('dataAuth');
     //const user = rememberMe ? localStorage.getItem("dataStudent") : "";
     var studentsData = JSON.parse(rememberMe);
     //var studentsFullname = studentsData.LAST_NAME;
     //console.log(studentsData); //line std_code
     setIsLoading(true);
-    const BASE_URL = "http://academic.pcru.ac.th/job-api/std-detail-end.php";
+    const BASE_URL = 'http://academic.pcru.ac.th/job-api/std-detail-end.php';
     try {
       //setError(false);
       //setIsLoading(true);
@@ -201,25 +238,29 @@ const GraduateList = (props) => {
               //console.log("xx");
               //console.log("5555=", response.data.bunditSTD.STD_FNAME);
               setIsLoading(false);
-              if (response.data.bunditSTD.GENDER_ID === "1") {
+
+              if (response.data.bunditSTD.GENDER_ID === '1') {
                 setIsShowMILITARY(true);
                 setisShowORDINATE(true);
               } else {
                 setIsShowMILITARY(false);
                 setisShowORDINATE(false);
               }
+
               setData(response.data.bunditSTD); //รับค่า result
 
               //-- set ค่าให้กับตัวแปร Joi --//
+              setGenderCk(response.data.bunditSTD.GENDER_ID);
               //setValue("STD_CODE", response.data.bunditSTD.STD_ID);
-              setValue("STD_ID", response.data.bunditSTD.STD_ID);
-              setValue("CITIZEN_ID", response.data.bunditSTD.CITIZEN_ID);
-              setValue("UNIV_ID", response.data.bunditSTD.UNIV_ID);
+              setValue('STD_ID', response.data.bunditSTD.STD_ID);
+              setValue('CITIZEN_ID', response.data.bunditSTD.CITIZEN_ID);
+              setValue('UNIV_ID', response.data.bunditSTD.UNIV_ID);
+              setValue('GENDER_ID', response.data.bunditSTD.GENDER_ID);
               setValue(
-                "TELEPHONEUPDATE",
+                'TELEPHONEUPDATE',
                 response.data.bunditSTD.MOBILE_CONTACT
               );
-              setValue("GENDER_ID_CHECK", response.data.bunditSTD.GENDER_ID);
+
               //-- จบส่วนของการ set ค่าให้กับตัวแปร Joi --//
 
               //console.log("xxx=", response.data.bunditSTD.STD_ID);
@@ -231,7 +272,7 @@ const GraduateList = (props) => {
           } else {
             //username ผิด
             //password ผิด
-            console.log("wrong username");
+            console.log('wrong username');
             //dispatch({ type: "LOGIN_FAILURE" });
             //setError(true);
             //setIsLoading(false);
@@ -253,7 +294,7 @@ const GraduateList = (props) => {
           }
         });
     } catch (error) {
-      console.log("err");
+      console.log('err');
     }
   };
   useEffect(retrieveTutorials, []);
@@ -264,11 +305,11 @@ const GraduateList = (props) => {
   }, []);
   /** */
   const loadCheckQN = () => {
-    var rememberMeX = localStorage.getItem("dataAuth");
+    var rememberMeX = localStorage.getItem('dataAuth');
     //const user = rememberMe ? localStorage.getItem("dataStudent") : "";
     var studentsDataQN = JSON.parse(rememberMeX);
     const BASE_URL_QN =
-      "http://academic.pcru.ac.th/job-api/qn-checkstd-end.php";
+      'http://academic.pcru.ac.th/job-api/qn-checkstd-end.php';
     try {
       //setError(false);
       //setIsLoading(true);
@@ -282,13 +323,42 @@ const GraduateList = (props) => {
               ///ตรวจสอบข้อมูลการตอบแบบสอบถาม//
               //
               //console.log("xx");
-              console.log("std=", res.data.QuestionaireSTD.STD_ID);
+              //console.log("std=", res.data.QuestionaireSTD.STD_ID);
               setIsLoading(false);
               //-- set ค่าให้กับตัวแปร Joi --//
               //setVal(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
+
               setProvid(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
+              setMilitaryID(res.data.QuestionaireSTD.QN_MILITARY_STATUS);
+              setOrdinateID(res.data.QuestionaireSTD.QN_ORDINATE_STATUS);
+              setJobStatus(res.data.QuestionaireSTD.QN_WORK_STATUS);
+
+              if (
+                res.data.QuestionaireSTD.QN_WORK_STATUS === '1' ||
+                res.data.QuestionaireSTD.QN_WORK_STATUS === '2' ||
+                res.data.QuestionaireSTD.QN_WORK_STATUS === '6' ||
+                res.data.QuestionaireSTD.QN_WORK_STATUS === '7'
+              ) {
+                setIsShowJob1267(true); //แสดง TextBox
+              } else {
+                setIsShowJob1267(false); //ซ่อน TextBox
+              }
+
+              setValue('GENDER_ID', res.data.QuestionaireSTD.GENDER_ID);
               setValue(
-                "REF_QN_PROVINCE_ID",
+                'QN_MILITARY_STATUS',
+                res.data.QuestionaireSTD.QN_MILITARY_STATUS
+              );
+              setValue(
+                'QN_ORDINATE_STATUS',
+                res.data.QuestionaireSTD.QN_ORDINATE_STATUS
+              );
+              setValue(
+                'QN_WORK_STATUS',
+                res.data.QuestionaireSTD.QN_WORK_STATUS
+              );
+              setValue(
+                'REF_QN_PROVINCE_ID',
                 res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
               ); /*
               
@@ -299,12 +369,16 @@ const GraduateList = (props) => {
               res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
             );
             */
+              /*
+              console.log('GENDER_ID =', res.data.QuestionaireSTD.GENDER_ID);
+
               console.log(
-                "province =",
+                'province =',
                 res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
               );
+              */
               //-- จบส่วนของการ set ค่าให้กับตัวแปร Joi --//
-              console.log("มีข้อมูลนี้ตอบแบบสอบถามแล้ว");
+              console.log('มีข้อมูลนี้ตอบแบบสอบถามแล้ว');
               //console.log("xxx=", response.data.bunditSTD.STD_ID);
               //localStorage.setItem("StudentData", response.data.id.data);
               //setError(false);
@@ -314,7 +388,7 @@ const GraduateList = (props) => {
           } else {
             //username ผิด
             //password ผิด
-            console.log("ไม่พบข้อมูล");
+            console.log('ไม่พบข้อมูล');
             //dispatch({ type: "LOGIN_FAILURE" });
             //setError(true);
             //setIsLoading(false);
@@ -333,19 +407,19 @@ const GraduateList = (props) => {
           }
         });
     } catch (error) {
-      console.log("err");
+      console.log('err');
     }
   };
   //====================================
   ///จังหวัด//
   const [loading, setLoading] = useState(true);
-  const [items, setItems] = useState([{ label: "Loading ...", value: "" }]);
+  const [items, setItems] = useState([{ label: 'Loading ...', value: '' }]);
 
   useEffect(() => {
     let unmounted = false;
     async function getProvinceID() {
       const response = await axios.get(
-        "http://academic.pcru.ac.th/job-api/provinces-end.php"
+        'http://academic.pcru.ac.th/job-api/provinces-end.php'
       );
       const body = await response.data.provinceSTD;
       //console.log("ccc> ", body);
@@ -362,6 +436,100 @@ const GraduateList = (props) => {
     getProvinceID();
     return () => {
       unmounted = true;
+    };
+  }, []);
+  //====================================
+
+  //====================================
+  ///ทหาร//
+  const [loadingmili, setLoadingMili] = useState(true);
+  const [itemsMili, setItemsMili] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountedMili = false;
+    async function MilitaryID() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/military-status-end.php'
+      );
+      const body = await response.data.MilitarySTD;
+      //console.log("ccc> ", body);
+      if (!unmountedMili) {
+        setItemsMili(
+          body.map(({ MILITARY_STATUS_ID, MILITARY_STATUS_NAME }) => ({
+            label: MILITARY_STATUS_NAME,
+            value: MILITARY_STATUS_ID,
+          }))
+        );
+        setLoadingMili(false);
+      }
+    }
+    MilitaryID();
+    return () => {
+      unmountedMili = true;
+    };
+  }, []);
+  //====================================
+  //====================================
+  ///นักบวช//
+  const [loadingordi, setLoadingOrdi] = useState(true);
+  const [itemsOrdi, setItemsOrdi] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountedOrdi = false;
+    async function OrdinateID() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/ordinate-status-end.php'
+      );
+      const body = await response.data.OrdinateSTD;
+      //console.log("ccc> ", body);
+      if (!unmountedOrdi) {
+        setItemsOrdi(
+          body.map(({ ORDINATE_STATUS_ID, ORDINATE_STATUS_NAME }) => ({
+            label: ORDINATE_STATUS_NAME,
+            value: ORDINATE_STATUS_ID,
+          }))
+        );
+        setLoadingOrdi(false);
+      }
+    }
+    OrdinateID();
+    return () => {
+      unmountedOrdi = true;
+    };
+  }, []);
+  //====================================
+  //====================================
+  ///สถานะการมีงานทำ//
+  const [loadingJob, setLoadingJob] = useState(true);
+  const [itemsJob, setItemsJob] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountedJob = false;
+    async function JobStatusID() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/work-status-end.php'
+      );
+      const body = await response.data.WorkstatusSTD;
+      //console.log("ccc> ", body);
+      if (!unmountedJob) {
+        setItemsJob(
+          body.map(({ STATUS_ID, WORKSTATUS_NAME_TH }) => ({
+            label: WORKSTATUS_NAME_TH,
+            value: STATUS_ID,
+          }))
+        );
+        setLoadingJob(false);
+      }
+    }
+    JobStatusID();
+    return () => {
+      unmountedJob = true;
     };
   }, []);
   //====================================
@@ -408,6 +576,7 @@ const GraduateList = (props) => {
   useEffect(() => {
     loadDataOrdinate();
   }, []);
+
   const loadDataOrdinate = () => {
     listOrdinate()
       .then((res) => {
@@ -462,11 +631,11 @@ const GraduateList = (props) => {
   //การเกณฑ์ทหาร สำหรับแสดงซ่อน textbox กรณีตอบอื่นๆฃ
   const handleChange_MILITARY = (e) => {
     e.preventDefault(); // prevent the default action
-    if (e.target.value === "1") {
+    if (e.target.value === '1') {
       setIsShowMILITARY(true); //แสดง TextBox
       setisShowORDINATE(true);
     } else {
-      setValue("QN_MILITARY_STATUS", ""); //กำหนดค่าว่าง
+      setValue('QN_MILITARY_STATUS', ''); //กำหนดค่าว่าง
       setIsShowMILITARY(false); //ซ่อน TextBox
       setisShowORDINATE(false);
     }
@@ -475,10 +644,10 @@ const GraduateList = (props) => {
   //ประเภทงานที่ทำ สำหรับแสดงซ่อน textbox กรณีตอบอื่นๆ
   const handleChange_QN_OCCUP_TYPE = (e) => {
     e.preventDefault(); // prevent the default action
-    if (e.target.value === "00") {
+    if (e.target.value === '00') {
       setIsShow(true); //แสดง TextBox
     } else {
-      setValue("QN_OCCUP_TYPE_TXT", ""); //กำหนดค่าว่าง
+      setValue('QN_OCCUP_TYPE_TXT', ''); //กำหนดค่าว่าง
       setIsShow(false); //ซ่อน TextBox
     }
   };
@@ -496,15 +665,15 @@ const GraduateList = (props) => {
       const result = await axios.post(
         `http://academic.pcru.ac.th/job-api/qn-add-end.php`,
         data,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        { headers: { 'Content-Type': 'multipart/form-data' } }
       );
       if (result) {
-        console.log("success");
+        console.log('success');
         setTimeout(() => {
           setNotify({
             isOpen: true,
-            message: "บันทึกข้อมูลเรียบร้อยแล้ว",
-            type: "success",
+            message: 'บันทึกข้อมูลเรียบร้อยแล้ว',
+            type: 'success',
           });
           //setIsAddLoading(false);
           //แจ้งบันทึก
@@ -522,11 +691,11 @@ const GraduateList = (props) => {
         //reset form
       }
     } catch (error) {
-      console.log("error");
+      console.log('error');
       setNotify({
         isOpen: true,
-        message: "การบันทึกข้อมูลผิดพลาดกรุณาติดต่อผู้ดูแลระบบ",
-        type: "warning",
+        message: 'การบันทึกข้อมูลผิดพลาดกรุณาติดต่อผู้ดูแลระบบ',
+        type: 'warning',
       });
       //setIsAddLoading(false);
       //loading false
@@ -535,149 +704,178 @@ const GraduateList = (props) => {
     }
   };
 
+  //setProvinceID
   const OnchangeSelectProvince = (e) => {
-    setValue("REF_QN_PROVINCE_ID", e.target.value);
+    setValue('REF_QN_PROVINCE_ID', e.target.value);
     setProvid(e.target.value);
   };
-
-  let content = <Loading msg=" กำลังโหลด..." />;
+  //setMilitaryID
+  const OnchangeSelectMilitaryID = (e) => {
+    setValue('QN_MILITARY_STATUS', e.target.value);
+    setMilitaryID(e.target.value);
+  };
+  //setOrdinateID
+  const OnchangeSelectOrdinateID = (e) => {
+    setValue('QN_ORDINATE_STATUS', e.target.value);
+    setOrdinateID(e.target.value);
+  };
+  //setJobID
+  const OnchangeSelectJobStatusID = (e) => {
+    e.preventDefault(); // prevent the default action
+    setValue('QN_WORK_STATUS', e.target.value);
+    setJobStatus(e.target.value);
+    if (
+      e.target.value === '1' ||
+      e.target.value === '2' ||
+      e.target.value === '6' ||
+      e.target.value === '7'
+    ) {
+      setIsShowJob1267(true); //แสดง TextBox
+    } else {
+      setValue('QN_OCCUP_TYPE', ''); //กำหนดค่าว่าง
+      setValue('QN_OCCUP_TYPE_TXT', ''); //กำหนดค่าว่าง
+      //setValue('QN_WORK_STATUS', '');
+      setIsShowJob1267(false); //ซ่อน TextBox
+    }
+  };
+  let content = <Loading msg=' กำลังโหลด...' />;
 
   if (!isLoading) {
     if (isError) {
-      content = "error";
+      content = 'error';
     } else {
       content = (
         <div>
           <form onSubmit={handleSubmit(handleSubmitAdd)}>
             <div className={classes.root}>
-              <Typography className={classes.typo} variant="h3" size="sm">
+              <Typography className={classes.typo} variant='h3' size='sm'>
                 ตอนที่ 1 ข้อมูลทั่วไป
               </Typography>
               <Grid container spacing={1}>
                 <Grid item xs={12} sm={6}>
-                  <div className="col-md-12">
-                    <label className="control-label">1. สถานศึกษา : </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>1. สถานศึกษา : </label>
                     <small className={classes.typo}>
-                      {"มหาวิทยาลัยราชภัฏเพชรบูรณ์"}
+                      {'มหาวิทยาลัยราชภัฏเพชรบูรณ์'}
                     </small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">2. ชื่อ-สกุล : </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>2. ชื่อ-สกุล : </label>
                     <small className={classes.typename}>
                       {data.PREFIX_NAME +
-                        "" +
+                        '' +
                         data.STD_FNAME +
-                        " " +
+                        ' ' +
                         data.STD_LNAME}
                     </small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">
-                      3. เลขประจำตัวประชาชน :{" "}
+                  <div className='col-md-12'>
+                    <label className='control-label'>
+                      3. เลขประจำตัวประชาชน :{' '}
                     </label>
                     <small className={classes.typo}>{data.CITIZEN_ID}</small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">
-                      4. เลขประจำตัวนักศึกษา :{" "}
+                  <div className='col-md-12'>
+                    <label className='control-label'>
+                      4. เลขประจำตัวนักศึกษา :{' '}
                     </label>
                     <small className={classes.typo}>{data.STD_ID}</small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">
-                      5. วัน/เดือน/ปี เกิด :{" "}
+                  <div className='col-md-12'>
+                    <label className='control-label'>
+                      5. วัน/เดือน/ปี เกิด :{' '}
                     </label>
                     <small className={classes.typo}>{data.BIRTHDAY}</small>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <div className="col-md-12">
-                    <label className="control-label">6. สาขา : </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>6. สาขา : </label>
                     <small className={classes.typo}>
                       {data.UNI_PROGRAM_NAME}
                     </small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">7. คณะ : </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>7. คณะ : </label>
                     <small className={classes.typo}>{data.FAC_NAME}</small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">
-                      8. สำเร็จการศึกษาหลักสูตร :{" "}
+                  <div className='col-md-12'>
+                    <label className='control-label'>
+                      8. สำเร็จการศึกษาหลักสูตร :{' '}
                     </label>
                     <small className={classes.typo}>{data.CURR_NAME}</small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">
-                      9. คะแนนเฉลี่ยตลอดหลักสูตร (GPA) :{" "}
+                  <div className='col-md-12'>
+                    <label className='control-label'>
+                      9. คะแนนเฉลี่ยตลอดหลักสูตร (GPA) :{' '}
                     </label>
                     <small className={classes.typo}>{data.GPA}</small>
                   </div>
                 </Grid>
               </Grid>
 
-              <Typography className={classes.typo} variant="h5" size="sm">
+              <Typography className={classes.typo} variant='h5' size='sm'>
                 ที่อยู่ปัจจุบัน
               </Typography>
 
               <Grid container spacing={1}>
                 <Grid item xs={12} sm={4}>
-                  <div className="col-md-12">
-                    <label className="control-label">เลขที่ </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>เลขที่ </label>
                     <small className={classes.typo}>{data.HOMEADD}</small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">หมู่ </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>หมู่ </label>
                     <small className={classes.typo}>{data.MOO}</small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">ซอย </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>ซอย </label>
                     <small className={classes.typo}>{data.SOI}</small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">ถนน </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>ถนน </label>
                     <small className={classes.typo}>{data.STREET}</small>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <div className="col-md-12">
-                    <label className="control-label">ตำบล </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>ตำบล </label>
                     <small className={classes.typo}>{data.TUMBOL}</small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">อำเภอ </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>อำเภอ </label>
                     <small className={classes.typo}>{data.AMPHUR}</small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">จังหวัด </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>จังหวัด </label>
                     <small className={classes.typo}>{data.PROVINCE_NAME}</small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">รหัสไปรษณีย์ </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>รหัสไปรษณีย์ </label>
                     <small className={classes.typo}>{data.ZIPCODE}</small>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <div className="col-md-12">
-                    <label className="control-label">
-                      เบอร์โทรศัพท์ (แก้ไขได้){" "}
+                  <div className='col-md-12'>
+                    <label className='control-label'>
+                      เบอร์โทรศัพท์ (แก้ไขได้){' '}
                     </label>
                     <small className={classes.typo}>
                       <TextField
-                        {...register("TELEPHONEUPDATE")}
-                        variant="outlined"
+                        {...register('TELEPHONEUPDATE')}
+                        variant='outlined'
                         fullWidth
                         error={!!errors.TELEPHONEUPDATE}
                         helperText={errors.TELEPHONEUPDATE?.message}
                         InputProps={{
                           readOnly: false,
                         }}
-                        size="small"
+                        size='small'
                       />
                     </small>
                   </div>
-                  <div className="col-md-12">
-                    <label className="control-label">E-mail </label>
+                  <div className='col-md-12'>
+                    <label className='control-label'>E-mail </label>
                     <small className={classes.typo}>{data.EMAIL}</small>
                   </div>
                 </Grid>
@@ -685,27 +883,27 @@ const GraduateList = (props) => {
 
               <Grid container spacing={1}>
                 <Grid item xs={12} sm={4}>
-                  <div className="col-md-6">
+                  <div className='col-md-6'>
                     <ListItem disableGutters={true}>
                       <ListItemIcon>
                         <Icon
-                          className="fa fa-home"
+                          className='fa fa-home'
                           style={{ color: green[500], fontSize: 30 }}
                         />
                       </ListItemIcon>
                       <ListItemText
-                        primary="ภูมิลำเนา (จังหวัด)"
-                        secondary={secondary ? "Secondary text" : null}
+                        primary='ภูมิลำเนา (จังหวัด)'
+                        secondary={secondary ? 'Secondary text' : null}
                         style={{ color: green[500], fontSize: 30 }}
                       />
                     </ListItem>
                     <small className={classes.typo}>
                       <SelectProvince
-                        refs={{ ...register("REF_QN_PROVINCE_ID") }}
+                        refs={{ ...register('REF_QN_PROVINCE_ID') }}
                         error={errors.REF_QN_PROVINCE_ID?.message}
                         defaultValue={provid}
                         value={provid}
-                        placeHolder={"เลือกจังหวัด"}
+                        placeHolder={'เลือกจังหวัด'}
                         onChange={(e) => OnchangeSelectProvince(e)}
                         options={items}
                       />
@@ -714,65 +912,112 @@ const GraduateList = (props) => {
                 </Grid>
                 {isShowMILITARY ? (
                   <Grid item xs={12} sm={4}>
-                    <div className="col-md-6">
+                    <div className='col-md-6'>
                       <ListItem disableGutters={true}>
                         <ListItemIcon>
                           <Icon
-                            className="fa fa-fighter-jet"
+                            className='fa fa-fighter-jet'
                             style={{ color: orange[500], fontSize: 30 }}
                           />
                         </ListItemIcon>
                         <ListItemText
-                          primary="สถานะการเกณฑ์ทหาร : (เฉพาะเพศชาย)"
-                          secondary={secondary ? "Secondary text" : null}
+                          primary='สถานะการเกณฑ์ทหาร : (เฉพาะเพศชาย)'
+                          secondary={secondary ? 'Secondary text' : null}
                           style={{ color: orange[500], fontSize: 30 }}
                         />
                       </ListItem>
-
                       <small className={classes.typo}>
-                        <FormControl fullWidth error>
-                          <Select
-                            {...register("QN_MILITARY_STATUS")}
-                            error={!!errors.QN_MILITARY_STATUS}
-                            defaultValue={"9"}
-                            fullWidth
-                          >
-                            <MenuItem value={"9"}>
-                              <em>-เลือกสถานะการเกณฑ์ทหารฯ-</em>
-                            </MenuItem>
-                            {military.map((item, index) => (
-                              <MenuItem
-                                key={index}
-                                value={item.MILITARY_STATUS_ID}
-                                style={{ whiteSpace: "normal" }}
-                              >
-                                {item.MILITARY_STATUS_ID}
-                                {". "}
-                                {item.MILITARY_STATUS_NAME}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          <FormHelperText>
-                            {errors.QN_MILITARY_STATUS?.message}
-                          </FormHelperText>
-                        </FormControl>
+                        <SelectProvince
+                          refs={{ ...register('QN_MILITARY_STATUS') }}
+                          error={errors.QN_MILITARY_STATUS?.message}
+                          defaultValue={militaryid}
+                          value={militaryid}
+                          placeHolder={'เลือกสถานะการเกณฑ์ทหารฯ'}
+                          onChange={(e) => OnchangeSelectMilitaryID(e)}
+                          options={itemsMili}
+                        />
                       </small>
                     </div>
                   </Grid>
                 ) : null}
                 {isShowORDINATE ? (
                   <Grid item xs={12} sm={4}>
-                    <div className="col-md-6">
+                    <div className='col-md-6'>
                       <ListItem disableGutters={true}>
                         <ListItemIcon>
                           <Icon
-                            className="fa fa-eye"
+                            className='fa fa-eye'
                             style={{ color: orange[500], fontSize: 30 }}
                           />
                         </ListItemIcon>
                         <ListItemText
-                          primary="สถานะการเป็นนักบวชปัจจุบัน"
-                          secondary={secondary ? "Secondary text" : null}
+                          primary='สถานะการเป็นนักบวชปัจจุบัน'
+                          secondary={secondary ? 'Secondary text' : null}
+                          style={{ color: orange[500], fontSize: 30 }}
+                        />
+                      </ListItem>
+
+                      <small className={classes.typo}>
+                        <SelectProvince
+                          refs={{ ...register('QN_ORDINATE_STATUS') }}
+                          error={errors.QN_ORDINATE_STATUS?.message}
+                          defaultValue={ordinateid}
+                          value={ordinateid}
+                          placeHolder={'เลือกสถานะการเป็นนักบวช'}
+                          onChange={(e) => OnchangeSelectOrdinateID(e)}
+                          options={itemsOrdi}
+                        />
+                      </small>
+                    </div>
+                  </Grid>
+                ) : null}
+                <Grid item xs={12} sm={4}>
+                  <div className='col-md-6'>
+                    <ListItem disableGutters={true}>
+                      <ListItemIcon>
+                        <Icon
+                          className='fa fa-child'
+                          style={{ color: purple[500], fontSize: 30 }}
+                        />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary='สถานะภาพการทำงานปัจจุบัน'
+                        secondary={secondary ? 'Secondary text' : null}
+                        style={{ color: purple[500], fontSize: 30 }}
+                      />
+                    </ListItem>
+
+                    <small className={classes.typo}>
+                      <SelectProvince
+                        refs={{ ...register('QN_WORK_STATUS') }}
+                        error={errors.QN_WORK_STATUS?.message}
+                        defaultValue={jobstatus}
+                        value={jobstatus}
+                        placeHolder={'เลือกสถานะภาพการทำงานปัจจุบัน'}
+                        onChange={(e) => OnchangeSelectJobStatusID(e)}
+                        options={itemsJob}
+                      />
+                    </small>
+                  </div>
+                </Grid>
+              </Grid>
+              {isShowJob1267 ? (
+                <Grid container spacing={0}>
+                  <Grid item xs={12} sm={4}>
+                    <Typography className={classes.typo} variant='h3' size='sm'>
+                      ตอนที่ 2 สำหรับผู้ที่ทำงานแล้ว
+                    </Typography>
+                    <div className='col-md-6'>
+                      <ListItem disableGutters={true}>
+                        <ListItemIcon>
+                          <Icon
+                            className='fa fa-car'
+                            style={{ color: orange[500], fontSize: 30 }}
+                          />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary='ประเภทงานที่ทำ'
+                          secondary={secondary ? 'Secondary text' : null}
                           style={{ color: orange[500], fontSize: 30 }}
                         />
                       </ListItem>
@@ -780,164 +1025,66 @@ const GraduateList = (props) => {
                       <small className={classes.typo}>
                         <FormControl fullWidth error>
                           <Select
-                            {...register("QN_ORDINATE_STATUS")}
-                            error={!!errors.QN_ORDINATE_STATUS}
-                            defaultValue={"0"}
+                            {...register('QN_OCCUP_TYPE')}
+                            error={!!errors.QN_OCCUP_TYPE}
+                            defaultValue={'99'}
                             fullWidth
+                            onChange={handleChange_QN_OCCUP_TYPE}
                           >
-                            <MenuItem value={"0"}>
-                              <em>-เลือกสถานะการเป็นนักบวช-</em>
+                            <MenuItem value={'99'}>
+                              <em>-เลือกประเภทงานที่ทำ-</em>
                             </MenuItem>
-                            {ordinate.map((item, index) => (
+                            {occuptype.map((item, index) => (
                               <MenuItem
                                 key={index}
-                                value={item.ORDINATE_STATUS_ID}
-                                style={{ whiteSpace: "normal" }}
+                                value={item.OCCUP_ID}
+                                style={{ whiteSpace: 'normal' }}
                               >
-                                {item.ORDINATE_STATUS_ID}
-                                {". "}
-                                {item.ORDINATE_STATUS_NAME}
+                                {item.OCCUP_ID}
+                                {'. '}
+                                {item.OCCUP_NAME}
                               </MenuItem>
                             ))}
                           </Select>
                           <FormHelperText>
-                            {errors.QN_ORDINATE_STATUS?.message}
+                            {errors.QN_OCCUP_TYPE?.message}
                           </FormHelperText>
                         </FormControl>
                       </small>
+                      {isShow ? (
+                        <small className={classes.typo}>
+                          <TextField
+                            {...register('QN_OCCUP_TYPE_TXT')}
+                            variant='outlined'
+                            label='อื่นๆ ระบุ'
+                            fullWidth
+                            error={!!errors.QN_OCCUP_TYPE_TXT}
+                            helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                            InputProps={{
+                              readOnly: false,
+                            }}
+                            size='small'
+                          />
+                        </small>
+                      ) : null}
                     </div>
                   </Grid>
-                ) : null}
-                <Grid item xs={12} sm={4}>
-                  <div className="col-md-6">
-                    <ListItem disableGutters={true}>
-                      <ListItemIcon>
-                        <Icon
-                          className="fa fa-child"
-                          style={{ color: purple[500], fontSize: 30 }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="สถานะภาพการทำงานปัจจุบัน"
-                        secondary={secondary ? "Secondary text" : null}
-                        style={{ color: purple[500], fontSize: 30 }}
-                      />
-                    </ListItem>
-
-                    <small className={classes.typo}>
-                      <FormControl fullWidth error>
-                        <Select
-                          {...register("QN_WORK_STATUS")}
-                          error={!!errors.QN_WORK_STATUS}
-                          defaultValue={"0"}
-                          fullWidth
-                        >
-                          <MenuItem value={"0"}>
-                            <em>-เลือกสถานะภาพการทำงานปัจจุบัน-</em>
-                          </MenuItem>
-                          {workstatus.map((item, index) => (
-                            <MenuItem
-                              key={index}
-                              value={item.STATUS_ID}
-                              style={{ whiteSpace: "normal" }}
-                            >
-                              {item.STATUS_ID}
-                              {". "}
-                              {item.WORKSTATUS_NAME_TH}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        <FormHelperText>
-                          {errors.QN_WORK_STATUS?.message}
-                        </FormHelperText>
-                      </FormControl>
-                    </small>
-                  </div>
                 </Grid>
-              </Grid>
-
-              <Grid container spacing={0}>
-                <Grid item xs={12} sm={4}>
-                  <Typography className={classes.typo} variant="h3" size="sm">
-                    ตอนที่ 2 สำหรับผู้ที่ทำงานแล้ว
-                  </Typography>
-                  <div className="col-md-6">
-                    <ListItem disableGutters={true}>
-                      <ListItemIcon>
-                        <Icon
-                          className="fa fa-car"
-                          style={{ color: orange[500], fontSize: 30 }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="ประเภทงานที่ทำ"
-                        secondary={secondary ? "Secondary text" : null}
-                        style={{ color: orange[500], fontSize: 30 }}
-                      />
-                    </ListItem>
-
-                    <small className={classes.typo}>
-                      <FormControl fullWidth error>
-                        <Select
-                          {...register("QN_OCCUP_TYPE")}
-                          error={!!errors.QN_OCCUP_TYPE}
-                          defaultValue={"99"}
-                          fullWidth
-                          onChange={handleChange_QN_OCCUP_TYPE}
-                        >
-                          <MenuItem value={"99"}>
-                            <em>-เลือกประเภทงานที่ทำ-</em>
-                          </MenuItem>
-                          {occuptype.map((item, index) => (
-                            <MenuItem
-                              key={index}
-                              value={item.OCCUP_ID}
-                              style={{ whiteSpace: "normal" }}
-                            >
-                              {item.OCCUP_ID}
-                              {". "}
-                              {item.OCCUP_NAME}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        <FormHelperText>
-                          {errors.QN_OCCUP_TYPE?.message}
-                        </FormHelperText>
-                      </FormControl>
-                    </small>
-                    {isShow ? (
-                      <small className={classes.typo}>
-                        <TextField
-                          {...register("QN_OCCUP_TYPE_TXT")}
-                          variant="outlined"
-                          label="อื่นๆ ระบุ"
-                          fullWidth
-                          error={!!errors.QN_OCCUP_TYPE_TXT}
-                          helperText={errors.QN_OCCUP_TYPE_TXT?.message}
-                          InputProps={{
-                            readOnly: false,
-                          }}
-                          size="small"
-                        />
-                      </small>
-                    ) : null}
-                  </div>
-                </Grid>
-              </Grid>
+              ) : null}
 
               <TextField
-                {...register("GENDER_ID_CHECK")}
-                type="hidden"
-                error={!!errors.GENDER_ID_CHECK}
-                helperText={errors.GENDER_ID_CHECK?.message}
+                {...register('GENDER_ID')}
+                type='hidden'
+                error={!!errors.GENDER_ID}
+                helperText={errors.GENDER_ID?.message}
                 InputProps={{
                   readOnly: true,
                 }}
-                onChange={handleChange_MILITARY}
+                onChange={(e) => handleChange_MILITARY(e)}
               />
               <TextField
-                {...register("STD_ID")}
-                type="hidden"
+                {...register('STD_ID')}
+                type='hidden'
                 error={!!errors.STD_ID}
                 helperText={errors.STD_ID?.message}
                 InputProps={{
@@ -945,8 +1092,8 @@ const GraduateList = (props) => {
                 }}
               />
               <TextField
-                {...register("CITIZEN_ID")}
-                type="hidden"
+                {...register('CITIZEN_ID')}
+                type='hidden'
                 error={!!errors.CITIZEN_ID}
                 helperText={errors.CITIZEN_ID?.message}
                 InputProps={{
@@ -954,8 +1101,8 @@ const GraduateList = (props) => {
                 }}
               />
               <TextField
-                {...register("UNIV_ID")}
-                type="hidden"
+                {...register('UNIV_ID')}
+                type='hidden'
                 error={!!errors.UNIV_ID}
                 helperText={errors.UNIV_ID?.message}
                 InputProps={{
@@ -969,10 +1116,10 @@ const GraduateList = (props) => {
                       <CircularProgress
                         size={26}
                         className={classes.loginLoader}
-                        color="secondary"
+                        color='secondary'
                       />
                     ) : (
-                      <Controls.Button type="submit" text="บันทึกข้อมูล" />
+                      <Controls.Button type='submit' text='บันทึกข้อมูล' />
                     )}
                   </div>
                 </Grid>
@@ -986,13 +1133,13 @@ const GraduateList = (props) => {
 
   return (
     <>
-      <PageTitle title="แบบสอบถามภาวะการมีงานทำของบัณฑิต ปีการศึกษา 2564 (บัณฑิตที่จบปีการศึกษา 2563)" />
+      <PageTitle title='แบบสอบถามภาวะการมีงานทำของบัณฑิต ปีการศึกษา 2564 (บัณฑิตที่จบปีการศึกษา 2563)' />
       <Paper className={classes.paper}>
-        <Col xl="12">
+        <Col xl='12'>
           <Card>
             <CardBody>
-              <div className="blog-single">
-                <div className="blog-box blog-details">{content}</div>
+              <div className='blog-single'>
+                <div className='blog-box blog-details'>{content}</div>
               </div>
             </CardBody>
           </Card>
