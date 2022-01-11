@@ -17,9 +17,14 @@ import MenuItem from "@material-ui/core/MenuItem";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { makeStyles } from "@material-ui/core/styles";
 
+import SSelect from "react-select";
+
+//import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+
 import Select from "@material-ui/core/Select";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import * as Joi from "joi";
 
@@ -241,6 +246,7 @@ const GraduateList = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isAddLoading, setIsAddLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -248,6 +254,7 @@ const GraduateList = (props) => {
     setValue,
     reset,
     control,
+    methods,
   } = useForm({
     resolver: joiResolver(dataStudents),
   });
@@ -345,6 +352,21 @@ const GraduateList = (props) => {
     }
   };
   useEffect(retrieveTutorials, []);
+  //regis
+
+  const [selectEditProvince, setSelectEditProvince] = useState({
+    selectedOption: [],
+  });
+  /*
+  useEffect(() => {
+    register({ name: "REF_QN_PROVINCE_ID" });
+  }, [register]);
+  */
+  /**/
+  const onChangeSelectProvinceEditHandler = (e) => {
+    setValue("REF_QN_PROVINCE_ID", e === null ? null : e.value.toString());
+    setSelectEditProvince({ e });
+  };
 
   ///
   useEffect(() => {
@@ -376,6 +398,40 @@ const GraduateList = (props) => {
               //setVal(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
 
               setProvid(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
+              /****ทดสอบรับค่า */
+
+              axios
+                .get(`http://academic.pcru.ac.th/job-api/provinces-end.php`)
+                .then(function (presponse) {
+                  const pbody = presponse.data.provinceSTD;
+                  const provinceOBJ = pbody.find(
+                    (prov) =>
+                      prov.code == res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
+                  );
+                  //console.log("xxxx", provinceOBJ);
+                  setSelectEditProvince({
+                    selectedOption: [
+                      {
+                        value: provinceOBJ.code,
+                        label: provinceOBJ.name_th,
+                      },
+                    ],
+                  });
+                });
+
+              ///
+
+              //****จบการรรับค่า */
+              /* 
+              setSelectEditProvince({
+                selectedOption: [
+                  {
+                    value: res.data.QuestionaireSTD.REF_QN_PROVINCE_ID,
+                    label: res.data.QuestionaireSTD.REF_QN_PROVINCE_ID,
+                  },
+                ],
+              });
+               */
               setMilitaryID(res.data.QuestionaireSTD.QN_MILITARY_STATUS);
               setOrdinateID(res.data.QuestionaireSTD.QN_ORDINATE_STATUS);
 
@@ -510,6 +566,22 @@ const GraduateList = (props) => {
             value: code,
           }))
         );
+        /*
+        if (provid) {
+          // set ค่าเริ่มต้น
+          const provinceOBJ = body.find((prov) => prov.code == provid);
+          //console.log("xxxx", provinceOBJ);
+          setSelectEditProvince({
+            selectedOption: [
+              {
+                value: provinceOBJ.code,
+                label: provinceOBJ.name_th,
+              },
+            ],
+          });
+          ///
+        }
+        */
         setLoading(false);
       }
     }
@@ -785,6 +857,7 @@ const GraduateList = (props) => {
     }
   };
 
+  /*
   //ประเภทงานที่ทำ สำหรับแสดงซ่อน textbox กรณีตอบอื่นๆ
   const handleChange_QN_OCCUP_TYPE = (e) => {
     e.preventDefault(); // prevent the default action
@@ -795,6 +868,9 @@ const GraduateList = (props) => {
       setIsShow(false); //ซ่อน TextBox
     }
   };
+
+
+  */
 
   ///console.log((Date.now() + 48 * 60 * 60 * 1000))
   const handleSubmitAdd = async (data) => {
@@ -882,6 +958,8 @@ const GraduateList = (props) => {
     } else {
       setValue("QN_OCCUP_TYPE", ""); //กำหนดค่าว่าง
       setValue("QN_OCCUP_TYPE_TXT", ""); //กำหนดค่าว่าง
+      setValue("QN_TALENT", ""); //กำหนดค่าว่าง
+      setValue("QN_TALENT_TXT", ""); //กำหนดค่าว่าง
       //setValue('QN_WORK_STATUS', '');
       setIsShowJob1267(false); //ซ่อน TextBox
     }
@@ -911,6 +989,7 @@ const GraduateList = (props) => {
       setIsShowTalent(false); //แสดง TextBox
     }
   };
+
   let content = <Loading msg=" กำลังโหลด..." />;
 
   if (!isLoading) {
@@ -1070,8 +1149,9 @@ const GraduateList = (props) => {
                         style={{ color: green[500], fontSize: 30 }}
                       />
                     </ListItem>
+
                     <small className={classes.typo}>
-                      <SelectProvince
+                      {/* <SelectProvince
                         refs={{ ...register("REF_QN_PROVINCE_ID") }}
                         error={errors.REF_QN_PROVINCE_ID?.message}
                         defaultValue={provid}
@@ -1079,7 +1159,44 @@ const GraduateList = (props) => {
                         placeHolder={"-เลือกจังหวัด-"}
                         onChange={(e) => OnchangeSelectProvince(e)}
                         options={items}
+                        
+                      /> */}
+                      {/* <SSelect
+                        name="REF_QN_PROVINCE_ID"
+                        placeholder="จังหวัด"
+                        value={selectEditProvince.selectedOption}
+                        options={items}
+                        isClearable
+                        isSearchable={true}
+                      /> */}
+                      <SSelect
+                        {...register("REF_QN_PROVINCE_ID")}
+                        error={errors.REF_QN_PROVINCE_ID?.message}
+                        value={selectEditProvince.selectedOption}
+                        onChange={onChangeSelectProvinceEditHandler}
+                        options={items}
                       />
+                      {errors.REF_QN_PROVINCE_ID ? (
+                        <div>
+                          <span className="text-danger">
+                            {"กรุณาเลือกจังหวัด"}
+                          </span>
+                        </div>
+                      ) : null}
+
+                      {/* <Controller
+                        control={control}
+                        defaultValue={provid}
+                        render={({ onChange, onBlur, value }) => (
+                          <SSelect
+                            refs={{ ...register("REF_QN_PROVINCE_ID") }}
+                            error={errors.REF_QN_PROVINCE_ID?.message}
+                            onChange={provid}
+                            onBlur={onBlur}
+                            options={items}
+                          />
+                        )}
+                      /> */}
                     </small>
                   </div>
                 </Grid>
