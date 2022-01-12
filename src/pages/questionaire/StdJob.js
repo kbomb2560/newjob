@@ -64,6 +64,25 @@ import List from "@material-ui/core/List";
 
 //*** */
 
+const customStyles = {
+  option: (provided, state) => ({
+    ...provided,
+    //borderBottom: "2px dotted green",
+    color: state.isSelected ? "yellow" : "black",
+    backgroundColor: state.isSelected ? "green" : "white",
+    whiteSpace: "normal",
+    fontSize: 16,
+    display: "flex",
+  }),
+  control: (provided) => ({
+    ...provided,
+    fontSize: 16,
+    padding: 9,
+
+    //marginTop: "5%",
+  }),
+};
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -205,6 +224,30 @@ const dataStudents = Joi.object({
     then: Joi.string().required(),
   }),
   //========ความสามารถพิเศษ==========//
+  //========จบประเภทงานที่ทำ==========//
+  //ตำแหน่งงาน
+  QN_POS_ID: Joi.any()
+    .when("QN_WORK_STATUS", {
+      is: "1",
+      then: Joi.string().required(),
+    })
+    .when("QN_WORK_STATUS", {
+      is: "2",
+      then: Joi.string().required(),
+    })
+    .when("QN_WORK_STATUS", {
+      is: "5",
+      then: Joi.string().required(),
+    })
+    .when("QN_WORK_STATUS", {
+      is: "6",
+      then: Joi.string().required(),
+    })
+    .when("QN_WORK_STATUS", {
+      is: "7",
+      then: Joi.string().required(),
+    }),
+  //========ตำแหน่งงาน==========//
 });
 
 const GraduateList = (props) => {
@@ -222,6 +265,8 @@ const GraduateList = (props) => {
   //ความสามารถพิเศษ
   const [talentid, setTalentID] = useState("99");
   const [talentTxT, setTalentIDTxT] = useState("");
+  //ตำแหน่งงาน
+  const [positionid, setPositionID] = useState("");
   //const [value, setVal] = useState('');
 
   ///แสดงซ่อน การมีงานทำข้อ 1-2-6-7
@@ -354,7 +399,7 @@ const GraduateList = (props) => {
   useEffect(retrieveTutorials, []);
   //regis
 
-  const [selectEditProvince, setSelectEditProvince] = useState({
+  const [selectEditPosition, setSelectEditPosition] = useState({
     selectedOption: [],
   });
   /*
@@ -363,9 +408,9 @@ const GraduateList = (props) => {
   }, [register]);
   */
   /**/
-  const onChangeSelectProvinceEditHandler = (e) => {
-    setValue("REF_QN_PROVINCE_ID", e === null ? null : e.value.toString());
-    setSelectEditProvince({ e });
+  const onChangeSelectPositionEditHandler = (e) => {
+    setValue("QN_POS_ID", e === null ? null : e.value.toString());
+    setSelectEditPosition({ e });
   };
 
   ///
@@ -398,32 +443,42 @@ const GraduateList = (props) => {
               //setVal(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
 
               setProvid(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
+              setPositionID(res.data.QuestionaireSTD.QN_POS_ID);
               /****ทดสอบรับค่า */
-
+              //QN_POS_ID
               axios
-                .get(`http://academic.pcru.ac.th/job-api/provinces-end.php`)
+                .get(`http://academic.pcru.ac.th/job-api/qn-position-end.php`)
                 .then(function (presponse) {
-                  const pbody = presponse.data.provinceSTD;
-                  const provinceOBJ = pbody.find(
-                    (prov) =>
-                      prov.code == res.data.QuestionaireSTD.REF_QN_PROVINCE_ID
+                  const pbody = presponse.data.position_careerSTD;
+
+                  //console.log("xxxx> ", pbody);
+                  //console.log("pos_id> ", res.data.QuestionaireSTD.QN_POS_ID);
+
+                  const positionOBJ = pbody.find(
+                    (prov) => prov.POS_ID == res.data.QuestionaireSTD.QN_POS_ID
                   );
-                  //console.log("xxxx", provinceOBJ);
-                  setSelectEditProvince({
-                    selectedOption: [
-                      {
-                        value: provinceOBJ.code,
-                        label: provinceOBJ.name_th,
-                      },
-                    ],
-                  });
+                  //console.log("xxxx", positionOBJ.POS_ID);
+                  if (res.data.QuestionaireSTD.QN_POS_ID) {
+                    setSelectEditPosition({
+                      selectedOption: [
+                        {
+                          value: positionOBJ.POS_ID,
+                          label: positionOBJ.POS_NAME,
+                        },
+                      ],
+                    });
+                  } else {
+                    setSelectEditPosition({
+                      selectedOption: [],
+                    });
+                  }
                 });
 
               ///
 
               //****จบการรรับค่า */
               /* 
-              setSelectEditProvince({
+              setSelectEditPosition({
                 selectedOption: [
                   {
                     value: res.data.QuestionaireSTD.REF_QN_PROVINCE_ID,
@@ -490,6 +545,8 @@ const GraduateList = (props) => {
               );
               setValue("QN_TALENT", res.data.QuestionaireSTD.QN_TALENT);
               setValue("QN_TALENT_TXT", res.data.QuestionaireSTD.QN_TALENT_TXT);
+
+              setValue("QN_POS_ID", res.data.QuestionaireSTD.QN_POS_ID);
 
               /*
               setrefProvinceID(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
@@ -571,7 +628,7 @@ const GraduateList = (props) => {
           // set ค่าเริ่มต้น
           const provinceOBJ = body.find((prov) => prov.code == provid);
           //console.log("xxxx", provinceOBJ);
-          setSelectEditProvince({
+          setSelectEditPosition({
             selectedOption: [
               {
                 value: provinceOBJ.code,
@@ -748,7 +805,37 @@ const GraduateList = (props) => {
     };
   }, []);
   //====================================
+  //====================================
+  ///ความตำแหน่งงาน//
+  const [loadingPositionCr, setLoadingPositionCr] = useState(true);
+  const [itemsPositionCr, setItemsPositionCr] = useState([
+    { label: "Loading ...", value: "" },
+  ]);
 
+  useEffect(() => {
+    let unmountedPositionCr = false;
+    async function PositionCrID() {
+      const response = await axios.get(
+        "http://academic.pcru.ac.th/job-api/qn-position-end.php"
+      );
+      const body = await response.data.position_careerSTD;
+      //console.log("ccc> ", body);
+      if (!unmountedPositionCr) {
+        setItemsPositionCr(
+          body.map(({ POS_ID, POS_NAME }) => ({
+            label: POS_NAME,
+            value: POS_ID,
+          }))
+        );
+        setLoadingPositionCr(false);
+      }
+    }
+    PositionCrID();
+    return () => {
+      unmountedPositionCr = true;
+    };
+  }, []);
+  //====================================
   ///
   ///load province
   const [province, setProvince] = useState([]);
@@ -841,9 +928,7 @@ const GraduateList = (props) => {
       });
   };
   //end Occuptype
-
   //
-
   //การเกณฑ์ทหาร สำหรับแสดงซ่อน textbox กรณีตอบอื่นๆฃ
   const handleChange_MILITARY = (e) => {
     e.preventDefault(); // prevent the default action
@@ -960,6 +1045,9 @@ const GraduateList = (props) => {
       setValue("QN_OCCUP_TYPE_TXT", ""); //กำหนดค่าว่าง
       setValue("QN_TALENT", ""); //กำหนดค่าว่าง
       setValue("QN_TALENT_TXT", ""); //กำหนดค่าว่าง
+      setValue("QN_POS_ID", ""); //กำหนดค่าว่าง
+      setSelectEditPosition({ e });
+
       //setValue('QN_WORK_STATUS', '');
       setIsShowJob1267(false); //ซ่อน TextBox
     }
@@ -1151,7 +1239,7 @@ const GraduateList = (props) => {
                     </ListItem>
 
                     <small className={classes.typo}>
-                      {/* <SelectProvince
+                      <SelectProvince
                         refs={{ ...register("REF_QN_PROVINCE_ID") }}
                         error={errors.REF_QN_PROVINCE_ID?.message}
                         defaultValue={provid}
@@ -1159,21 +1247,21 @@ const GraduateList = (props) => {
                         placeHolder={"-เลือกจังหวัด-"}
                         onChange={(e) => OnchangeSelectProvince(e)}
                         options={items}
-                        
-                      /> */}
+                      />
                       {/* <SSelect
                         name="REF_QN_PROVINCE_ID"
                         placeholder="จังหวัด"
-                        value={selectEditProvince.selectedOption}
+                        value={selectEditPosition.selectedOption}
                         options={items}
                         isClearable
                         isSearchable={true}
                       /> */}
-                      <SSelect
+
+                      {/* <SSelect
                         {...register("REF_QN_PROVINCE_ID")}
                         error={errors.REF_QN_PROVINCE_ID?.message}
-                        value={selectEditProvince.selectedOption}
-                        onChange={onChangeSelectProvinceEditHandler}
+                        value={selectEditPosition.selectedOption}
+                        onChange={onChangeSelectPositionEditHandler}
                         options={items}
                       />
                       {errors.REF_QN_PROVINCE_ID ? (
@@ -1182,21 +1270,7 @@ const GraduateList = (props) => {
                             {"กรุณาเลือกจังหวัด"}
                           </span>
                         </div>
-                      ) : null}
-
-                      {/* <Controller
-                        control={control}
-                        defaultValue={provid}
-                        render={({ onChange, onBlur, value }) => (
-                          <SSelect
-                            refs={{ ...register("REF_QN_PROVINCE_ID") }}
-                            error={errors.REF_QN_PROVINCE_ID?.message}
-                            onChange={provid}
-                            onBlur={onBlur}
-                            options={items}
-                          />
-                        )}
-                      /> */}
+                      ) : null} */}
                     </small>
                   </div>
                 </Grid>
@@ -1388,6 +1462,308 @@ const GraduateList = (props) => {
                           </small>
                         ) : null}
                       </div>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-6">
+                        <ListItem disableGutters={true}>
+                          <ListItemIcon>
+                            <Icon
+                              className="fa fa-car"
+                              style={{ color: orange[500], fontSize: 30 }}
+                            />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary="ชื่อตำแหน่งงาน"
+                            secondary={secondary ? "Secondary text" : null}
+                            style={{ color: orange[500], fontSize: 30 }}
+                          />
+                        </ListItem>
+
+                        <small className={classes.typo}>
+                          {/* <SelectProvince
+                            refs={{ ...register("QN_TALENT") }}
+                            error={errors.QN_TALENT?.message}
+                            defaultValue={talentid}
+                            value={talentid}
+                            placeHolder={"-เลือกความสามารถพิเศษ-"}
+                            onChange={(e) => OnchangeSelectTalentID(e)}
+                            options={itemsTalent}
+                          /> */}
+                          <SSelect
+                            {...register("QN_POS_ID")}
+                            error={errors.QN_POS_ID?.message}
+                            value={selectEditPosition.selectedOption}
+                            onChange={onChangeSelectPositionEditHandler}
+                            options={itemsPositionCr}
+                            styles={customStyles}
+                          />
+                          {errors.QN_POS_ID ? (
+                            <div>
+                              <span className="text-danger">
+                                {"กรุณาเลือกตำแหน่งงาน"}
+                              </span>
+                            </div>
+                          ) : null}
+                        </small>
+                      </div>
+                    </Grid>
+
+                    <Grid container spacing={0}>
+                      <Typography
+                        className={classes.typo}
+                        variant="h3"
+                        size="sm"
+                      >
+                        สถานที่ทำงานปัจจุบัน
+                      </Typography>
+
+                      <Grid container spacing={1}>
+                        <Grid item xs={12} sm={3}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              ชื่อหน่วยงาน{" "}
+                            </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">หมู่ </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+
+                        <Grid item xs={12} sm={3}>
+                          <div className="col-md-12">
+                            <label className="control-label">อาคาร/ตึก </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">ตรอก/ซอย </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">ถนน </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">จังหวัด </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">อำเภอ </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">ตำบล </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              ประเทศที่ทำงาน{" "}
+                            </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              รหัสไปรษณีย์{" "}
+                            </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">โทรศัพท์ </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">โทรสาร </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">อีเมล์ </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
