@@ -120,7 +120,58 @@ const useStyles = makeStyles((theme) => ({
     color: "#8C2BFF",
   },
 }));
-
+const WORK_CHECK_STATUS = Joi.any()
+  .when("QN_WORK_STATUS", {
+    is: "1",
+    then: Joi.string()
+      .regex(/^[00-05]/)
+      .required(),
+  })
+  .when("QN_WORK_STATUS", {
+    is: "2",
+    then: Joi.string()
+      .regex(/^[00-05]/)
+      .required(),
+  })
+  .when("QN_WORK_STATUS", {
+    is: "5",
+    then: Joi.string()
+      .regex(/^[00-05]/)
+      .required(),
+  })
+  .when("QN_WORK_STATUS", {
+    is: "6",
+    then: Joi.string()
+      .regex(/^[00-05]/)
+      .required(),
+  })
+  .when("QN_WORK_STATUS", {
+    is: "7",
+    then: Joi.string()
+      .regex(/^[00-05]/)
+      .required(),
+  });
+const WORK_CHECK_STATUS_STRING = Joi.any()
+  .when("QN_WORK_STATUS", {
+    is: "1",
+    then: Joi.string().required(),
+  })
+  .when("QN_WORK_STATUS", {
+    is: "2",
+    then: Joi.string().required(),
+  })
+  .when("QN_WORK_STATUS", {
+    is: "5",
+    then: Joi.string().required(),
+  })
+  .when("QN_WORK_STATUS", {
+    is: "6",
+    then: Joi.string().required(),
+  })
+  .when("QN_WORK_STATUS", {
+    is: "7",
+    then: Joi.string().required(),
+  });
 const dataStudents = Joi.object({
   //สำหรับข้อมูลผู้สำเร็จการศึกษา
   TELEPHONEUPDATE: Joi.string().required(),
@@ -151,74 +202,14 @@ const dataStudents = Joi.object({
 
   //======--ส่วนที่ 1 --======//
   //ประเภทงานที่ทำ
-  QN_OCCUP_TYPE: Joi.any()
-    .when("QN_WORK_STATUS", {
-      is: "1",
-      then: Joi.string()
-        .regex(/^[00-05]/)
-        .required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "2",
-      then: Joi.string()
-        .regex(/^[00-05]/)
-        .required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "5",
-      then: Joi.string()
-        .regex(/^[00-05]/)
-        .required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "6",
-      then: Joi.string()
-        .regex(/^[00-05]/)
-        .required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "7",
-      then: Joi.string()
-        .regex(/^[00-05]/)
-        .required(),
-    }),
+  QN_OCCUP_TYPE: WORK_CHECK_STATUS,
   QN_OCCUP_TYPE_TXT: Joi.any().when("QN_OCCUP_TYPE", {
     is: "00",
     then: Joi.string().required(),
   }),
   //========จบประเภทงานที่ทำ==========//
   //ความสามารถพิเศษ
-  QN_TALENT: Joi.any()
-    .when("QN_WORK_STATUS", {
-      is: "1",
-      then: Joi.string()
-        .regex(/^[00-05]/)
-        .required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "2",
-      then: Joi.string()
-        .regex(/^[00-05]/)
-        .required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "5",
-      then: Joi.string()
-        .regex(/^[00-05]/)
-        .required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "6",
-      then: Joi.string()
-        .regex(/^[00-05]/)
-        .required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "7",
-      then: Joi.string()
-        .regex(/^[00-05]/)
-        .required(),
-    }),
+  QN_TALENT: WORK_CHECK_STATUS,
   QN_TALENT_TXT: Joi.any().when("QN_TALENT", {
     is: "00",
     then: Joi.string().required(),
@@ -226,27 +217,22 @@ const dataStudents = Joi.object({
   //========ความสามารถพิเศษ==========//
   //========จบประเภทงานที่ทำ==========//
   //ตำแหน่งงาน
-  QN_POS_ID: Joi.any()
-    .when("QN_WORK_STATUS", {
-      is: "1",
-      then: Joi.string().required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "2",
-      then: Joi.string().required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "5",
-      then: Joi.string().required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "6",
-      then: Joi.string().required(),
-    })
-    .when("QN_WORK_STATUS", {
-      is: "7",
-      then: Joi.string().required(),
-    }),
+
+  //จังหวัดสถานที่ทำงาน
+  JOB_QN_PROVINCE_ID: WORK_CHECK_STATUS_STRING,
+  JOB_QN_DISTRICT_ID: WORK_CHECK_STATUS_STRING,
+  JOB_QN_SUBDISTRICT_ID: WORK_CHECK_STATUS_STRING,
+
+  //
+  //QN_POS_ID: WORK_CHECK_STATUS,
+  //========ตำแหน่งงาน==========//
+  //========จบประเภทงานที่ทำ==========//
+  //ตำแหน่งงาน
+
+  QN_POS_ID: WORK_CHECK_STATUS_STRING,
+  //========ตำแหน่งงาน==========//
+  //========ประเทศที่ทำงาน==========//
+  QN_WORK_NATION: WORK_CHECK_STATUS_STRING,
   //========ตำแหน่งงาน==========//
 });
 
@@ -267,11 +253,22 @@ const GraduateList = (props) => {
   const [talentTxT, setTalentIDTxT] = useState("");
   //ตำแหน่งงาน
   const [positionid, setPositionID] = useState("");
+  //ประเทศที่ทำงาน
+  //const [positionid, setPositionID] = useState("");
+  const [worknationid, setWorkNationID] = useState("TH");
   //const [value, setVal] = useState('');
 
-  ///แสดงซ่อน การมีงานทำข้อ 1-2-6-7
-  const [isShowJob1267, setIsShowJob1267] = useState(false);
-
+  //จังหวัด-job
+  const [jobprovid, setJobProvid] = useState("0");
+  //อำเภอ-job
+  const [jobdistid, setJobDistid] = useState("0");
+  //ตำบล-job
+  const [jobsubdistid, setJobSubDistid] = useState("0");
+  //
+  ///แสดงซ่อน การมีงานทำข้อ 1-2-5-6-7
+  const [sShowJob12567, setIsShowJob12567] = useState(false);
+  ///แสดงซ่อน การมีงานทำข้อ 3-4
+  const [sShowJob34, setIsShowJob34] = useState(false);
   //ซ่อนแสดงประเภทงานที่ทำ
   const [isShow, setIsShow] = useState(false);
   //ซ่อนแสดงความสามารถพิเศษ
@@ -516,11 +513,14 @@ const GraduateList = (props) => {
                 res.data.QuestionaireSTD.QN_WORK_STATUS === "6" ||
                 res.data.QuestionaireSTD.QN_WORK_STATUS === "7"
               ) {
-                setIsShowJob1267(true); //แสดง TextBox
+                setIsShowJob12567(true); //แสดง TextBox
+                setIsShowJob34(false);
               } else {
-                setIsShowJob1267(false); //ซ่อน TextBox
+                setIsShowJob12567(false); //ซ่อน TextBox
+                setIsShowJob34(true);
               }
 
+              setWorkNationID(res.data.QuestionaireSTD.QN_WORK_NATION);
               setValue("GENDER_ID", res.data.QuestionaireSTD.GENDER_ID);
               setValue(
                 "QN_MILITARY_STATUS",
@@ -547,7 +547,10 @@ const GraduateList = (props) => {
               setValue("QN_TALENT_TXT", res.data.QuestionaireSTD.QN_TALENT_TXT);
 
               setValue("QN_POS_ID", res.data.QuestionaireSTD.QN_POS_ID);
-
+              setValue(
+                "QN_WORK_NATION",
+                res.data.QuestionaireSTD.QN_WORK_NATION
+              );
               /*
               setrefProvinceID(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
               */
@@ -599,15 +602,11 @@ const GraduateList = (props) => {
   };
   //====================================
   //====================================
-
-  //====================================
   ///จังหวัด//
   //const [isLoading, setIsLoading] = useState(false);
   //const [isError, setIsError] = useState(false);
-
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([{ label: "Loading ...", value: "" }]);
-
   useEffect(() => {
     let unmounted = false;
     async function getProvinceID() {
@@ -623,22 +622,6 @@ const GraduateList = (props) => {
             value: code,
           }))
         );
-        /*
-        if (provid) {
-          // set ค่าเริ่มต้น
-          const provinceOBJ = body.find((prov) => prov.code == provid);
-          //console.log("xxxx", provinceOBJ);
-          setSelectEditPosition({
-            selectedOption: [
-              {
-                value: provinceOBJ.code,
-                label: provinceOBJ.name_th,
-              },
-            ],
-          });
-          ///
-        }
-        */
         setLoading(false);
       }
     }
@@ -647,7 +630,6 @@ const GraduateList = (props) => {
       unmounted = true;
     };
   }, []);
-
   //====================================
 
   //====================================
@@ -836,97 +818,38 @@ const GraduateList = (props) => {
     };
   }, []);
   //====================================
-  ///
-  ///load province
-  const [province, setProvince] = useState([]);
+  //====================================
+  ///QN_WORK_NATION ประเทศที่ทำงาน//
+  const [loadingWorkNation, setLoadingWorkNation] = useState(true);
+  const [itemsWorkNation, setItemsWorkNation] = useState([
+    { label: "Loading ...", value: "" },
+  ]);
+
   useEffect(() => {
-    loadData();
+    let unmountedWorkNation = false;
+    async function WorkNationID() {
+      const response = await axios.get(
+        "http://academic.pcru.ac.th/job-api/qn-ref-nation-end.php"
+      );
+      const body = await response.data.worknationSTD;
+      //console.log("ccc> ", body);
+      if (!unmountedWorkNation) {
+        setItemsWorkNation(
+          body.map(({ NATION_ID, NATION_NAME_ENG }) => ({
+            label: NATION_NAME_ENG,
+            value: NATION_ID,
+          }))
+        );
+        setLoadingWorkNation(false);
+      }
+    }
+    WorkNationID();
+    return () => {
+      unmountedWorkNation = true;
+    };
   }, []);
+  //====================================
 
-  const loadData = () => {
-    listProvince()
-      .then((res) => {
-        //setProvince(res.data);
-        setProvince(res.data.provinceSTD);
-        //console.log(res.data.provinceSTD);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  //end loadprovince
-
-  ///load military_status
-  const [military, setMilitary] = useState([]);
-  useEffect(() => {
-    loadDataMilitary();
-  }, []);
-  const loadDataMilitary = () => {
-    listMilitary()
-      .then((res) => {
-        //setProvince(res.data);
-        setMilitary(res.data.MilitarySTD);
-        //console.log(res.data.provinceSTD);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  //end military_status
-
-  ///load Ordinate_status
-  const [ordinate, setOrdinate] = useState([]);
-  useEffect(() => {
-    loadDataOrdinate();
-  }, []);
-
-  const loadDataOrdinate = () => {
-    listOrdinate()
-      .then((res) => {
-        //setProvince(res.data);
-        setOrdinate(res.data.OrdinateSTD);
-        //console.log(res.data.provinceSTD);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  //end Ordinate_status
-
-  ///load Ordinate_status
-  const [workstatus, setWorkstatus] = useState([]);
-  useEffect(() => {
-    loadDataWorkstatus();
-  }, []);
-  const loadDataWorkstatus = () => {
-    listWorkstatus()
-      .then((res) => {
-        //setProvince(res.data);
-        setWorkstatus(res.data.WorkstatusSTD);
-        //console.log(res.data.provinceSTD);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  //end Ordinate_status
-
-  ///load Occuptype
-  const [occuptype, setOccuptype] = useState([]);
-  useEffect(() => {
-    loadDataOccuptype();
-  }, []);
-  const loadDataOccuptype = () => {
-    listOccupType()
-      .then((res) => {
-        //setProvince(res.data);
-        setOccuptype(res.data.OccuptypeSTD);
-        //console.log(res.data.provinceSTD);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   //end Occuptype
   //
   //การเกณฑ์ทหาร สำหรับแสดงซ่อน textbox กรณีตอบอื่นๆฃ
@@ -942,20 +865,104 @@ const GraduateList = (props) => {
     }
   };
 
-  /*
-  //ประเภทงานที่ทำ สำหรับแสดงซ่อน textbox กรณีตอบอื่นๆ
-  const handleChange_QN_OCCUP_TYPE = (e) => {
-    e.preventDefault(); // prevent the default action
-    if (e.target.value === "00") {
-      setIsShow(true); //แสดง TextBox
-    } else {
-      setValue("QN_OCCUP_TYPE_TXT", ""); //กำหนดค่าว่าง
-      setIsShow(false); //ซ่อน TextBox
+  //====================================
+  ///จังหวัด//
+  //const [isLoading, setIsLoading] = useState(false);
+  //const [isError, setIsError] = useState(false);
+  const [loadingJobsProvince, setLoadingJobsProvince] = useState(true);
+  const [itemsJobsProvince, setItemsJobsProvince] = useState([
+    { label: "Loading ...", value: "" },
+  ]);
+  useEffect(() => {
+    let unmountedJobsProvince = false;
+    async function getJobProvinceID() {
+      const response = await axios.get(
+        "http://academic.pcru.ac.th/job-api/provinces-end.php"
+      );
+      const body = await response.data.provinceSTD;
+      //console.log("ccc> ", body);
+      if (!unmountedJobsProvince) {
+        setItemsJobsProvince(
+          body.map(({ code, name_th }) => ({
+            label: name_th,
+            value: code,
+          }))
+        );
+        setLoadingJobsProvince(false);
+      }
     }
-  };
+    getJobProvinceID();
+    return () => {
+      unmountedJobsProvince = true;
+    };
+  }, []);
+  //====================================+
+  //console.log("data> ", jobprovid);
 
+  const [loadingJobsDistrict, setLoadingJobsDistrict] = useState(true);
+  const [itemsJobsDistrict, setItemsJobsDistrict] = useState([
+    { label: "Loading ...", value: "" },
+  ]);
+  useEffect(() => {
+    let unmountedJobsDistrict = false;
+    async function getJobDistrictID() {
+      const response = await axios.get(
+        `http://academic.pcru.ac.th/job-api/district-end.php?provincecode=${jobprovid}`
+      );
+      const body = await response.data.districtSTD;
+      //console.log("ccc> ", body);
+      if (jobprovid != "0") {
+        if (!unmountedJobsDistrict) {
+          setItemsJobsDistrict(
+            body.map(({ DISTRICT_ID, DISTRICT_NAME_TH }) => ({
+              label: DISTRICT_NAME_TH,
+              value: DISTRICT_ID,
+            }))
+          );
+          setLoadingJobsDistrict(false);
+        }
+      }
+    }
+    getJobDistrictID();
+    return () => {
+      unmountedJobsDistrict = true;
+    };
+  }, [jobprovid]);
+  //====================================
 
-  */
+  //====================================+
+  //console.log("data> ", jobprovid);
+
+  const [loadingJobSubDistrict, setLoadingJobSubDistrict] = useState(true);
+  const [itemsJobSubDistrict, setItemsJobSubDistrict] = useState([
+    { label: "Loading ...", value: "" },
+  ]);
+  useEffect(() => {
+    let unmountedJobSubDistrict = false;
+    async function getJobSubDistrictID() {
+      const response = await axios.get(
+        `http://academic.pcru.ac.th/job-api/sub-district-end.php?districtcode=${jobdistid}`
+      );
+      const body = await response.data.subdistrictSTD;
+      //console.log("ccc> ", body);
+      if (jobdistid != "0") {
+        if (!unmountedJobSubDistrict) {
+          setItemsJobSubDistrict(
+            body.map(({ SUB_DISTRICT_ID, SUB_DISTRICT_NAME_TH }) => ({
+              label: SUB_DISTRICT_NAME_TH,
+              value: SUB_DISTRICT_ID,
+            }))
+          );
+          setLoadingJobSubDistrict(false);
+        }
+      }
+    }
+    getJobSubDistrictID();
+    return () => {
+      unmountedJobSubDistrict = true;
+    };
+  }, [jobdistid]);
+  //====================================
 
   ///console.log((Date.now() + 48 * 60 * 60 * 1000))
   const handleSubmitAdd = async (data) => {
@@ -1036,10 +1043,14 @@ const GraduateList = (props) => {
       e.target.value === "6" ||
       e.target.value === "7"
     ) {
-      setIsShowJob1267(true); //แสดง TextBox
+      setIsShowJob12567(true); //แสดง TextBox
+      setIsShowJob34(false);
       //setValue("QN_OCCUP_TYPE", e.target.value);
       setOccupID(e.target.value);
       setTalentID(e.target.value);
+      //setPositionID(e.target.value);
+      //setPositionID({ e });
+      setWorkNationID(e.target.value);
     } else {
       setValue("QN_OCCUP_TYPE", ""); //กำหนดค่าว่าง
       setValue("QN_OCCUP_TYPE_TXT", ""); //กำหนดค่าว่าง
@@ -1047,9 +1058,13 @@ const GraduateList = (props) => {
       setValue("QN_TALENT_TXT", ""); //กำหนดค่าว่าง
       setValue("QN_POS_ID", ""); //กำหนดค่าว่าง
       setSelectEditPosition({ e });
-
+      setValue("QN_WORK_NATION", "");
+      setValue("JOB_QN_PROVINCE_ID", "");
+      setValue("JOB_QN_DISTRICT_ID", "");
+      setValue("JOB_QN_SUBDISTRICT_ID", "");
       //setValue('QN_WORK_STATUS', '');
-      setIsShowJob1267(false); //ซ่อน TextBox
+      setIsShowJob12567(false); //ซ่อน TextBox
+      setIsShowJob34(true);
     }
   };
 
@@ -1076,6 +1091,28 @@ const GraduateList = (props) => {
       setValue("QN_TALENT_TXT", ""); //กำหนดค่าว่าง
       setIsShowTalent(false); //แสดง TextBox
     }
+  };
+  //setWorkNationID
+  const OnchangeSelectWorkNationID = (e) => {
+    setValue("QN_WORK_NATION", e.target.value);
+    setWorkNationID(e.target.value);
+  };
+  //setProvinceID
+  const OnchangeSelectJobProvince = (e) => {
+    setValue("JOB_QN_PROVINCE_ID", e.target.value);
+    setJobProvid(e.target.value);
+    setJobSubDistid(e.target.value);
+    //setProvid(e.target.value);
+  };
+  //setDistrictID
+  const OnchangeSelectDistrict = (e) => {
+    setValue("JOB_QN_DISTRICT_ID", e.target.value);
+    setJobDistid(e.target.value);
+  };
+  //setSubdistrictID
+  const OnchangeSelectSubDistrict = (e) => {
+    setValue("JOB_QN_SUBDISTRICT_ID", e.target.value);
+    setJobSubDistid(e.target.value);
   };
 
   let content = <Loading msg=" กำลังโหลด..." />;
@@ -1248,29 +1285,6 @@ const GraduateList = (props) => {
                         onChange={(e) => OnchangeSelectProvince(e)}
                         options={items}
                       />
-                      {/* <SSelect
-                        name="REF_QN_PROVINCE_ID"
-                        placeholder="จังหวัด"
-                        value={selectEditPosition.selectedOption}
-                        options={items}
-                        isClearable
-                        isSearchable={true}
-                      /> */}
-
-                      {/* <SSelect
-                        {...register("REF_QN_PROVINCE_ID")}
-                        error={errors.REF_QN_PROVINCE_ID?.message}
-                        value={selectEditPosition.selectedOption}
-                        onChange={onChangeSelectPositionEditHandler}
-                        options={items}
-                      />
-                      {errors.REF_QN_PROVINCE_ID ? (
-                        <div>
-                          <span className="text-danger">
-                            {"กรุณาเลือกจังหวัด"}
-                          </span>
-                        </div>
-                      ) : null} */}
                     </small>
                   </div>
                 </Grid>
@@ -1365,7 +1379,7 @@ const GraduateList = (props) => {
                   </div>
                 </Grid>
               </Grid>
-              {isShowJob1267 ? (
+              {sShowJob12567 ? (
                 <Grid container spacing={0}>
                   <Typography className={classes.typo} variant="h3" size="sm">
                     ตอนที่ 2 สำหรับผู้ที่ทำงานแล้ว
@@ -1614,81 +1628,56 @@ const GraduateList = (props) => {
                           </div>
                         </Grid>
 
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={3}>
                           <div className="col-md-12">
                             <label className="control-label">จังหวัด </label>
                             <small className={classes.typo}>
-                              <TextField
-                                {...register("TELEPHONEUPDATE")}
-                                variant="outlined"
-                                fullWidth
-                                error={!!errors.TELEPHONEUPDATE}
-                                helperText={errors.TELEPHONEUPDATE?.message}
-                                InputProps={{
-                                  readOnly: false,
-                                }}
-                                size="small"
+                              <SelectProvince
+                                refs={{ ...register("JOB_QN_PROVINCE_ID") }}
+                                error={errors.JOB_QN_PROVINCE_ID?.message}
+                                defaultValue={jobprovid}
+                                value={jobprovid}
+                                placeHolder={"-เลือกจังหวัด-"}
+                                onChange={(e) => OnchangeSelectJobProvince(e)}
+                                options={itemsJobsProvince}
                               />
                             </small>
                           </div>
                         </Grid>
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={3}>
                           <div className="col-md-12">
                             <label className="control-label">อำเภอ </label>
                             <small className={classes.typo}>
-                              <TextField
-                                {...register("TELEPHONEUPDATE")}
-                                variant="outlined"
-                                fullWidth
-                                error={!!errors.TELEPHONEUPDATE}
-                                helperText={errors.TELEPHONEUPDATE?.message}
-                                InputProps={{
-                                  readOnly: false,
-                                }}
-                                size="small"
+                              <SelectProvince
+                                refs={{ ...register("JOB_QN_DISTRICT_ID") }}
+                                error={errors.JOB_QN_DISTRICT_ID?.message}
+                                defaultValue={jobdistid}
+                                value={jobdistid}
+                                placeHolder={"-เลือกอำเภอ-"}
+                                onChange={(e) => OnchangeSelectDistrict(e)}
+                                options={itemsJobsDistrict}
                               />
                             </small>
                           </div>
                         </Grid>
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={3}>
                           <div className="col-md-12">
                             <label className="control-label">ตำบล </label>
                             <small className={classes.typo}>
-                              <TextField
-                                {...register("TELEPHONEUPDATE")}
-                                variant="outlined"
-                                fullWidth
-                                error={!!errors.TELEPHONEUPDATE}
-                                helperText={errors.TELEPHONEUPDATE?.message}
-                                InputProps={{
-                                  readOnly: false,
-                                }}
-                                size="small"
+                              <SelectProvince
+                                refs={{ ...register("JOB_QN_SUBDISTRICT_ID") }}
+                                error={errors.JOB_QN_SUBDISTRICT_ID?.message}
+                                defaultValue={jobsubdistid}
+                                value={jobsubdistid}
+                                placeHolder={"-เลือกตำบล-"}
+                                onChange={(e) => OnchangeSelectSubDistrict(e)}
+                                options={itemsJobSubDistrict}
                               />
                             </small>
                           </div>
                         </Grid>
-                        <Grid item xs={12} sm={2}>
-                          <div className="col-md-12">
-                            <label className="control-label">
-                              ประเทศที่ทำงาน{" "}
-                            </label>
-                            <small className={classes.typo}>
-                              <TextField
-                                {...register("TELEPHONEUPDATE")}
-                                variant="outlined"
-                                fullWidth
-                                error={!!errors.TELEPHONEUPDATE}
-                                helperText={errors.TELEPHONEUPDATE?.message}
-                                InputProps={{
-                                  readOnly: false,
-                                }}
-                                size="small"
-                              />
-                            </small>
-                          </div>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
+
+                        <Grid item xs={12} sm={3}>
                           <div className="col-md-12">
                             <label className="control-label">
                               รหัสไปรษณีย์{" "}
@@ -1709,7 +1698,7 @@ const GraduateList = (props) => {
                           </div>
                         </Grid>
 
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={3}>
                           <div className="col-md-12">
                             <label className="control-label">โทรศัพท์ </label>
                             <small className={classes.typo}>
@@ -1727,7 +1716,7 @@ const GraduateList = (props) => {
                             </small>
                           </div>
                         </Grid>
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={3}>
                           <div className="col-md-12">
                             <label className="control-label">โทรสาร </label>
                             <small className={classes.typo}>
@@ -1745,7 +1734,7 @@ const GraduateList = (props) => {
                             </small>
                           </div>
                         </Grid>
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={3}>
                           <div className="col-md-12">
                             <label className="control-label">อีเมล์ </label>
                             <small className={classes.typo}>
@@ -1763,9 +1752,37 @@ const GraduateList = (props) => {
                             </small>
                           </div>
                         </Grid>
+                        <Grid item xs={12} sm={3}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              ประเทศที่ทำงาน{" "}
+                            </label>
+                            <small className={classes.typo}>
+                              <SelectProvince
+                                refs={{ ...register("QN_WORK_NATION") }}
+                                error={errors.QN_WORK_NATION?.message}
+                                defaultValue={worknationid}
+                                value={worknationid}
+                                placeHolder={"-ประเทศที่ทำงาน-"}
+                                onChange={(e) => OnchangeSelectWorkNationID(e)}
+                                options={itemsWorkNation}
+                              />
+                            </small>
+                          </div>
+                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
+                </Grid>
+              ) : null}
+
+              {sShowJob34 ? (
+                <Grid container spacing={0}>
+                  <Typography className={classes.typo} variant="h3" size="sm">
+                    ตอนที่ 3 สำหรับผู้ที่ยังไม่ได้ทำงาน
+                  </Typography>
+
+                  <Grid container spacing={1}></Grid>
                 </Grid>
               ) : null}
 

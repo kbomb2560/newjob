@@ -31,7 +31,8 @@ export default function Select(props) {
               fontSize: 14,
             }}
           >
-            ({item.value})-{item.label}
+            {/* ({item.value})-{item.label} */}
+            {item.label}
           </MenuItem>
         ))}
       </MuiSelect>
