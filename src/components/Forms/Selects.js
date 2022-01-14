@@ -20,7 +20,13 @@ export default function Select(props) {
 
   return (
     <FormControl fullWidth {...(error && { error: true })} variant="outlined">
-      <MuiSelect label={label} name={name} value={value} onChange={onChange}>
+      <MuiSelect
+        label={label}
+        name={name}
+        value={value}
+        onChange={onChange}
+        SelectDisplayProps={{ style: { paddingTop: 10, paddingBottom: 10 } }}
+      >
         <MenuItem value={value}>{placeHolder}</MenuItem>
         {options.map((item) => (
           <MenuItem

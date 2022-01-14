@@ -77,7 +77,6 @@ const customStyles = {
   control: (provided) => ({
     ...provided,
     fontSize: 16,
-    padding: 9,
 
     //marginTop: "5%",
   }),
@@ -221,7 +220,7 @@ const dataStudents = Joi.object({
   //จังหวัดสถานที่ทำงาน
   JOB_QN_PROVINCE_ID: WORK_CHECK_STATUS_STRING,
   JOB_QN_DISTRICT_ID: WORK_CHECK_STATUS_STRING,
-  JOB_QN_SUBDISTRICT_ID: WORK_CHECK_STATUS_STRING,
+  QN_WORK_TAMBON: WORK_CHECK_STATUS_STRING,
 
   //
   //QN_POS_ID: WORK_CHECK_STATUS,
@@ -521,6 +520,11 @@ const GraduateList = (props) => {
               }
 
               setWorkNationID(res.data.QuestionaireSTD.QN_WORK_NATION);
+
+              setJobProvid(res.data.QuestionaireSTD.JOB_QN_PROVINCE_ID);
+              setJobDistid(res.data.QuestionaireSTD.JOB_QN_DISTRICT_ID);
+              setJobSubDistid(res.data.QuestionaireSTD.QN_WORK_TAMBON);
+
               setValue("GENDER_ID", res.data.QuestionaireSTD.GENDER_ID);
               setValue(
                 "QN_MILITARY_STATUS",
@@ -551,6 +555,19 @@ const GraduateList = (props) => {
                 "QN_WORK_NATION",
                 res.data.QuestionaireSTD.QN_WORK_NATION
               );
+              setValue(
+                "JOB_QN_PROVINCE_ID",
+                res.data.QuestionaireSTD.JOB_QN_PROVINCE_ID
+              );
+              setValue(
+                "JOB_QN_DISTRICT_ID",
+                res.data.QuestionaireSTD.JOB_QN_DISTRICT_ID
+              );
+              setValue(
+                "QN_WORK_TAMBON",
+                res.data.QuestionaireSTD.QN_WORK_TAMBON
+              );
+
               /*
               setrefProvinceID(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
               */
@@ -910,8 +927,8 @@ const GraduateList = (props) => {
         `http://academic.pcru.ac.th/job-api/district-end.php?provincecode=${jobprovid}`
       );
       const body = await response.data.districtSTD;
-      //console.log("ccc> ", body);
-      if (jobprovid != "0") {
+      console.log("ccc> ", jobprovid);
+      if (jobprovid != "0" && jobprovid != "") {
         if (!unmountedJobsDistrict) {
           setItemsJobsDistrict(
             body.map(({ DISTRICT_ID, DISTRICT_NAME_TH }) => ({
@@ -945,7 +962,7 @@ const GraduateList = (props) => {
       );
       const body = await response.data.subdistrictSTD;
       //console.log("ccc> ", body);
-      if (jobdistid != "0") {
+      if (jobprovid != "0" && jobprovid != "") {
         if (!unmountedJobSubDistrict) {
           setItemsJobSubDistrict(
             body.map(({ SUB_DISTRICT_ID, SUB_DISTRICT_NAME_TH }) => ({
@@ -1050,6 +1067,11 @@ const GraduateList = (props) => {
       setTalentID(e.target.value);
       //setPositionID(e.target.value);
       //setPositionID({ e });
+      setJobProvid("0");
+      setJobDistid("0");
+      setJobSubDistid("0");
+      //setProvid(e.target.value);
+
       setWorkNationID(e.target.value);
     } else {
       setValue("QN_OCCUP_TYPE", ""); //กำหนดค่าว่าง
@@ -1061,7 +1083,7 @@ const GraduateList = (props) => {
       setValue("QN_WORK_NATION", "");
       setValue("JOB_QN_PROVINCE_ID", "");
       setValue("JOB_QN_DISTRICT_ID", "");
-      setValue("JOB_QN_SUBDISTRICT_ID", "");
+      setValue("QN_WORK_TAMBON", "");
       //setValue('QN_WORK_STATUS', '');
       setIsShowJob12567(false); //ซ่อน TextBox
       setIsShowJob34(true);
@@ -1100,6 +1122,8 @@ const GraduateList = (props) => {
   //setProvinceID
   const OnchangeSelectJobProvince = (e) => {
     setValue("JOB_QN_PROVINCE_ID", e.target.value);
+    setValue("QN_WORK_TAMBON", "");
+    setValue("JOB_QN_DISTRICT_ID", "");
     setJobProvid(e.target.value);
     setJobSubDistid(e.target.value);
     //setProvid(e.target.value);
@@ -1111,7 +1135,7 @@ const GraduateList = (props) => {
   };
   //setSubdistrictID
   const OnchangeSelectSubDistrict = (e) => {
-    setValue("JOB_QN_SUBDISTRICT_ID", e.target.value);
+    setValue("QN_WORK_TAMBON", e.target.value);
     setJobSubDistid(e.target.value);
   };
 
@@ -1190,193 +1214,196 @@ const GraduateList = (props) => {
                   </div>
                 </Grid>
               </Grid>
+              <Grid container spacing={0}>
+                <Typography className={classes.typo} variant="h5" size="sm">
+                  ที่อยู่ปัจจุบัน
+                </Typography>
 
-              <Typography className={classes.typo} variant="h5" size="sm">
-                ที่อยู่ปัจจุบัน
-              </Typography>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={4}>
+                    <div className="col-md-12">
+                      <label className="control-label">เลขที่ </label>
+                      <small className={classes.typo}>{data.HOMEADD}</small>
+                    </div>
+                    <div className="col-md-12">
+                      <label className="control-label">หมู่ </label>
+                      <small className={classes.typo}>{data.MOO}</small>
+                    </div>
+                    <div className="col-md-12">
+                      <label className="control-label">ซอย </label>
+                      <small className={classes.typo}>{data.SOI}</small>
+                    </div>
+                    <div className="col-md-12">
+                      <label className="control-label">ถนน </label>
+                      <small className={classes.typo}>{data.STREET}</small>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className="col-md-12">
+                      <label className="control-label">ตำบล </label>
+                      <small className={classes.typo}>{data.TUMBOL}</small>
+                    </div>
+                    <div className="col-md-12">
+                      <label className="control-label">อำเภอ </label>
+                      <small className={classes.typo}>{data.AMPHUR}</small>
+                    </div>
+                    <div className="col-md-12">
+                      <label className="control-label">จังหวัด </label>
+                      <small className={classes.typo}>
+                        {data.PROVINCE_NAME}
+                      </small>
+                    </div>
+                    <div className="col-md-12">
+                      <label className="control-label">รหัสไปรษณีย์ </label>
+                      <small className={classes.typo}>{data.ZIPCODE}</small>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className="col-md-12">
+                      <label className="control-label">
+                        เบอร์โทรศัพท์ (แก้ไขได้){" "}
+                      </label>
+                      <small className={classes.typo}>
+                        <TextField
+                          {...register("TELEPHONEUPDATE")}
+                          variant="outlined"
+                          fullWidth
+                          error={!!errors.TELEPHONEUPDATE}
+                          helperText={errors.TELEPHONEUPDATE?.message}
+                          InputProps={{
+                            readOnly: false,
+                          }}
+                          size="small"
+                        />
+                      </small>
+                    </div>
+                    <div className="col-md-12">
+                      <label className="control-label">E-mail </label>
+                      <small className={classes.typo}>{data.EMAIL}</small>
+                    </div>
+                  </Grid>
+                </Grid>
 
-              <Grid container spacing={1}>
-                <Grid item xs={12} sm={4}>
-                  <div className="col-md-12">
-                    <label className="control-label">เลขที่ </label>
-                    <small className={classes.typo}>{data.HOMEADD}</small>
-                  </div>
-                  <div className="col-md-12">
-                    <label className="control-label">หมู่ </label>
-                    <small className={classes.typo}>{data.MOO}</small>
-                  </div>
-                  <div className="col-md-12">
-                    <label className="control-label">ซอย </label>
-                    <small className={classes.typo}>{data.SOI}</small>
-                  </div>
-                  <div className="col-md-12">
-                    <label className="control-label">ถนน </label>
-                    <small className={classes.typo}>{data.STREET}</small>
-                  </div>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <div className="col-md-12">
-                    <label className="control-label">ตำบล </label>
-                    <small className={classes.typo}>{data.TUMBOL}</small>
-                  </div>
-                  <div className="col-md-12">
-                    <label className="control-label">อำเภอ </label>
-                    <small className={classes.typo}>{data.AMPHUR}</small>
-                  </div>
-                  <div className="col-md-12">
-                    <label className="control-label">จังหวัด </label>
-                    <small className={classes.typo}>{data.PROVINCE_NAME}</small>
-                  </div>
-                  <div className="col-md-12">
-                    <label className="control-label">รหัสไปรษณีย์ </label>
-                    <small className={classes.typo}>{data.ZIPCODE}</small>
-                  </div>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <div className="col-md-12">
-                    <label className="control-label">
-                      เบอร์โทรศัพท์ (แก้ไขได้){" "}
-                    </label>
-                    <small className={classes.typo}>
-                      <TextField
-                        {...register("TELEPHONEUPDATE")}
-                        variant="outlined"
-                        fullWidth
-                        error={!!errors.TELEPHONEUPDATE}
-                        helperText={errors.TELEPHONEUPDATE?.message}
-                        InputProps={{
-                          readOnly: false,
-                        }}
-                        size="small"
-                      />
-                    </small>
-                  </div>
-                  <div className="col-md-12">
-                    <label className="control-label">E-mail </label>
-                    <small className={classes.typo}>{data.EMAIL}</small>
-                  </div>
-                </Grid>
-              </Grid>
-
-              <Grid container spacing={1}>
-                <Grid item xs={12} sm={4}>
-                  <div className="col-md-6">
-                    <ListItem disableGutters={true}>
-                      <ListItemIcon>
-                        <Icon
-                          className="fa fa-home"
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={4}>
+                    <div className="col-md-6">
+                      <ListItem disableGutters={true}>
+                        <ListItemIcon>
+                          <Icon
+                            className="fa fa-home"
+                            style={{ color: green[500], fontSize: 30 }}
+                          />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="ภูมิลำเนา (จังหวัด)"
+                          secondary={secondary ? "Secondary text" : null}
                           style={{ color: green[500], fontSize: 30 }}
                         />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="ภูมิลำเนา (จังหวัด)"
-                        secondary={secondary ? "Secondary text" : null}
-                        style={{ color: green[500], fontSize: 30 }}
-                      />
-                    </ListItem>
+                      </ListItem>
 
-                    <small className={classes.typo}>
-                      <SelectProvince
-                        refs={{ ...register("REF_QN_PROVINCE_ID") }}
-                        error={errors.REF_QN_PROVINCE_ID?.message}
-                        defaultValue={provid}
-                        value={provid}
-                        placeHolder={"-เลือกจังหวัด-"}
-                        onChange={(e) => OnchangeSelectProvince(e)}
-                        options={items}
-                      />
-                    </small>
-                  </div>
-                </Grid>
-                {isShowMILITARY ? (
+                      <small className={classes.typo}>
+                        <SelectProvince
+                          refs={{ ...register("REF_QN_PROVINCE_ID") }}
+                          error={errors.REF_QN_PROVINCE_ID?.message}
+                          defaultValue={provid}
+                          value={provid}
+                          placeHolder={"-เลือกจังหวัด-"}
+                          onChange={(e) => OnchangeSelectProvince(e)}
+                          options={items}
+                        />
+                      </small>
+                    </div>
+                  </Grid>
+                  {isShowMILITARY ? (
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-6">
+                        <ListItem disableGutters={true}>
+                          <ListItemIcon>
+                            <Icon
+                              className="fa fa-fighter-jet"
+                              style={{ color: orange[500], fontSize: 30 }}
+                            />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary="สถานะการเกณฑ์ทหาร : (เฉพาะเพศชาย)"
+                            secondary={secondary ? "Secondary text" : null}
+                            style={{ color: orange[500], fontSize: 30 }}
+                          />
+                        </ListItem>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_MILITARY_STATUS") }}
+                            error={errors.QN_MILITARY_STATUS?.message}
+                            defaultValue={militaryid}
+                            value={militaryid}
+                            placeHolder={"-เลือกสถานะการเกณฑ์ทหารฯ-"}
+                            onChange={(e) => OnchangeSelectMilitaryID(e)}
+                            options={itemsMili}
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+                  ) : null}
+                  {isShowORDINATE ? (
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-6">
+                        <ListItem disableGutters={true}>
+                          <ListItemIcon>
+                            <Icon
+                              className="fa fa-eye"
+                              style={{ color: orange[500], fontSize: 30 }}
+                            />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary="สถานะการเป็นนักบวชปัจจุบัน"
+                            secondary={secondary ? "Secondary text" : null}
+                            style={{ color: orange[500], fontSize: 30 }}
+                          />
+                        </ListItem>
+
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_ORDINATE_STATUS") }}
+                            error={errors.QN_ORDINATE_STATUS?.message}
+                            defaultValue={ordinateid}
+                            value={ordinateid}
+                            placeHolder={"-เลือกสถานะการเป็นนักบวช-"}
+                            onChange={(e) => OnchangeSelectOrdinateID(e)}
+                            options={itemsOrdi}
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+                  ) : null}
                   <Grid item xs={12} sm={4}>
                     <div className="col-md-6">
                       <ListItem disableGutters={true}>
                         <ListItemIcon>
                           <Icon
-                            className="fa fa-fighter-jet"
-                            style={{ color: orange[500], fontSize: 30 }}
+                            className="fa fa-child"
+                            style={{ color: purple[500], fontSize: 30 }}
                           />
                         </ListItemIcon>
                         <ListItemText
-                          primary="สถานะการเกณฑ์ทหาร : (เฉพาะเพศชาย)"
+                          primary="สถานะภาพการทำงานปัจจุบัน"
                           secondary={secondary ? "Secondary text" : null}
-                          style={{ color: orange[500], fontSize: 30 }}
-                        />
-                      </ListItem>
-                      <small className={classes.typo}>
-                        <SelectProvince
-                          refs={{ ...register("QN_MILITARY_STATUS") }}
-                          error={errors.QN_MILITARY_STATUS?.message}
-                          defaultValue={militaryid}
-                          value={militaryid}
-                          placeHolder={"-เลือกสถานะการเกณฑ์ทหารฯ-"}
-                          onChange={(e) => OnchangeSelectMilitaryID(e)}
-                          options={itemsMili}
-                        />
-                      </small>
-                    </div>
-                  </Grid>
-                ) : null}
-                {isShowORDINATE ? (
-                  <Grid item xs={12} sm={4}>
-                    <div className="col-md-6">
-                      <ListItem disableGutters={true}>
-                        <ListItemIcon>
-                          <Icon
-                            className="fa fa-eye"
-                            style={{ color: orange[500], fontSize: 30 }}
-                          />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary="สถานะการเป็นนักบวชปัจจุบัน"
-                          secondary={secondary ? "Secondary text" : null}
-                          style={{ color: orange[500], fontSize: 30 }}
-                        />
-                      </ListItem>
-
-                      <small className={classes.typo}>
-                        <SelectProvince
-                          refs={{ ...register("QN_ORDINATE_STATUS") }}
-                          error={errors.QN_ORDINATE_STATUS?.message}
-                          defaultValue={ordinateid}
-                          value={ordinateid}
-                          placeHolder={"-เลือกสถานะการเป็นนักบวช-"}
-                          onChange={(e) => OnchangeSelectOrdinateID(e)}
-                          options={itemsOrdi}
-                        />
-                      </small>
-                    </div>
-                  </Grid>
-                ) : null}
-                <Grid item xs={12} sm={4}>
-                  <div className="col-md-6">
-                    <ListItem disableGutters={true}>
-                      <ListItemIcon>
-                        <Icon
-                          className="fa fa-child"
                           style={{ color: purple[500], fontSize: 30 }}
                         />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="สถานะภาพการทำงานปัจจุบัน"
-                        secondary={secondary ? "Secondary text" : null}
-                        style={{ color: purple[500], fontSize: 30 }}
-                      />
-                    </ListItem>
+                      </ListItem>
 
-                    <small className={classes.typo}>
-                      <SelectProvince
-                        refs={{ ...register("QN_WORK_STATUS") }}
-                        error={errors.QN_WORK_STATUS?.message}
-                        defaultValue={jobstatus}
-                        value={jobstatus}
-                        placeHolder={"-เลือกสถานะภาพการทำงานปัจจุบัน-"}
-                        onChange={(e) => OnchangeSelectJobStatusID(e)}
-                        options={itemsJob}
-                      />
-                    </small>
-                  </div>
+                      <small className={classes.typo}>
+                        <SelectProvince
+                          refs={{ ...register("QN_WORK_STATUS") }}
+                          error={errors.QN_WORK_STATUS?.message}
+                          defaultValue={jobstatus}
+                          value={jobstatus}
+                          placeHolder={"-เลือกสถานะภาพการทำงานปัจจุบัน-"}
+                          onChange={(e) => OnchangeSelectJobStatusID(e)}
+                          options={itemsJob}
+                        />
+                      </small>
+                    </div>
+                  </Grid>
                 </Grid>
               </Grid>
               {sShowJob12567 ? (
@@ -1665,8 +1692,8 @@ const GraduateList = (props) => {
                             <label className="control-label">ตำบล </label>
                             <small className={classes.typo}>
                               <SelectProvince
-                                refs={{ ...register("JOB_QN_SUBDISTRICT_ID") }}
-                                error={errors.JOB_QN_SUBDISTRICT_ID?.message}
+                                refs={{ ...register("QN_WORK_TAMBON") }}
+                                error={errors.QN_WORK_TAMBON?.message}
                                 defaultValue={jobsubdistid}
                                 value={jobsubdistid}
                                 placeHolder={"-เลือกตำบล-"}
@@ -1770,6 +1797,170 @@ const GraduateList = (props) => {
                             </small>
                           </div>
                         </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              ประเภทกิจการ{" "}
+                            </label>
+                            <small className={classes.typo}>
+                              <SelectProvince
+                                refs={{ ...register("QN_WORK_NATION") }}
+                                error={errors.QN_WORK_NATION?.message}
+                                defaultValue={worknationid}
+                                value={worknationid}
+                                placeHolder={"-โปรดระบุ-"}
+                                onChange={(e) => OnchangeSelectWorkNationID(e)}
+                                options={itemsWorkNation}
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              สถานประกอบการอุตสาหกรรมเป้าหมาย ตามยุทธศาสตร์ชาติ
+                              20 ปี(พ.ศ.2561-2580){" "}
+                            </label>
+                            <small className={classes.typo}>
+                              <SelectProvince
+                                refs={{ ...register("QN_WORK_NATION") }}
+                                error={errors.QN_WORK_NATION?.message}
+                                defaultValue={worknationid}
+                                value={worknationid}
+                                placeHolder={"-โปรดระบุ-"}
+                                onChange={(e) => OnchangeSelectWorkNationID(e)}
+                                options={itemsWorkNation}
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              เงือนเดือน/รายได้เฉลี่ยต่อเดือน(บาท)
+                            </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register("TELEPHONEUPDATE")}
+                                variant="outlined"
+                                fullWidth
+                                error={!!errors.TELEPHONEUPDATE}
+                                helperText={errors.TELEPHONEUPDATE?.message}
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size="small"
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              ท่านมีความพอใจต่องานที่ทำหรือไม่ โปรดระบุ
+                            </label>
+                            <small className={classes.typo}>
+                              <SelectProvince
+                                refs={{ ...register("QN_OCCUP_TYPE") }}
+                                error={errors.QN_OCCUP_TYPE?.message}
+                                defaultValue={occupid}
+                                value={occupid}
+                                placeHolder={"-เลือกประเภทงานที่ทำ-"}
+                                onChange={(e) => OnchangeSelectOccupID(e)}
+                                options={itemsOcc}
+                              />
+                            </small>
+                            {isShow ? (
+                              <small className={classes.typo}>
+                                <TextField
+                                  {...register("QN_OCCUP_TYPE_TXT")}
+                                  variant="outlined"
+                                  label="อื่นๆ ระบุ"
+                                  fullWidth
+                                  error={!!errors.QN_OCCUP_TYPE_TXT}
+                                  helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                                  InputProps={{
+                                    readOnly: false,
+                                  }}
+                                  size="small"
+                                />
+                              </small>
+                            ) : null}
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              หลังจากสำเร็จการศึกษาได้งานทำในระยะเวลาเท่าไร
+                            </label>
+                            <small className={classes.typo}>
+                              <SelectProvince
+                                refs={{ ...register("QN_WORK_NATION") }}
+                                error={errors.QN_WORK_NATION?.message}
+                                defaultValue={worknationid}
+                                value={worknationid}
+                                placeHolder={"-โปรดระบุ-"}
+                                onChange={(e) => OnchangeSelectWorkNationID(e)}
+                                options={itemsWorkNation}
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              งานที่ทำตรงกับสาขาที่ได้สำเร็จการศึกษาหรือไม่
+                            </label>
+                            <small className={classes.typo}>
+                              <SelectProvince
+                                refs={{ ...register("QN_WORK_NATION") }}
+                                error={errors.QN_WORK_NATION?.message}
+                                defaultValue={worknationid}
+                                value={worknationid}
+                                placeHolder={"-โปรดระบุ-"}
+                                onChange={(e) => OnchangeSelectWorkNationID(e)}
+                                options={itemsWorkNation}
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              ท่านสามารถนำความรู้จากสาขาวิชาที่เรียนมาประยุกต์ใช้กับหน้าที่การงานที่ทำอยู่ขณะนี้เพียงใด
+                            </label>
+                            <small className={classes.typo}>
+                              <SelectProvince
+                                refs={{ ...register("QN_WORK_NATION") }}
+                                error={errors.QN_WORK_NATION?.message}
+                                defaultValue={worknationid}
+                                value={worknationid}
+                                placeHolder={"-โปรดระบุ-"}
+                                onChange={(e) => OnchangeSelectWorkNationID(e)}
+                                options={itemsWorkNation}
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={3}>
+                          <div className="col-md-12">
+                            <label className="control-label">
+                              ความต้องการศึกษาต่อ
+                            </label>
+                            <small className={classes.typo}>
+                              <SelectProvince
+                                refs={{ ...register("QN_WORK_NATION") }}
+                                error={errors.QN_WORK_NATION?.message}
+                                defaultValue={worknationid}
+                                value={worknationid}
+                                placeHolder={"-โปรดระบุ-"}
+                                onChange={(e) => OnchangeSelectWorkNationID(e)}
+                                options={itemsWorkNation}
+                              />
+                            </small>
+                          </div>
+                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -1782,7 +1973,510 @@ const GraduateList = (props) => {
                     ตอนที่ 3 สำหรับผู้ที่ยังไม่ได้ทำงาน
                   </Typography>
 
-                  <Grid container spacing={1}></Grid>
+                  <Grid container spacing={1}>
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          สาเหตุที่ยังไม่ได้ทำงาน
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_OCCUP_TYPE") }}
+                            error={errors.QN_OCCUP_TYPE?.message}
+                            defaultValue={occupid}
+                            value={occupid}
+                            placeHolder={"-เลือกสาเหตุ-"}
+                            onChange={(e) => OnchangeSelectOccupID(e)}
+                            options={itemsOcc}
+                          />
+                        </small>
+                        {isShow ? (
+                          <small className={classes.typo}>
+                            <TextField
+                              {...register("QN_OCCUP_TYPE_TXT")}
+                              variant="outlined"
+                              label="อื่นๆ ระบุ"
+                              fullWidth
+                              error={!!errors.QN_OCCUP_TYPE_TXT}
+                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              InputProps={{
+                                readOnly: false,
+                              }}
+                              size="small"
+                            />
+                          </small>
+                        ) : null}
+                      </div>
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ท่านมีปัญหาในการหางานทำหลังสำเร็จการศึกษาหรือไม่
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_OCCUP_TYPE") }}
+                            error={errors.QN_OCCUP_TYPE?.message}
+                            defaultValue={occupid}
+                            value={occupid}
+                            placeHolder={"-เลือกสาเหตุ-"}
+                            onChange={(e) => OnchangeSelectOccupID(e)}
+                            options={itemsOcc}
+                          />
+                        </small>
+                        {isShow ? (
+                          <small className={classes.typo}>
+                            <TextField
+                              {...register("QN_OCCUP_TYPE_TXT")}
+                              variant="outlined"
+                              label="อื่นๆ ระบุ"
+                              fullWidth
+                              error={!!errors.QN_OCCUP_TYPE_TXT}
+                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              InputProps={{
+                                readOnly: false,
+                              }}
+                              size="small"
+                            />
+                          </small>
+                        ) : null}
+                      </div>
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ความต้องการทำงาน
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_OCCUP_TYPE") }}
+                            error={errors.QN_OCCUP_TYPE?.message}
+                            defaultValue={occupid}
+                            value={occupid}
+                            placeHolder={"-เลือกสาเหตุ-"}
+                            onChange={(e) => OnchangeSelectOccupID(e)}
+                            options={itemsOcc}
+                          />
+                        </small>
+                        {isShow ? (
+                          <small className={classes.typo}>
+                            <TextField
+                              {...register("QN_OCCUP_TYPE_TXT")}
+                              variant="outlined"
+                              label="อื่นๆ ระบุ"
+                              fullWidth
+                              error={!!errors.QN_OCCUP_TYPE_TXT}
+                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              InputProps={{
+                                readOnly: false,
+                              }}
+                              size="small"
+                            />
+                          </small>
+                        ) : null}
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ประเทศที่ต้องการทำงาน
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_WORK_NATION") }}
+                            error={errors.QN_WORK_NATION?.message}
+                            defaultValue={worknationid}
+                            value={worknationid}
+                            placeHolder={"-โปรดระบุ-"}
+                            onChange={(e) => OnchangeSelectWorkNationID(e)}
+                            options={itemsWorkNation}
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ตำแหน่งที่ต้องการทำงาน{" "}
+                        </label>
+                        <small className={classes.typo}>
+                          <TextField
+                            {...register("TELEPHONEUPDATE")}
+                            variant="outlined"
+                            fullWidth
+                            error={!!errors.TELEPHONEUPDATE}
+                            helperText={errors.TELEPHONEUPDATE?.message}
+                            InputProps={{
+                              readOnly: false,
+                            }}
+                            size="small"
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ความต้องการพัฒนาทักษะ หลักสูตร{" "}
+                        </label>
+                        <small className={classes.typo}>
+                          <TextField
+                            {...register("TELEPHONEUPDATE")}
+                            variant="outlined"
+                            fullWidth
+                            error={!!errors.TELEPHONEUPDATE}
+                            helperText={errors.TELEPHONEUPDATE?.message}
+                            InputProps={{
+                              readOnly: false,
+                            }}
+                            size="small"
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ความประงค์ในการเปิดเผยข้อมูลแก่นายจ้าง/สถานประกอบการ
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_WORK_NATION") }}
+                            error={errors.QN_WORK_NATION?.message}
+                            defaultValue={worknationid}
+                            value={worknationid}
+                            placeHolder={"-โปรดระบุ-"}
+                            onChange={(e) => OnchangeSelectWorkNationID(e)}
+                            options={itemsWorkNation}
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ความต้องการศึกษาต่อ
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_WORK_NATION") }}
+                            error={errors.QN_WORK_NATION?.message}
+                            defaultValue={worknationid}
+                            value={worknationid}
+                            placeHolder={"-โปรดระบุ-"}
+                            onChange={(e) => OnchangeSelectWorkNationID(e)}
+                            options={itemsWorkNation}
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              ) : null}
+              {sShowJob34 ? (
+                <Grid container spacing={0}>
+                  <Typography className={classes.typo} variant="h3" size="sm">
+                    ตอนที่ 4 การศึกษาต่อ
+                  </Typography>
+
+                  <Grid container spacing={1}>
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ระดับการศึกษาที่ท่านต้องการศึกษาต่อ/กำลังศึกษาต่อ
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_OCCUP_TYPE") }}
+                            error={errors.QN_OCCUP_TYPE?.message}
+                            defaultValue={occupid}
+                            value={occupid}
+                            placeHolder={"-เลือกสาเหตุ-"}
+                            onChange={(e) => OnchangeSelectOccupID(e)}
+                            options={itemsOcc}
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          สาขาวิชาที่ท่านต้องการศึกษา/กำลังศึกษาต่อ
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_OCCUP_TYPE") }}
+                            error={errors.QN_OCCUP_TYPE?.message}
+                            defaultValue={occupid}
+                            value={occupid}
+                            placeHolder={"-เลือกสาเหตุ-"}
+                            onChange={(e) => OnchangeSelectOccupID(e)}
+                            options={itemsOcc}
+                          />
+                        </small>
+                        {isShow ? (
+                          <small className={classes.typo}>
+                            <TextField
+                              {...register("QN_OCCUP_TYPE_TXT")}
+                              variant="outlined"
+                              label="อื่นๆ ระบุ"
+                              fullWidth
+                              error={!!errors.QN_OCCUP_TYPE_TXT}
+                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              InputProps={{
+                                readOnly: false,
+                              }}
+                              size="small"
+                            />
+                          </small>
+                        ) : null}
+                      </div>
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ประเภทของสถาบันการศึกษา/มหาวิทยาลัยที่ท่านต้องการศึกษา/กำลังศึกษาต่อ
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_OCCUP_TYPE") }}
+                            error={errors.QN_OCCUP_TYPE?.message}
+                            defaultValue={occupid}
+                            value={occupid}
+                            placeHolder={"-เลือกสาเหตุ-"}
+                            onChange={(e) => OnchangeSelectOccupID(e)}
+                            options={itemsOcc}
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          เหตุผลที่ทำให้ท่านตัดสินใจศึกษาต่อ
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_OCCUP_TYPE") }}
+                            error={errors.QN_OCCUP_TYPE?.message}
+                            defaultValue={occupid}
+                            value={occupid}
+                            placeHolder={"-เลือกสาเหตุ-"}
+                            onChange={(e) => OnchangeSelectOccupID(e)}
+                            options={itemsOcc}
+                          />
+                        </small>
+                        {isShow ? (
+                          <small className={classes.typo}>
+                            <TextField
+                              {...register("QN_OCCUP_TYPE_TXT")}
+                              variant="outlined"
+                              label="อื่นๆ ระบุ"
+                              fullWidth
+                              error={!!errors.QN_OCCUP_TYPE_TXT}
+                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              InputProps={{
+                                readOnly: false,
+                              }}
+                              size="small"
+                            />
+                          </small>
+                        ) : null}
+                      </div>
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ท่านมีปัญหาในการศึกษาต่อหรือไม่
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_OCCUP_TYPE") }}
+                            error={errors.QN_OCCUP_TYPE?.message}
+                            defaultValue={occupid}
+                            value={occupid}
+                            placeHolder={"-เลือกสาเหตุ-"}
+                            onChange={(e) => OnchangeSelectOccupID(e)}
+                            options={itemsOcc}
+                          />
+                        </small>
+                        {isShow ? (
+                          <small className={classes.typo}>
+                            <TextField
+                              {...register("QN_OCCUP_TYPE_TXT")}
+                              variant="outlined"
+                              label="อื่นๆ ระบุ"
+                              fullWidth
+                              error={!!errors.QN_OCCUP_TYPE_TXT}
+                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              InputProps={{
+                                readOnly: false,
+                              }}
+                              size="small"
+                            />
+                          </small>
+                        ) : null}
+                      </div>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              ) : null}
+              {sShowJob34 ? (
+                <Grid container spacing={0}>
+                  <Typography className={classes.typo} variant="h3" size="sm">
+                    ตอนที่ 5 ข้อเสนอแนะ
+                  </Typography>
+
+                  <Grid container spacing={1}>
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ท่านคิดว่าในหลักสูตรของสถาบัน
+                          ควรเพิ่มรายวิชาหรือความรู้เรื่องใดที่จะเอื้อประโยชน์ต่อการประกอบอาชีพของท่านได้มากยิ่งขึ้น
+                          (เลือกได้มากกว่า 1 ข้อ)
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_OCCUP_TYPE") }}
+                            error={errors.QN_OCCUP_TYPE?.message}
+                            defaultValue={occupid}
+                            value={occupid}
+                            placeHolder={"-เลือกสาเหตุ-"}
+                            onChange={(e) => OnchangeSelectOccupID(e)}
+                            options={itemsOcc}
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+
+                    <Grid item xs={12} sm={3}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ข้อเสนอแนะเกี่ยวกับหลักสูตรและสาขาวิชาที่เรียน{" "}
+                        </label>
+                        <small className={classes.typo}>
+                          <TextField
+                            {...register("TELEPHONEUPDATE")}
+                            variant="outlined"
+                            fullWidth
+                            error={!!errors.TELEPHONEUPDATE}
+                            helperText={errors.TELEPHONEUPDATE?.message}
+                            InputProps={{
+                              readOnly: false,
+                            }}
+                            size="small"
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+
+                    <Grid item xs={12} sm={3}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ข้อเสนอแนะเกี่ยวกับการเรียนการสอน{" "}
+                        </label>
+                        <small className={classes.typo}>
+                          <TextField
+                            {...register("TELEPHONEUPDATE")}
+                            variant="outlined"
+                            fullWidth
+                            error={!!errors.TELEPHONEUPDATE}
+                            helperText={errors.TELEPHONEUPDATE?.message}
+                            InputProps={{
+                              readOnly: false,
+                            }}
+                            size="small"
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          ข้อเสนอแนะเกี่ยวกับกิจกรรมพัฒนานักศึกษา{" "}
+                        </label>
+                        <small className={classes.typo}>
+                          <TextField
+                            {...register("TELEPHONEUPDATE")}
+                            variant="outlined"
+                            fullWidth
+                            error={!!errors.TELEPHONEUPDATE}
+                            helperText={errors.TELEPHONEUPDATE?.message}
+                            InputProps={{
+                              readOnly: false,
+                            }}
+                            size="small"
+                          />
+                        </small>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              ) : null}
+
+              {sShowJob34 ? (
+                <Grid container spacing={0}>
+                  <Typography className={classes.typo} variant="h3" size="sm">
+                    ตอนที่ 6 การรับรางวัล
+                  </Typography>
+
+                  <Grid container spacing={1}>
+                    <Grid item xs={12} sm={4}>
+                      <div className="col-md-12">
+                        <label className="control-label">
+                          เคยได้รับประกาศเกียรติคุณยกย่องในด้านใด หลังจบการศึกษา
+                          เคยรับรางวัล ดังนี้
+                        </label>
+                        <small className={classes.typo}>
+                          <SelectProvince
+                            refs={{ ...register("QN_OCCUP_TYPE") }}
+                            error={errors.QN_OCCUP_TYPE?.message}
+                            defaultValue={occupid}
+                            value={occupid}
+                            placeHolder={"-เลือกสาเหตุ-"}
+                            onChange={(e) => OnchangeSelectOccupID(e)}
+                            options={itemsOcc}
+                          />
+                        </small>
+                        {isShow ? (
+                          <small className={classes.typo}>
+                            <TextField
+                              {...register("QN_OCCUP_TYPE_TXT")}
+                              variant="outlined"
+                              label="ชื่อรางวัล"
+                              fullWidth
+                              error={!!errors.QN_OCCUP_TYPE_TXT}
+                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              InputProps={{
+                                readOnly: false,
+                              }}
+                              size="small"
+                            />
+
+                            <TextField
+                              {...register("QN_OCCUP_TYPE_TXT")}
+                              variant="outlined"
+                              label="หน่วยงานที่มอบรางวัล"
+                              fullWidth
+                              error={!!errors.QN_OCCUP_TYPE_TXT}
+                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              InputProps={{
+                                readOnly: false,
+                              }}
+                              size="small"
+                            />
+                          </small>
+                        ) : null}
+                      </div>
+                    </Grid>
+                  </Grid>
                 </Grid>
               ) : null}
 
