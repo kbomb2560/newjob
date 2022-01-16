@@ -64,6 +64,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import FolderIcon from '@material-ui/icons/Folder';
 import List from '@material-ui/core/List';
+import { tr } from 'date-fns/locale';
 
 //*** */
 
@@ -198,6 +199,42 @@ const WORK_CHECK_STATUS_NUMBER = Joi.any()
     is: '7',
     then: Joi.number().required(),
   });
+const NOWORK_CHECK_STATUS_STRING = Joi.any()
+  .when('QN_WORK_STATUS', {
+    is: '3',
+    then: Joi.string().required(),
+  })
+  .when('QN_WORK_STATUS', {
+    is: '4',
+    then: Joi.string().required(),
+  });
+
+const WORK24_STATUS_NUMBER = Joi.any()
+  .when('QN_WORK_STATUS', {
+    is: '1',
+    then: Joi.number().required(),
+  })
+  .when('QN_WORK_STATUS', {
+    is: '3',
+    then: Joi.number().required(),
+  })
+  .when('QN_WORK_STATUS', {
+    is: '5',
+    then: Joi.number().required(),
+  })
+  .when('QN_WORK_STATUS', {
+    is: '6',
+    then: Joi.number().required(),
+  })
+  .when('QN_WORK_STATUS', {
+    is: '7',
+    then: Joi.number().required(),
+  });
+const WORKEDU_REQURIE_CHECK = Joi.any().when('QN_REQUIRE_EDU', {
+  is: '1',
+  then: Joi.string().required(),
+  otherwise: Joi.any().allow(''),
+});
 
 const dataStudents = Joi.object({
   //สำหรับข้อมูลผู้สำเร็จการศึกษา
@@ -209,7 +246,8 @@ const dataStudents = Joi.object({
   STD_ID: Joi.string(),
   REF_QN_PROVINCE_ID: Joi.string()
     .regex(/^[1-99]/)
-    .required().label('กรุณาเลือกจังหวัดภูมิลำเนา'),
+    .required()
+    .label('กรุณาเลือกจังหวัดภูมิลำเนา'),
   QN_MILITARY_STATUS: Joi.any().when('GENDER_ID', {
     is: '1',
     then: Joi.string()
@@ -219,7 +257,10 @@ const dataStudents = Joi.object({
   }),
   QN_ORDINATE_STATUS: Joi.any().when('GENDER_ID', {
     is: '1',
-    then: Joi.string().pattern(new RegExp('^[1-5]')).required().label('กรุณาเลือกสถานนักบวช'),
+    then: Joi.string()
+      .pattern(new RegExp('^[1-5]'))
+      .required()
+      .label('กรุณาเลือกสถานนักบวช'),
   }),
 
   QN_WORK_STATUS: Joi.string()
@@ -248,18 +289,33 @@ const dataStudents = Joi.object({
   QN_WORK_ADD: WORK_CHECK_STATUS_STRING.label('ระบุเลขที่ตั้ง'),
   QN_WORK_MOO: WORK_CHECK_STATUS_NUMBER.allow('').label('ระบุหมู่'),
   QN_WORK_BUILDING: WORK_CHECK_STATUS_STRING.allow('')
-    .allow(null).label('ระบุอาคาร/ตึก'),
-  QN_WORK_SOI: WORK_CHECK_STATUS_STRING.allow('').allow(null).label('ระบุตรอก/ซอย'),
-  QN_WORK_STREET: WORK_CHECK_STATUS_STRING.allow('').allow(null).label('ระบุถนน'),
+    .allow(null)
+    .label('ระบุอาคาร/ตึก'),
+  QN_WORK_SOI: WORK_CHECK_STATUS_STRING.allow('')
+    .allow(null)
+    .label('ระบุตรอก/ซอย'),
+  QN_WORK_STREET: WORK_CHECK_STATUS_STRING.allow('')
+    .allow(null)
+    .label('ระบุถนน'),
   QN_WORK_ZIPCODE: WORK_CHECK_STATUS_NUMBER.label('ระบุรหัสไปรษณีย์'),
-  QN_WORK_TEL: WORK_CHECK_STATUS_STRING.allow('').allow(null).label('ระบุเบอร์โทรศัพท์'),
-  QN_WORK_FAX: WORK_CHECK_STATUS_STRING.allow('').allow(null).label('ระบุเบอร์โทรสาร'),
-  QN_WORK_EMAIL: WORK_CHECK_STATUS_STRING.allow('').allow(null).label('ระบุอีเมล์'),
+  QN_WORK_TEL: WORK_CHECK_STATUS_STRING.allow('')
+    .allow(null)
+    .label('ระบุเบอร์โทรศัพท์'),
+  QN_WORK_FAX: WORK_CHECK_STATUS_STRING.allow('')
+    .allow(null)
+    .label('ระบุเบอร์โทรสาร'),
+  QN_WORK_EMAIL: WORK_CHECK_STATUS_STRING.allow('')
+    .allow(null)
+    .label('ระบุอีเมล์'),
   QN_SALARY: WORK_CHECK_STATUS_NUMBER.label('ระบุเงินเดือน'),
 
   //จังหวัดสถานที่ทำงาน
-  JOB_QN_PROVINCE_ID: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกจังหวัดสถานที่ทำงาน'),
-  JOB_QN_DISTRICT_ID: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกอำเภอสถานที่ทำงาน'),
+  JOB_QN_PROVINCE_ID: WORK_CHECK_STATUS_STRING.label(
+    'กรุณาเลือกจังหวัดสถานที่ทำงาน'
+  ),
+  JOB_QN_DISTRICT_ID: WORK_CHECK_STATUS_STRING.label(
+    'กรุณาเลือกอำเภอสถานที่ทำงาน'
+  ),
   QN_WORK_TAMBON: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกตำบลสถานที่ทำงาน'),
 
   //
@@ -272,8 +328,12 @@ const dataStudents = Joi.object({
   //========ตำแหน่งงาน==========//
   //========ประเทศที่ทำงาน==========//
   QN_WORK_NATION: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกประเทศที่ทำงาน'),
-  QN_WORKTYPE_ID: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกประเภทกิจการของที่ทำงาน'),
-  QN_STRATEGIC_ID: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกอุตสาหกรรมของสถานที่ทำงาน'),
+  QN_WORKTYPE_ID: WORK_CHECK_STATUS_STRING.label(
+    'กรุณาเลือกประเภทกิจการของที่ทำงาน'
+  ),
+  QN_STRATEGIC_ID: WORK_CHECK_STATUS_STRING.label(
+    'กรุณาเลือกอุตสาหกรรมของสถานที่ทำงาน'
+  ),
 
   QN_WORK_SATISFY: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกความพอใจต่องานทำ'),
   QN_WORK_SATISFY_TXT: Joi.any().when('QN_WORK_SATISFY', {
@@ -281,21 +341,31 @@ const dataStudents = Joi.object({
     then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
   }),
   //==================//
-  QN_TIME_FINDWORK: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกระยะเวลาการได้งานทำ'),
-  QN_MATCH_EDU: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกลักษะงานที่ทำตรงกับสาขาหรือไม่'),
-  QN_APPLY_EDU: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกการประยุกต์ใช้กับงานที่ทำ'),
-  QN_REQUIRE_EDU: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกความต้องการศึกษาต่อ'),
-  
+  QN_TIME_FINDWORK: WORK_CHECK_STATUS_STRING.label(
+    'กรุณาเลือกระยะเวลาการได้งานทำ'
+  ),
+  QN_MATCH_EDU: WORK_CHECK_STATUS_STRING.label(
+    'กรุณาเลือกลักษะงานที่ทำตรงกับสาขาหรือไม่'
+  ),
+  QN_APPLY_EDU: WORK_CHECK_STATUS_STRING.label(
+    'กรุณาเลือกการประยุกต์ใช้กับงานที่ทำ'
+  ),
+  /*
+  QN_REQUIRE_EDU: WORK_CHECK_STATUS_STRING.label(
+    'กรุณาเลือกความต้องการศึกษาต่อ'
+  ),
+  */
+  QN_REQUIRE_EDU: WORK24_STATUS_NUMBER.label('กรุณาเลือกความต้องการศึกษาต่อ'),
   PB_DIPLOMA: Joi.string().required().label('กรุณาเลือกข้อมูลการได้รับรางวัล'),
   PB_DIPLOMA_NAME_TXT: Joi.any().when('PB_DIPLOMA', {
     is: '1',
     then: Joi.string().allow('').required(),
-    otherwise:Joi.string().required().label('ระบุชื่อรางวัล'),
+    otherwise: Joi.string().required().label('ระบุชื่อรางวัล'),
   }),
   PB_AGENCY_TXT: Joi.any().when('PB_DIPLOMA', {
     is: '1',
     then: Joi.string().allow('').required(),
-    otherwise:Joi.string().required().label('ระบุหน่วยงานที่มอบรางวัล'),
+    otherwise: Joi.string().required().label('ระบุหน่วยงานที่มอบรางวัล'),
   }),
   QN_ADDPROGRAM1: Joi.string().allow(''),
   QN_ADDPROGRAM2: Joi.string().allow(''),
@@ -310,11 +380,56 @@ const dataStudents = Joi.object({
     is: '1',
     then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
   }),
+  QN_COMMENT_PROGRAM: Joi.any().allow('').allow(null),
+  QN_COMMENT_LEARN: Joi.any().allow('').allow(null),
+  QN_COMMENT_ACTIVITY: Joi.any().allow('').allow(null),
 
+  QN_LEVEL_EDU: WORKEDU_REQURIE_CHECK.label('ระบุระดับการศึกษา'), //ระดับการศึกษา
+  QN_PROGRAM_EDU: WORKEDU_REQURIE_CHECK.label('กรุณาเลือก'),
+  QN_PROGRAM_EDU_ID: Joi.any().when('QN_PROGRAM_EDU', {
+    is: '2',
+    then: Joi.string().required().label('ระบุข้อมูลสาขาวิชาอื่น ๆ'),
+  }),
+  QN_TYPE_UNIV: WORKEDU_REQURIE_CHECK.label('กรุณาเลือกข้อมูล'),
+  QN_CAUSE_EDU: WORKEDU_REQURIE_CHECK.label('กรุณาเลือกข้อมูล'),
+  QN_CAUSE_EDU_TXT: Joi.any().when('QN_CAUSE_EDU', {
+    is: '0',
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
+  }),
+  QN_PROB_EDU: WORKEDU_REQURIE_CHECK.required(),
+  QN_PROB_EDU_TXT: Joi.any().when('QN_PROB_EDU', {
+    is: '00',
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
+  }),
+  //ไม่มีงานทำ
+  QN_CAUSE_NOWORK: NOWORK_CHECK_STATUS_STRING.label('กรุณาเลือกข้อมูล'),
+  QN_CAUSE_NOWORK_TXT: Joi.any().when('QN_CAUSE_NOWORK', {
+    is: '0',
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
+  }),
+  QN_PROB_FINDWORK: NOWORK_CHECK_STATUS_STRING.label('กรุณาเลือกข้อมูล'),
+  QN_PROB_FINDWORK_TXT: Joi.any().when('QN_PROB_FINDWORK', {
+    is: '00',
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
+  }),
+  QN_WORKNEED_ID: NOWORK_CHECK_STATUS_STRING.label('กรุณาเลือกข้อมูล'),
+  QN_WORKNEED_NATION: Joi.any().when('QN_WORKNEED_ID', {
+    is: '2',
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
+  }),
+  QN_WORKNEED_POSITION: Joi.any().when('QN_WORKNEED_ID', {
+    is: '2',
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
+  }),
+  QN_SKILL_DEVELOPMENT: Joi.any().when('QN_WORKNEED_ID', {
+    is: '2',
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
+  }),
+  QN_DISCLOSURE_AGREEMENT_ID: Joi.any().when('QN_WORKNEED_ID', {
+    is: '2',
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
+  }),
 });
-
-
-
 
 const GraduateList = (props) => {
   //จังหวัด
@@ -347,12 +462,38 @@ const GraduateList = (props) => {
   //
   const [worktypeid, setWorkTypeID] = useState('0');
   const [strategicid, setStrategicID] = useState('0');
-//การรับรางวัล
-const [diplomaid, setDiplomaID] = useState('0');
-const [diplomaTxT, setDiplomaTxT] = useState('');
-const [isdiplomaShow, setIsdiplomaShow] = useState(false);
-const [agencyTxT, setAgencyTxT] = useState('');
-const [isagencyShow, setIsAgencyShow] = useState(false);
+  //ระดับการศึกษา
+  const [leveleduid, setLevelEduID] = useState('0');
+  const [programeduid, setProgramEduID] = useState('0');
+  const [programeduid_id, setProgramEduID_ID] = useState('0');
+  const [IsProgramEduIDShow, setIsProgramEduIDShow] = useState('0');
+
+  const [typeunvid, setTypeUnivID] = useState('0');
+  const [causeeduid, setCauseEduID] = useState('99');
+  const [causeeduidtxt, setCauseEduIDTxT] = useState('');
+  const [isShowCauseeduIdtxt, setIsShowCauseEduIDTxT] = useState(false);
+
+  const [probeduid, setProbEduID] = useState('0');
+  const [probeduidtxt, setProbEduIDTxT] = useState('');
+  const [isShowProbeduIdtxt, setIsShowProbEduIDTxT] = useState(false);
+  //ไม่มีงานทำ
+  const [causnoworkid, setCauseNoWorkID] = useState('99');
+  const [causenoworktxt, setCauseNoWorkTxT] = useState('');
+  const [isShowCauseNoWorktxt, setIsShowCauseNoWorkTxT] = useState(false);
+  //
+  const [probfindwork, setProbFindWorkID] = useState('0');
+  const [probfindworktxt, setProbFindWorkTxT] = useState('');
+  const [isShowProbFindWorktxt, setIsShowProbFindWorkTxT] = useState(false);
+  //
+  const [disclosureid, setDisclosureID] = useState('99');
+  //
+  const [interworkneedid, setInterWorkNeedID] = useState('0');
+  //การรับรางวัล
+  const [diplomaid, setDiplomaID] = useState('0');
+  const [diplomaTxT, setDiplomaTxT] = useState('');
+  const [isdiplomaShow, setIsdiplomaShow] = useState(false);
+  const [agencyTxT, setAgencyTxT] = useState('');
+  const [isagencyShow, setIsAgencyShow] = useState(false);
   //พึงพอใจงานที่ทำ
   const [satisfyid, setSatisfyID] = useState('0');
   const [satisfyidTxT, setSatisfyIDTxT] = useState('');
@@ -361,9 +502,16 @@ const [isagencyShow, setIsAgencyShow] = useState(false);
   const [matcheduid, setMatchEduID] = useState('0');
   const [applyeduid, setApplyEduID] = useState('0');
   const [requireeduid, setRequireEduID] = useState('0');
+  ///แสดงซ่อน การศึกษาต่อ
+  const [isShowRequireEdu, setIsShowRequireEdu] = useState(false); //ข้อมูลการศึกษาต่อ
+  const [isShowRequireEdu24, setisShowRequireEdu24] = useState(false); //ลิสเลือกการศึกษาต่อ
+  //
+  const [workneednationid, setWorkNeedNationID] = useState('0');
+  ///แสดงซ่อน edu nation
+  const [isShowInter, setIsShowInter] = useState(false); //ข้อมูลการหางานต่างประเทศ
 
   //ข้อเสอนแนะ//
-//1.ควรเพิ่มรายวิชา
+  //1.ควรเพิ่มรายวิชา
   const [progrom1state, setProgram1Checked] = useState(false); //อังกฤษ
   const [progrom2state, setProgram2Checked] = useState(false); //คอมพิวเตอร์
   const [progrom3state, setProgram3Checked] = useState(false); //บัญชี
@@ -373,15 +521,14 @@ const [isagencyShow, setIsAgencyShow] = useState(false);
   const [progrom7state, setProgram7Checked] = useState(false); //ระบุ
   const [progrom8state, setProgram8Checked] = useState(false); //ภาษาจีน
   const [progrom9state, setProgram9Checked] = useState(false); //ภาษาในอาเซียน
-  const [progrom7TxTstate, setProgram7TxT] = useState(false); //ข้อความที่ระบุ
+  //const [progrom7TxTstate, setProgram7TxT] = useState(false); //ข้อความที่ระบุ
+  const [isShowProgram7TxT, setIsShowProgram7TxT] = useState(false);
 
   ///แสดงซ่อน การมีงานทำข้อ 1-2-5-6-7
   const [sShowJob12567, setIsShowJob12567] = useState(false);
   ///แสดงซ่อน การมีงานทำข้อ 3-4
   const [sShowJob34, setIsShowJob34] = useState(false);
 
-  ///แสดงซ่อน การศึกษาต่อ
-  const [isShowRequireEdu, setIsShowRequireEdu] = useState(false);  
   //แสดงซ่อน ข้อเสนอแนะ
   //ซ่อนแสดงประเภทงานที่ทำ
   const [isShow, setIsShow] = useState(false);
@@ -627,12 +774,25 @@ const [isagencyShow, setIsAgencyShow] = useState(false);
                 res.data.QuestionaireSTD.QN_WORK_STATUS === '6' ||
                 res.data.QuestionaireSTD.QN_WORK_STATUS === '7'
               ) {
-                setIsShowJob12567(true); //แสดง TextBox
-                //setIsShowRequireEdu(true);
-                setIsShowJob34(false);
+                if (res.data.QuestionaireSTD.QN_WORK_STATUS === '2') {
+                  setIsShowJob12567(true); //แสดง TextBox
+                  setIsShowRequireEdu(true);
+                  setIsShowJob34(false);
+                } else {
+                  setIsShowJob12567(true); //แสดง TextBox
+                  setIsShowRequireEdu(false);
+                  setIsShowJob34(false);
+                }
               } else {
-                setIsShowJob12567(false); //ซ่อน TextBox
-                setIsShowJob34(true);
+                if (res.data.QuestionaireSTD.QN_WORK_STATUS === '4') {
+                  setIsShowRequireEdu(true);
+                  setIsShowJob12567(false); //ซ่อน TextBox
+                  setIsShowJob34(true);
+                } else {
+                  setIsShowRequireEdu(false);
+                  setIsShowJob12567(false); //ซ่อน TextBox
+                  setIsShowJob34(true);
+                }
               }
 
               setWorkNationID(res.data.QuestionaireSTD.QN_WORK_NATION);
@@ -659,10 +819,9 @@ const [isagencyShow, setIsAgencyShow] = useState(false);
               setRequireEduID(res.data.QuestionaireSTD.QN_REQUIRE_EDU);
 
               //ต้องการศึกษาต่อ
+
               //setJobStatus(res.data.QuestionaireSTD.QN_WORK_STATUS);
-              if (
-                res.data.QuestionaireSTD.QN_REQUIRE_EDU === '1'
-              ) {
+              if (res.data.QuestionaireSTD.QN_REQUIRE_EDU === '1') {
                 //setIsShowJob12567(true); //แสดง TextBox
                 //setIsShowJob34(false);
                 setIsShowRequireEdu(true);
@@ -671,9 +830,11 @@ const [isagencyShow, setIsAgencyShow] = useState(false);
                 //setIsShowJob34(true);
                 setIsShowRequireEdu(false);
               }
-
-
-//ตอนที่ 6 การรับรางวัล
+              //ระดับการศึกษา
+              setLevelEduID(res.data.QuestionaireSTD.QN_LEVEL_EDU);
+              setProgramEduID(res.data.QuestionaireSTD.QN_PROGRAM_EDU);
+              setProgramEduID_ID(res.data.QuestionaireSTD.QN_PROGRAM_EDU_ID);
+              //ตอนที่ 6 การรับรางวัล
               setDiplomaID(res.data.QuestionaireSTD.PB_DIPLOMA);
               setDiplomaTxT(res.data.QuestionaireSTD.PB_DIPLOMA_NAME_TXT);
               setAgencyTxT(res.data.QuestionaireSTD.PB_AGENCY_TXT);
@@ -683,8 +844,6 @@ const [isagencyShow, setIsAgencyShow] = useState(false);
                 setIsdiplomaShow(false); //ซ่อน TextBox
               }
 
-
-
               /*
               setAgencyTxT(res.data.QuestionaireSTD.PB_AGENCY_TXT);
               if (res.data.QuestionaireSTD.PB_DIPLOMA !== '1') {
@@ -693,9 +852,7 @@ const [isagencyShow, setIsAgencyShow] = useState(false);
                 setIsAgencyShow(false); //ซ่อน TextBox
               }
               */
-//
-
-
+              //
 
               setValue('GENDER_ID', res.data.QuestionaireSTD.GENDER_ID);
               setValue(
@@ -789,21 +946,160 @@ const [isagencyShow, setIsAgencyShow] = useState(false);
                 'QN_REQUIRE_EDU',
                 res.data.QuestionaireSTD.QN_REQUIRE_EDU
               );
+              //ระดับการศึกษา
+              setValue('QN_LEVEL_EDU', res.data.QuestionaireSTD.QN_LEVEL_EDU);
+              //สาขาวิชาที่ต้องการศึกษาต่อ
+              setValue(
+                'QN_PROGRAM_EDU',
+                res.data.QuestionaireSTD.QN_PROGRAM_EDU
+              );
+              if (res.data.QuestionaireSTD.QN_PROGRAM_EDU === '2') {
+                setIsProgramEduIDShow(true); //แสดง TextBox
+              } else {
+                setIsProgramEduIDShow(false); //ซ่อน TextBox
+              }
+              setValue(
+                'QN_PROGRAM_EDU_ID',
+                res.data.QuestionaireSTD.QN_PROGRAM_EDU_ID
+              );
+              setTypeUnivID(res.data.QuestionaireSTD.QN_TYPE_UNIV);
+              setValue('QN_TYPE_UNIV', res.data.QuestionaireSTD.QN_TYPE_UNIV);
+              setCauseEduID(res.data.QuestionaireSTD.QN_CAUSE_EDU);
+              setValue('QN_CAUSE_EDU', res.data.QuestionaireSTD.QN_CAUSE_EDU);
 
+              if (res.data.QuestionaireSTD.QN_CAUSE_EDU === '0') {
+                setIsShowCauseEduIDTxT(true); //แสดง TextBox
+              } else {
+                setIsShowCauseEduIDTxT(false); //ซ่อน TextBox
+              }
 
-//การรับรางวัล
-setValue('PB_DIPLOMA', res.data.QuestionaireSTD.PB_DIPLOMA);
-setValue('PB_DIPLOMA_NAME_TXT', res.data.QuestionaireSTD.PB_DIPLOMA_NAME_TXT);
-setValue('PB_AGENCY_TXT', res.data.QuestionaireSTD.PB_AGENCY_TXT);
+              setProbEduID(res.data.QuestionaireSTD.QN_PROB_EDU);
+              setValue('QN_PROB_EDU', res.data.QuestionaireSTD.QN_PROB_EDU);
+              if (res.data.QuestionaireSTD.QN_PROB_EDU === '00') {
+                setIsShowProbEduIDTxT(true); //แสดง TextBox
+              } else {
+                setIsShowProbEduIDTxT(false); //ซ่อน TextBox
+              }
+              //setAgencyTxT(res.data.QuestionaireSTD.PB_AGENCY_TXT);
 
-setValue('QN_ADDPROGRAM1',res.data.QuestionaireSTD.QN_ADDPROGRAM1);
-if(res.data.QuestionaireSTD.QN_ADDPROGRAM1==='1'){
-  //setValue('QN_ADDPROGRAM1','1')
-  setProgram1Checked(true)
-}else{
-  //setValue('QN_ADDPROGRAM1','')
-  setProgram1Checked(false)
-}
+              setValue(
+                'QN_WORKNEED_POSITION',
+                res.data.QuestionaireSTD.QN_WORKNEED_POSITION
+              );
+              setValue(
+                'QN_SKILL_DEVELOPMENT',
+                res.data.QuestionaireSTD.QN_SKILL_DEVELOPMENT
+              );
+              //การรับรางวัล
+              setValue('PB_DIPLOMA', res.data.QuestionaireSTD.PB_DIPLOMA);
+              setValue(
+                'PB_DIPLOMA_NAME_TXT',
+                res.data.QuestionaireSTD.PB_DIPLOMA_NAME_TXT
+              );
+              setValue('PB_AGENCY_TXT', res.data.QuestionaireSTD.PB_AGENCY_TXT);
+
+              setValue(
+                'QN_ADDPROGRAM1',
+                res.data.QuestionaireSTD.QN_ADDPROGRAM1
+              );
+              if (res.data.QuestionaireSTD.QN_ADDPROGRAM1 === '1') {
+                setProgram1Checked(true);
+              } else {
+                setProgram1Checked(false);
+              }
+              setValue(
+                'QN_ADDPROGRAM2',
+                res.data.QuestionaireSTD.QN_ADDPROGRAM2
+              );
+              if (res.data.QuestionaireSTD.QN_ADDPROGRAM2 === '1') {
+                setProgram2Checked(true);
+              } else {
+                setProgram2Checked(false);
+              }
+              setValue(
+                'QN_ADDPROGRAM3',
+                res.data.QuestionaireSTD.QN_ADDPROGRAM3
+              );
+              if (res.data.QuestionaireSTD.QN_ADDPROGRAM3 === '1') {
+                setProgram3Checked(true);
+              } else {
+                setProgram3Checked(false);
+              }
+              setValue(
+                'QN_ADDPROGRAM4',
+                res.data.QuestionaireSTD.QN_ADDPROGRAM4
+              );
+              if (res.data.QuestionaireSTD.QN_ADDPROGRAM4 === '1') {
+                setProgram4Checked(true);
+              } else {
+                setProgram4Checked(false);
+              }
+              setValue(
+                'QN_ADDPROGRAM5',
+                res.data.QuestionaireSTD.QN_ADDPROGRAM5
+              );
+              if (res.data.QuestionaireSTD.QN_ADDPROGRAM5 === '1') {
+                setProgram5Checked(true);
+              } else {
+                setProgram5Checked(false);
+              }
+              setValue(
+                'QN_ADDPROGRAM6',
+                res.data.QuestionaireSTD.QN_ADDPROGRAM6
+              );
+              if (res.data.QuestionaireSTD.QN_ADDPROGRAM6 === '1') {
+                setProgram6Checked(true);
+              } else {
+                setProgram6Checked(false);
+              }
+              setValue(
+                'QN_ADDPROGRAM7',
+                res.data.QuestionaireSTD.QN_ADDPROGRAM7
+              );
+              setValue(
+                'QN_ADDPROGRAM7_TXT',
+                res.data.QuestionaireSTD.QN_ADDPROGRAM7_TXT
+              );
+              if (res.data.QuestionaireSTD.QN_ADDPROGRAM7 === '1') {
+                setProgram7Checked(true);
+                setIsShowProgram7TxT(true);
+              } else {
+                setProgram7Checked(false);
+                setIsShowProgram7TxT(false);
+              }
+              setValue(
+                'QN_ADDPROGRAM8',
+                res.data.QuestionaireSTD.QN_ADDPROGRAM8
+              );
+              if (res.data.QuestionaireSTD.QN_ADDPROGRAM8 === '1') {
+                setProgram8Checked(true);
+              } else {
+                setProgram8Checked(false);
+              }
+              setValue(
+                'QN_ADDPROGRAM9',
+                res.data.QuestionaireSTD.QN_ADDPROGRAM9
+              );
+              if (res.data.QuestionaireSTD.QN_ADDPROGRAM9 === '1') {
+                setProgram9Checked(true);
+              } else {
+                setProgram9Checked(false);
+              }
+
+              //cm
+              setValue(
+                'QN_COMMENT_PROGRAM',
+                res.data.QuestionaireSTD.QN_COMMENT_PROGRAM
+              );
+              setValue(
+                'QN_COMMENT_LEARN',
+                res.data.QuestionaireSTD.QN_COMMENT_LEARN
+              );
+              setValue(
+                'QN_COMMENT_ACTIVITY',
+                res.data.QuestionaireSTD.QN_COMMENT_ACTIVITY
+              );
+
               /*
               setrefProvinceID(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
               */
@@ -1464,8 +1760,352 @@ if(res.data.QuestionaireSTD.QN_ADDPROGRAM1==='1'){
     };
   }, []);
   //==================================
+  //====================================
+  ///QN_LEVEL_EDU //
+  const [loadingLevelEduID, setLoadingLevelEduID] = useState(true);
+  const [itemLevelEduID, setItemLevelEduID] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountLevelEduID = false;
+    async function LevelEduID() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-lev-end.php'
+      );
+      const body = await response.data.edulevSTD;
+      //console.log("ccc> ", body);
+      if (!unmountLevelEduID) {
+        setItemLevelEduID(
+          body.map(({ LEV_ID, LEV_NAME_TH }) => ({
+            label: LEV_NAME_TH,
+            value: LEV_ID,
+          }))
+        );
+        setLoadingLevelEduID(false);
+      }
+    }
+    LevelEduID();
+    return () => {
+      unmountLevelEduID = true;
+    };
+  }, []);
+  //==================================
+  ///QN_PROGRAM_EDU //
+  const [loadingProgramEdu, setLoadingProgramEdu] = useState(true);
+  const [itemProgramEdu, setItemProgramEdu] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountProgramEdu = false;
+    async function ProgramEdu() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-programeduid-end.php'
+      );
+      const body = await response.data.programeduidSTD;
+      //console.log("ccc> ", body);
+      if (!unmountProgramEdu) {
+        setItemProgramEdu(
+          body.map(({ PROGRAM_EDU_ID, PROGRAM_EDU_NAME }) => ({
+            label: PROGRAM_EDU_NAME,
+            value: PROGRAM_EDU_ID,
+          }))
+        );
+        setLoadingProgramEdu(false);
+      }
+    }
+    ProgramEdu();
+    return () => {
+      unmountProgramEdu = true;
+    };
+  }, []);
+  //==================================
+  ///QN_PROGRAM_EDU_ID //
+  const [loadingProgramEduEID, setLoadingProgramEduEID] = useState(true);
+  const [itemProgramEduEID, setItemProgramEduEID] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountProgramEduEID = false;
+    async function ProgramEduEID() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-programedu-end.php'
+      );
+      const body = await response.data.programeduSTD;
+      //console.log("ccc> ", body);
+      if (!unmountProgramEduEID) {
+        setItemProgramEduEID(
+          body.map(({ PROGRAM_ID, PROGRAM_NAME }) => ({
+            label: PROGRAM_NAME,
+            value: PROGRAM_ID,
+          }))
+        );
+        setLoadingProgramEduEID(false);
+      }
+    }
+    ProgramEduEID();
+    return () => {
+      unmountProgramEduEID = true;
+    };
+  }, []);
+  //==================================
+
+  ///QN_TYPE_UNIV //
+  const [loadingTypeUni, setLoadingTypeUni] = useState(true);
+  const [itemTypeUni, setItemTypeUni] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountTypeUni = false;
+    async function TypeUni() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-typeuniv-end.php'
+      );
+      const body = await response.data.typeunivSTD;
+      //console.log("ccc> ", body);
+      if (!unmountTypeUni) {
+        setItemTypeUni(
+          body.map(({ TYPE_UNIV_ID, TYPE_UNIV_NAME }) => ({
+            label: TYPE_UNIV_NAME,
+            value: TYPE_UNIV_ID,
+          }))
+        );
+        setLoadingTypeUni(false);
+      }
+    }
+    TypeUni();
+    return () => {
+      unmountTypeUni = true;
+    };
+  }, []);
+  //==================================
+  ///QN_CAUSE_EDU //
+  const [loadingCauseEdu, setLoadingCauseEdu] = useState(true);
+  const [itemCauseEdu, setItemCauseEdu] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountCauseEdu = false;
+    async function CauseEdu() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-cause-end.php'
+      );
+      const body = await response.data.causeeduSTD;
+      //console.log("ccc> ", body);
+      if (!unmountCauseEdu) {
+        setItemCauseEdu(
+          body.map(({ QN_CAUSE_EDU_ID, QN_CAUSE_EDU_NAME }) => ({
+            label: QN_CAUSE_EDU_NAME,
+            value: QN_CAUSE_EDU_ID,
+          }))
+        );
+        setLoadingCauseEdu(false);
+      }
+    }
+    CauseEdu();
+    return () => {
+      unmountCauseEdu = true;
+    };
+  }, []);
+  //==================================
+  ///QN_PROB_EDU //
+  const [loadingProbEdu, setLoadingProbEdu] = useState(true);
+  const [itemProbEdu, setItemProbEdu] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountProbEdu = false;
+    async function ProbEdu() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-probedu-end.php'
+      );
+      const body = await response.data.probeduSTD;
+      //console.log("ccc> ", body);
+      if (!unmountProbEdu) {
+        setItemProbEdu(
+          body.map(({ PROB_EDU_ID, QN_PROB_EDU }) => ({
+            label: QN_PROB_EDU,
+            value: PROB_EDU_ID,
+          }))
+        );
+        setLoadingProbEdu(false);
+      }
+    }
+    ProbEdu();
+    return () => {
+      unmountProbEdu = true;
+    };
+  }, []);
+  //==================================
+  //
+  ////
+  ///QN_CAUSE_NOWORK //
+  const [loadingCauseNoWork, setLoadingCauseNoWork] = useState(true);
+  const [itemCauseNoWork, setItemCauseNoWork] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountCauseNoWork = false;
+    async function CauseNoWork() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-causenowork-end.php'
+      );
+      const body = await response.data.causenoworkSTD;
+      //console.log("ccc> ", body);
+      if (!unmountCauseNoWork) {
+        setItemCauseNoWork(
+          body.map(({ NOWORK_ID, QN_CAUSE_NOWORK }) => ({
+            label: QN_CAUSE_NOWORK,
+            value: NOWORK_ID,
+          }))
+        );
+        setLoadingCauseNoWork(false);
+      }
+    }
+    CauseNoWork();
+    return () => {
+      unmountCauseNoWork = true;
+    };
+  }, []);
+  //==================================
+  //
+  /////
+  ///QN_PROB_FINDWORK //
+  const [loadingProbFindWork, setLoadingProbFindWork] = useState(true);
+  const [itemProbFindWork, setItemProbFindWork] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountProbFindWork = false;
+    async function ProbFindWork() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-probfindwork-end.php'
+      );
+      const body = await response.data.probfindworkSTD;
+      //console.log("ccc> ", body);
+      if (!unmountProbFindWork) {
+        setItemProbFindWork(
+          body.map(({ PROB_ID, QN_PROB_FINDWORK }) => ({
+            label: QN_PROB_FINDWORK,
+            value: PROB_ID,
+          }))
+        );
+        setLoadingProbFindWork(false);
+      }
+    }
+    ProbFindWork();
+    return () => {
+      unmountProbFindWork = true;
+    };
+  }, []);
+  //================================
+  /////
+  ///QN_WORKNEED_ID //
+  const [loadingInterWorkNeed, setLoadingInterWorkNeed] = useState(true);
+  const [itemInterWorkNeed, setItemInterWorkNeed] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountInterWorkNeed = false;
+    async function InterWorkNeed() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-workneed-end.php'
+      );
+      const body = await response.data.workneedSTD;
+      //console.log("ccc> ", body);
+      if (!unmountInterWorkNeed) {
+        setItemInterWorkNeed(
+          body.map(({ WORKNEED_ID, WORKNEED_NAME_TH }) => ({
+            label: WORKNEED_NAME_TH,
+            value: WORKNEED_ID,
+          }))
+        );
+        setLoadingInterWorkNeed(false);
+      }
+    }
+    InterWorkNeed();
+    return () => {
+      unmountInterWorkNeed = true;
+    };
+  }, []);
+  //==================================
+  //====================================
+  ///QN_WORK_NATION_NEED ประเทศที่ทำงาน//
+  const [loadingWorkNationNeed, setLoadingWorkNationNeed] = useState(true);
+  const [itemsWorkNationNeed, setItemsWorkNationNeed] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountedWorkNationNeed = false;
+    async function WorkNationIDNeed() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-neednation-end.php'
+      );
+      const body = await response.data.worknationSTD;
+      //console.log("ccc> ", body);
+      if (!unmountedWorkNationNeed) {
+        setItemsWorkNationNeed(
+          body.map(({ NATION_ID, NATION_NAME_ENG }) => ({
+            label: NATION_NAME_ENG,
+            value: NATION_ID,
+          }))
+        );
+        setLoadingWorkNationNeed(false);
+      }
+    }
+    WorkNationIDNeed();
+    return () => {
+      unmountedWorkNationNeed = true;
+    };
+  }, []);
+  //====================================
+  //
+  //====================================
+  ///QN_DISCLOSURE_AGREEMENT_ID เปิดเผยข้อมูล//
+  const [loadingDisclosure, setLoadingDisclosure] = useState(true);
+  const [itemsDisclosure, setItemsDisclosure] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
+
+  useEffect(() => {
+    let unmountedDisclosure = false;
+    async function DisclosureID() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-disclosure-end.php'
+      );
+      const body = await response.data.disclosureSTD;
+      //console.log("ccc> ", body);
+      if (!unmountedDisclosure) {
+        setItemsDisclosure(
+          body.map(
+            ({ DISCLOSURE_AGREEMENT_ID, DISCLOSURE_AGREEMENT_NAME_TH }) => ({
+              label: DISCLOSURE_AGREEMENT_NAME_TH,
+              value: DISCLOSURE_AGREEMENT_ID,
+            })
+          )
+        );
+        setLoadingDisclosure(false);
+      }
+    }
+    DisclosureID();
+    return () => {
+      unmountedDisclosure = true;
+    };
+  }, []);
+  //====================================
+  //==
+
   //console.log("data > ",data);
-  console.log("err=> ",errors)
+  console.log('err=> ', errors);
 
   //[กรณีกดปุ่มบันทึกข้อมูล]
   ///console.log((Date.now() + 48 * 60 * 60 * 1000))
@@ -1549,11 +2189,20 @@ if(res.data.QuestionaireSTD.QN_ADDPROGRAM1==='1'){
     ) {
       setIsShowJob12567(true); //แสดง TextBox
       setIsShowJob34(false);
-      //setValue("QN_OCCUP_TYPE", e.target.value);
+      setIsProgramEduIDShow(false);
+      //setIsShowCauseNoWorkTxT(false); //แสดง TextBox
+      if (e.target.value !== '2') {
+        setisShowRequireEdu24(true);
+        setIsShowRequireEdu(false);
+      }
+      if (e.target.value === '2') {
+        setisShowRequireEdu24(false);
+        setIsShowRequireEdu(true);
+      }
+      //setIsShowRequireEdu(true);
       setOccupID(e.target.value);
       setTalentID(e.target.value);
-      //setPositionID(e.target.value);
-      //setPositionID({ e });
+      setWorkNationID(e.target.value);
       setJobProvid('0');
       setJobDistid('0');
       setJobSubDistid('0');
@@ -1564,9 +2213,12 @@ if(res.data.QuestionaireSTD.QN_ADDPROGRAM1==='1'){
       setMatchEduID('0');
       setApplyEduID('0');
       setRequireEduID('0');
-      //setProvid(e.target.value);
-
-      setWorkNationID(e.target.value);
+      setLevelEduID('0');
+      setCauseEduID('99');
+      setProbEduID('0');
+      setCauseNoWorkID('99');
+      setProbFindWorkID('0');
+      setInterWorkNeedID('0');
     } else {
       setValue('QN_OCCUP_TYPE', ''); //กำหนดค่าว่าง
       setValue('QN_OCCUP_TYPE_TXT', ''); //กำหนดค่าว่าง
@@ -1586,9 +2238,41 @@ if(res.data.QuestionaireSTD.QN_ADDPROGRAM1==='1'){
       setValue('QN_MATCH_EDU', '');
       setValue('QN_APPLY_EDU', '');
       setValue('QN_REQUIRE_EDU', '');
-      //setValue('QN_WORK_STATUS', '');
+      setValue('QN_CAUSE_EDU', '');
+      setValue('QN_PROB_EDU', '');
+      setValue('QN_CAUSE_EDU_TXT', '');
+      setValue('QN_PROB_EDU_TXT', '');
+      setValue('QN_CAUSE_NOWORK', '');
+      setValue('QN_CAUSE_NOWORK_TXT', '');
+      setValue('QN_PROB_FINDWORK', '');
+      setValue('QN_PROB_FINDWORK_TXT', '');
+      setValue('QN_WORKNEED_ID', '');
+      setValue('QN_WORK_NAME', '');
+      setValue('QN_WORK_ADD', '');
+      setValue('QN_WORK_MOO', '');
+      setValue('QN_WORK_BUILDING', '');
+      setValue('QN_WORK_SOI', '');
+      setValue('QN_WORK_STREET', '');
+      setValue('QN_WORK_ZIPCODE', '');
+      setValue('QN_WORK_TEL', '');
+      setValue('QN_WORK_FAX', '');
+      setValue('QN_WORK_EMAIL', '');
+      setValue('QN_SALARY', '');
+      setValue('QN_MATCH_EDU', '');
+      setValue('QN_APPLY_EDU', '');
+      setValue('QN_STRATEGIC_ID', '');
+
       setIsShowJob12567(false); //ซ่อน TextBox
       setIsShowJob34(true);
+      setIsProgramEduIDShow(false);
+      if (e.target.value !== '4') {
+        setisShowRequireEdu24(true);
+        setIsShowRequireEdu(false);
+      }
+      if (e.target.value === '4') {
+        setisShowRequireEdu24(false);
+        setIsShowRequireEdu(true);
+      }
     }
   };
 
@@ -1683,9 +2367,7 @@ if(res.data.QuestionaireSTD.QN_ADDPROGRAM1==='1'){
   const OnchangeSelectRequireEduID = (e) => {
     setValue('QN_REQUIRE_EDU', e.target.value);
     setRequireEduID(e.target.value);
-    if (
-      e.target.value === '1'
-    ) {
+    if (e.target.value === '1') {
       //setIsShowJob12567(true); //แสดง TextBox
       //setIsShowJob34(false);
       setIsShowRequireEdu(true);
@@ -1693,6 +2375,8 @@ if(res.data.QuestionaireSTD.QN_ADDPROGRAM1==='1'){
       //setIsShowJob12567(false); //ซ่อน TextBox
       //setIsShowJob34(true);
       setIsShowRequireEdu(false);
+      //setLevelEduID('0');
+      setValue('QN_LEVEL_EDU', '');
     }
   };
 
@@ -1708,39 +2392,209 @@ if(res.data.QuestionaireSTD.QN_ADDPROGRAM1==='1'){
       setValue('PB_AGENCY_TXT', ''); //กำหนดค่าว่าง
       setIsdiplomaShow(false); //แสดง TextBox
       setIsAgencyShow(false); //แสดง TextBox
-    }  
+    }
+  };
+  //EDU
+  //setOccupID
+  const OnchangeSelectLevelEduID = (e) => {
+    setValue('QN_LEVEL_EDU', e.target.value);
+    setLevelEduID(e.target.value);
+  };
+  //
+  //setProgramEdu
+  const OnchangeSelectProgramEdu = (e) => {
+    setValue('QN_PROGRAM_EDU', e.target.value);
+    setProgramEduID(e.target.value);
+
+    if (e.target.value === '2') {
+      setIsProgramEduIDShow(true); //แสดง TextBox
+    } else {
+      setValue('QN_PROGRAM_EDU_ID', ''); //กำหนดค่าว่าง
+      setIsProgramEduIDShow(false); //แสดง TextBox
+    }
+  };
+  //setProgramEduEID
+  const OnchangeSelectProgramEduEID = (e) => {
+    setValue('QN_PROGRAM_EDU_ID', e.target.value);
+    setProgramEduID_ID(e.target.value);
   };
 
+  //setTypeUnivID
+  const OnchangeSelectTypeUnivID = (e) => {
+    setValue('QN_TYPE_UNIV', e.target.value);
+    setTypeUnivID(e.target.value);
+  };
+  //
+  //setCauseEduID
+  const OnchangeSelectCauseEduID = (e) => {
+    setValue('QN_CAUSE_EDU', e.target.value);
+    setCauseEduID(e.target.value);
+    if (e.target.value === '0') {
+      setIsShowCauseEduIDTxT(true); //แสดง TextBox
+    } else {
+      setValue('QN_CAUSE_EDU_TXT', ''); //กำหนดค่าว่าง
+      setIsShowCauseEduIDTxT(false); //แสดง TextBox
+    }
+  };
+  //setProbEduID
+  const OnchangeSelectProbEduID = (e) => {
+    setValue('QN_PROB_EDU', e.target.value);
+    setProbEduID(e.target.value);
+    if (e.target.value === '00') {
+      setIsShowProbEduIDTxT(true); //แสดง TextBox
+    } else {
+      setValue('QN_PROB_EDU_TXT', ''); //กำหนดค่าว่าง
+      setIsShowProbEduIDTxT(false); //แสดง TextBox
+    }
+  };
+  ///P1
+  const handleCm1Change = (e) => {
+    //1
+    setProgram1Checked(e.target.checked);
+    if (e.target.checked === true) {
+      setValue('QN_ADDPROGRAM1', '1');
+    } else {
+      setValue('QN_ADDPROGRAM1', '');
+    }
+  };
 
-///P1
-const handleCm1Change = (e) => { //1
-  //setCmState({ ...cmstate, [e.target.name]: e.target.checked });
-  setProgram1Checked(e.target.checked);
-  if(e.target.checked===true){
-    setValue('QN_ADDPROGRAM1','1')
-  }else{
-    setValue('QN_ADDPROGRAM1','')
-  }
-};
-const handleCm2Change = (e) => { //2
-  //setCmState({ ...cmstate, [e.target.name]: e.target.checked });
-  setProgram2Checked(e.target.checked);
-  if(e.target.checked===true){
-    setValue('QN_ADDPROGRAM2','1')
-  }else{
-    setValue('QN_ADDPROGRAM2','')
-  }
-};
-const handleCm3Change = (e) => { //3
-  //setCmState({ ...cmstate, [e.target.name]: e.target.checked });
-  setProgram3Checked(e.target.checked);
-  if(e.target.checked===true){
-    setValue('QN_ADDPROGRAM3','1')
-  }else{
-    setValue('QN_ADDPROGRAM3','')
-  }
-};
+  ///no Work ไม่มีงานทำ
+  //setCauseNoWorkID
+  const OnchangeSelectCauseNoWorkID = (e) => {
+    setValue('QN_CAUSE_NOWORK', e.target.value);
+    setCauseNoWorkID(e.target.value);
+    if (e.target.value === '0') {
+      setIsShowCauseNoWorkTxT(true); //แสดง TextBox
+    } else {
+      setValue('QN_CAUSE_NOWORK_TXT', ''); //กำหนดค่าว่าง
+      setIsShowCauseNoWorkTxT(false); //แสดง TextBox
+    }
+  };
+  //
+  //setProbFindWorkID
+  const OnchangeSelectProbFindWorkID = (e) => {
+    setValue('QN_PROB_FINDWORK', e.target.value);
+    setProbFindWorkID(e.target.value);
+    if (e.target.value === '00') {
+      setIsShowProbFindWorkTxT(true); //แสดง TextBox
+    } else {
+      setValue('QN_PROB_FINDWORK_TXT', ''); //กำหนดค่าว่าง
+      setIsShowProbFindWorkTxT(false); //แสดง TextBox
+    }
+  };
+  //
+  //setInterWorkNeedID
+  const OnchangeSelectInterWorkNeedID = (e) => {
+    setValue('QN_WORKNEED_ID', e.target.value);
+    setInterWorkNeedID(e.target.value);
+    if (e.target.value === '02') {
+      setIsShowInter(true); //แสดง TextBox การทำงานต่างประเทศ
+    } else {
+      //setInterWorkNeedID('0');
+      setIsShowInter(false); //แสดง TextBox ทำงานภายในประเทศ ค่าที่เกี่ยวข้องต้องเป็นค่าว่าง
+      setValue('QN_WORKNEED_NATION', '');
+      setValue('QN_WORKNEED_POSITION', '');
+      setValue('QN_SKILL_DEVELOPMENT', '');
+      setValue('QN_DISCLOSURE_AGREEMENT_ID', '');
+      /* ว่าง
+QN_WORKNEED_NATION
+QN_WORKNEED_POSITION
+QN_SKILL_DEVELOPMENT
+QN_DISCLOSURE_AGREEMENT_ID
 
+      */
+    }
+  };
+  //
+  //setDisclosureID
+  const OnchangeSelectDisclosureID = (e) => {
+    setValue('QN_DISCLOSURE_AGREEMENT_ID', e.target.value);
+    setDisclosureID(e.target.value);
+  };
+  //setWorkNeedNationID
+  const OnchangeSelectWorkNeedNationID = (e) => {
+    setValue('QN_WORKNEED_NATION', e.target.value);
+    setWorkNeedNationID(e.target.value);
+  };
+  //
+
+  const handleCm2Change = (e) => {
+    //2
+    setProgram2Checked(e.target.checked);
+    if (e.target.checked === true) {
+      setValue('QN_ADDPROGRAM2', '1');
+    } else {
+      setValue('QN_ADDPROGRAM2', '');
+    }
+  };
+  const handleCm3Change = (e) => {
+    //3
+    setProgram3Checked(e.target.checked);
+    if (e.target.checked === true) {
+      setValue('QN_ADDPROGRAM3', '1');
+    } else {
+      setValue('QN_ADDPROGRAM3', '');
+    }
+  };
+  const handleCm4Change = (e) => {
+    //4
+    setProgram4Checked(e.target.checked);
+    if (e.target.checked === true) {
+      setValue('QN_ADDPROGRAM4', '1');
+    } else {
+      setValue('QN_ADDPROGRAM4', '');
+    }
+  };
+  const handleCm5Change = (e) => {
+    //5
+    setProgram5Checked(e.target.checked);
+    if (e.target.checked === true) {
+      setValue('QN_ADDPROGRAM5', '1');
+    } else {
+      setValue('QN_ADDPROGRAM5', '');
+    }
+  };
+  const handleCm6Change = (e) => {
+    //6
+    setProgram6Checked(e.target.checked);
+    if (e.target.checked === true) {
+      setValue('QN_ADDPROGRAM6', '1');
+    } else {
+      setValue('QN_ADDPROGRAM6', '');
+    }
+  };
+  const handleCm7Change = (e) => {
+    //7
+    setProgram7Checked(e.target.checked);
+    if (e.target.checked === true) {
+      setValue('QN_ADDPROGRAM7', '1');
+      //show
+      setIsShowProgram7TxT(true); //แสดง TextBox
+      //
+    } else {
+      setValue('QN_ADDPROGRAM7', '');
+      setValue('QN_ADDPROGRAM7_TXT', '');
+      setIsShowProgram7TxT(false); //แสดง TextBox
+    }
+  };
+  const handleCm8Change = (e) => {
+    //8
+    setProgram8Checked(e.target.checked);
+    if (e.target.checked === true) {
+      setValue('QN_ADDPROGRAM8', '1');
+    } else {
+      setValue('QN_ADDPROGRAM8', '');
+    }
+  };
+  const handleCm9Change = (e) => {
+    //9
+    setProgram9Checked(e.target.checked);
+    if (e.target.checked === true) {
+      setValue('QN_ADDPROGRAM9', '1');
+    } else {
+      setValue('QN_ADDPROGRAM9', '');
+    }
+  };
 
   let content = <Loading msg=' กำลังโหลด...' />;
 
@@ -2209,7 +3063,6 @@ const handleCm3Change = (e) => { //3
                             </small>
                           </div>
                         </Grid>
-
                         <Grid item xs={12} sm={2}>
                           <div className='col-md-12'>
                             <label className='control-label'>อาคาร/ตึก </label>
@@ -2246,7 +3099,6 @@ const handleCm3Change = (e) => { //3
                             </small>
                           </div>
                         </Grid>
-
                         <Grid item xs={12} sm={2}>
                           <div className='col-md-12'>
                             <label className='control-label'>ถนน </label>
@@ -2265,7 +3117,6 @@ const handleCm3Change = (e) => { //3
                             </small>
                           </div>
                         </Grid>
-
                         <Grid item xs={12} sm={3}>
                           <div className='col-md-12'>
                             <label className='control-label'>จังหวัด </label>
@@ -2314,7 +3165,6 @@ const handleCm3Change = (e) => { //3
                             </small>
                           </div>
                         </Grid>
-
                         <Grid item xs={12} sm={3}>
                           <div className='col-md-12'>
                             <label className='control-label'>
@@ -2335,7 +3185,6 @@ const handleCm3Change = (e) => { //3
                             </small>
                           </div>
                         </Grid>
-
                         <Grid item xs={12} sm={3}>
                           <div className='col-md-12'>
                             <label className='control-label'>โทรศัพท์ </label>
@@ -2408,7 +3257,6 @@ const handleCm3Change = (e) => { //3
                             </small>
                           </div>
                         </Grid>
-
                         <Grid item xs={12} sm={6}>
                           <div className='col-md-12'>
                             <label className='control-label'>
@@ -2558,24 +3406,6 @@ const handleCm3Change = (e) => { //3
                             </small>
                           </div>
                         </Grid>
-                        <Grid item xs={12} sm={3}>
-                          <div className='col-md-12'>
-                            <label className='control-label'>
-                              ความต้องการศึกษาต่อ
-                            </label>
-                            <small className={classes.typo}>
-                              <SelectProvince
-                                refs={{ ...register('QN_REQUIRE_EDU') }}
-                                error={errors.QN_REQUIRE_EDU?.message}
-                                defaultValue={requireeduid}
-                                value={requireeduid}
-                                placeHolder={'-โปรดระบุ-'}
-                                onChange={(e) => OnchangeSelectRequireEduID(e)}
-                                options={itemsRequireEdu}
-                              />
-                            </small>
-                          </div>
-                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -2596,24 +3426,24 @@ const handleCm3Change = (e) => { //3
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
-                            refs={{ ...register('QN_OCCUP_TYPE') }}
-                            error={errors.QN_OCCUP_TYPE?.message}
-                            defaultValue={occupid}
-                            value={occupid}
+                            refs={{ ...register('QN_CAUSE_NOWORK') }}
+                            error={errors.QN_CAUSE_NOWORK?.message}
+                            defaultValue={causnoworkid}
+                            value={causnoworkid}
                             placeHolder={'-เลือกสาเหตุ-'}
-                            onChange={(e) => OnchangeSelectOccupID(e)}
-                            options={itemsOcc}
+                            onChange={(e) => OnchangeSelectCauseNoWorkID(e)}
+                            options={itemCauseNoWork}
                           />
                         </small>
-                        {isShow ? (
+                        {isShowCauseNoWorktxt ? (
                           <small className={classes.typo}>
                             <TextField
-                              {...register('QN_OCCUP_TYPE_TXT')}
+                              {...register('QN_CAUSE_NOWORK_TXT')}
                               variant='outlined'
                               label='อื่นๆ ระบุ'
                               fullWidth
-                              error={!!errors.QN_OCCUP_TYPE_TXT}
-                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              error={!!errors.QN_CAUSE_NOWORK_TXT}
+                              helperText={errors.QN_CAUSE_NOWORK_TXT?.message}
                               InputProps={{
                                 readOnly: false,
                               }}
@@ -2631,24 +3461,24 @@ const handleCm3Change = (e) => { //3
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
-                            refs={{ ...register('QN_OCCUP_TYPE') }}
-                            error={errors.QN_OCCUP_TYPE?.message}
-                            defaultValue={occupid}
-                            value={occupid}
-                            placeHolder={'-เลือกสาเหตุ-'}
-                            onChange={(e) => OnchangeSelectOccupID(e)}
-                            options={itemsOcc}
+                            refs={{ ...register('QN_PROB_FINDWORK') }}
+                            error={errors.QN_PROB_FINDWORK?.message}
+                            defaultValue={probfindwork}
+                            value={probfindwork}
+                            placeHolder={'-เลือกปัญหา-'}
+                            onChange={(e) => OnchangeSelectProbFindWorkID(e)}
+                            options={itemProbFindWork}
                           />
                         </small>
-                        {isShow ? (
+                        {isShowProbFindWorktxt ? (
                           <small className={classes.typo}>
                             <TextField
-                              {...register('QN_OCCUP_TYPE_TXT')}
+                              {...register('QN_PROB_FINDWORK_TXT')}
                               variant='outlined'
                               label='อื่นๆ ระบุ'
                               fullWidth
-                              error={!!errors.QN_OCCUP_TYPE_TXT}
-                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              error={!!errors.QN_PROB_FINDWORK_TXT}
+                              helperText={errors.QN_PROB_FINDWORK_TXT?.message}
                               InputProps={{
                                 readOnly: false,
                               }}
@@ -2666,129 +3496,130 @@ const handleCm3Change = (e) => { //3
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
-                            refs={{ ...register('QN_OCCUP_TYPE') }}
-                            error={errors.QN_OCCUP_TYPE?.message}
-                            defaultValue={occupid}
-                            value={occupid}
+                            refs={{ ...register('QN_WORKNEED_ID') }}
+                            error={errors.QN_WORKNEED_ID?.message}
+                            defaultValue={interworkneedid}
+                            value={interworkneedid}
                             placeHolder={'-เลือกสาเหตุ-'}
-                            onChange={(e) => OnchangeSelectOccupID(e)}
-                            options={itemsOcc}
-                          />
-                        </small>
-                        {isShow ? (
-                          <small className={classes.typo}>
-                            <TextField
-                              {...register('QN_OCCUP_TYPE_TXT')}
-                              variant='outlined'
-                              label='อื่นๆ ระบุ'
-                              fullWidth
-                              error={!!errors.QN_OCCUP_TYPE_TXT}
-                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
-                              InputProps={{
-                                readOnly: false,
-                              }}
-                              size='small'
-                            />
-                          </small>
-                        ) : null}
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <div className='col-md-12'>
-                        <label className='control-label'>
-                          ประเทศที่ต้องการทำงาน
-                        </label>
-                        <small className={classes.typo}>
-                          <SelectProvince
-                            refs={{ ...register('QN_WORK_NATION') }}
-                            error={errors.QN_WORK_NATION?.message}
-                            defaultValue={worknationid}
-                            value={worknationid}
-                            placeHolder={'-โปรดระบุ-'}
-                            onChange={(e) => OnchangeSelectWorkNationID(e)}
-                            options={itemsWorkNation}
+                            onChange={(e) => OnchangeSelectInterWorkNeedID(e)}
+                            options={itemInterWorkNeed}
                           />
                         </small>
                       </div>
                     </Grid>
+                    {isShowInter ? (
+                      <Grid container spacing={1}>
+                        <Grid item xs={12} sm={4}>
+                          <div className='col-md-12'>
+                            <label className='control-label'>
+                              ประเทศที่ต้องการทำงาน
+                            </label>
+                            <small className={classes.typo}>
+                              <SelectProvince
+                                refs={{ ...register('QN_WORKNEED_NATION') }}
+                                error={errors.QN_WORKNEED_NATION?.message}
+                                defaultValue={workneednationid}
+                                value={workneednationid}
+                                placeHolder={'-โปรดระบุ-'}
+                                onChange={(e) =>
+                                  OnchangeSelectWorkNeedNationID(e)
+                                }
+                                options={itemsWorkNationNeed}
+                              />
+                            </small>
+                          </div>
+                        </Grid>
 
-                    <Grid item xs={12} sm={4}>
-                      <div className='col-md-12'>
-                        <label className='control-label'>
-                          ตำแหน่งที่ต้องการทำงาน{' '}
-                        </label>
-                        <small className={classes.typo}>
-                          <TextField
-                            {...register('TELEPHONEUPDATE')}
-                            variant='outlined'
-                            fullWidth
-                            error={!!errors.TELEPHONEUPDATE}
-                            helperText={errors.TELEPHONEUPDATE?.message}
-                            InputProps={{
-                              readOnly: false,
-                            }}
-                            size='small'
-                          />
-                        </small>
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <div className='col-md-12'>
-                        <label className='control-label'>
-                          ความต้องการพัฒนาทักษะ หลักสูตร{' '}
-                        </label>
-                        <small className={classes.typo}>
-                          <TextField
-                            {...register('TELEPHONEUPDATE')}
-                            variant='outlined'
-                            fullWidth
-                            error={!!errors.TELEPHONEUPDATE}
-                            helperText={errors.TELEPHONEUPDATE?.message}
-                            InputProps={{
-                              readOnly: false,
-                            }}
-                            size='small'
-                          />
-                        </small>
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <div className='col-md-12'>
-                        <label className='control-label'>
-                          ความประสงค์ในการเปิดเผยข้อมูลแก่นายจ้าง/สถานประกอบการ
-                        </label>
-                        <small className={classes.typo}>
-                          <SelectProvince
-                            refs={{ ...register('QN_WORK_NATION') }}
-                            error={errors.QN_WORK_NATION?.message}
-                            defaultValue={worknationid}
-                            value={worknationid}
-                            placeHolder={'-โปรดระบุ-'}
-                            onChange={(e) => OnchangeSelectWorkNationID(e)}
-                            options={itemsWorkNation}
-                          />
-                        </small>
-                      </div>
-                    </Grid>
-
-                    <Grid item xs={12} sm={4}>
-                      <div className='col-md-12'>
-                        <label className='control-label'>
-                          ความต้องการศึกษาต่อ
-                        </label>
-                        <small className={classes.typo}>
-                          <SelectProvince
-                            refs={{ ...register('QN_WORK_NATION') }}
-                            error={errors.QN_WORK_NATION?.message}
-                            defaultValue={worknationid}
-                            value={worknationid}
-                            placeHolder={'-โปรดระบุ-'}
-                            onChange={(e) => OnchangeSelectWorkNationID(e)}
-                            options={itemsWorkNation}
-                          />
-                        </small>
-                      </div>
-                    </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <div className='col-md-12'>
+                            <label className='control-label'>
+                              ตำแหน่งที่ต้องการทำงาน{' '}
+                            </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register('QN_WORKNEED_POSITION')}
+                                variant='outlined'
+                                fullWidth
+                                error={!!errors.QN_WORKNEED_POSITION}
+                                helperText={
+                                  errors.QN_WORKNEED_POSITION?.message
+                                }
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size='small'
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <div className='col-md-12'>
+                            <label className='control-label'>
+                              ความต้องการพัฒนาทักษะ หลักสูตร{' '}
+                            </label>
+                            <small className={classes.typo}>
+                              <TextField
+                                {...register('QN_SKILL_DEVELOPMENT')}
+                                variant='outlined'
+                                fullWidth
+                                error={!!errors.QN_SKILL_DEVELOPMENT}
+                                helperText={
+                                  errors.QN_SKILL_DEVELOPMENT?.message
+                                }
+                                InputProps={{
+                                  readOnly: false,
+                                }}
+                                size='small'
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <div className='col-md-12'>
+                            <label className='control-label'>
+                              ความประสงค์ในการเปิดเผยข้อมูลแก่นายจ้าง/สถานประกอบการ
+                            </label>
+                            <small className={classes.typo}>
+                              <SelectProvince
+                                refs={{
+                                  ...register('QN_DISCLOSURE_AGREEMENT_ID'),
+                                }}
+                                error={
+                                  errors.QN_DISCLOSURE_AGREEMENT_ID?.message
+                                }
+                                defaultValue={disclosureid}
+                                value={disclosureid}
+                                placeHolder={'-โปรดระบุ-'}
+                                onChange={(e) => OnchangeSelectDisclosureID(e)}
+                                options={itemsDisclosure}
+                              />
+                            </small>
+                          </div>
+                        </Grid>
+                      </Grid>
+                    ) : null}
+                  </Grid>
+                </Grid>
+              ) : null}
+              {isShowRequireEdu24 ? (
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={3}>
+                    <div className='col-md-12'>
+                      <label className='control-label'>
+                        ความต้องการศึกษาต่อ
+                      </label>
+                      <small className={classes.typo}>
+                        <SelectProvince
+                          refs={{ ...register('QN_REQUIRE_EDU') }}
+                          error={errors.QN_REQUIRE_EDU?.message}
+                          defaultValue={requireeduid}
+                          value={requireeduid}
+                          placeHolder={'-โปรดระบุ-'}
+                          onChange={(e) => OnchangeSelectRequireEduID(e)}
+                          options={itemsRequireEdu}
+                        />
+                      </small>
+                    </div>
                   </Grid>
                 </Grid>
               ) : null}
@@ -2806,13 +3637,13 @@ const handleCm3Change = (e) => { //3
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
-                            refs={{ ...register('QN_OCCUP_TYPE') }}
-                            error={errors.QN_OCCUP_TYPE?.message}
-                            defaultValue={occupid}
-                            value={occupid}
-                            placeHolder={'-เลือกสาเหตุ-'}
-                            onChange={(e) => OnchangeSelectOccupID(e)}
-                            options={itemsOcc}
+                            refs={{ ...register('QN_LEVEL_EDU') }}
+                            error={errors.QN_LEVEL_EDU?.message}
+                            defaultValue={leveleduid}
+                            value={leveleduid}
+                            placeHolder={'-เลือก-'}
+                            onChange={(e) => OnchangeSelectLevelEduID(e)}
+                            options={itemLevelEduID}
                           />
                         </small>
                       </div>
@@ -2825,28 +3656,25 @@ const handleCm3Change = (e) => { //3
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
-                            refs={{ ...register('QN_OCCUP_TYPE') }}
-                            error={errors.QN_OCCUP_TYPE?.message}
-                            defaultValue={occupid}
-                            value={occupid}
-                            placeHolder={'-เลือกสาเหตุ-'}
-                            onChange={(e) => OnchangeSelectOccupID(e)}
-                            options={itemsOcc}
+                            refs={{ ...register('QN_PROGRAM_EDU') }}
+                            error={errors.QN_PROGRAM_EDU?.message}
+                            defaultValue={programeduid}
+                            value={programeduid}
+                            placeHolder={'-เลือก-'}
+                            onChange={(e) => OnchangeSelectProgramEdu(e)}
+                            options={itemProgramEdu}
                           />
                         </small>
-                        {isShow ? (
+                        {IsProgramEduIDShow ? (
                           <small className={classes.typo}>
-                            <TextField
-                              {...register('QN_OCCUP_TYPE_TXT')}
-                              variant='outlined'
-                              label='อื่นๆ ระบุ'
-                              fullWidth
-                              error={!!errors.QN_OCCUP_TYPE_TXT}
-                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
-                              InputProps={{
-                                readOnly: false,
-                              }}
-                              size='small'
+                            <SelectProvince
+                              refs={{ ...register('QN_PROGRAM_EDU_ID') }}
+                              error={errors.QN_PROGRAM_EDU_ID?.message}
+                              defaultValue={programeduid_id}
+                              value={programeduid_id}
+                              placeHolder={'-เลือก-'}
+                              onChange={(e) => OnchangeSelectProgramEduEID(e)}
+                              options={itemProgramEduEID}
                             />
                           </small>
                         ) : null}
@@ -2856,17 +3684,18 @@ const handleCm3Change = (e) => { //3
                     <Grid item xs={12} sm={4}>
                       <div className='col-md-12'>
                         <label className='control-label'>
-                          3. ประเภทของสถาบันการศึกษา/มหาวิทยาลัยที่ท่านต้องการศึกษา/กำลังศึกษาต่อ
+                          3.
+                          ประเภทของสถาบันการศึกษา/มหาวิทยาลัยที่ท่านต้องการศึกษา/กำลังศึกษาต่อ
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
-                            refs={{ ...register('QN_OCCUP_TYPE') }}
-                            error={errors.QN_OCCUP_TYPE?.message}
-                            defaultValue={occupid}
-                            value={occupid}
-                            placeHolder={'-เลือกสาเหตุ-'}
-                            onChange={(e) => OnchangeSelectOccupID(e)}
-                            options={itemsOcc}
+                            refs={{ ...register('QN_TYPE_UNIV') }}
+                            error={errors.QN_TYPE_UNIV?.message}
+                            defaultValue={typeunvid}
+                            value={typeunvid}
+                            placeHolder={'-เลือก-'}
+                            onChange={(e) => OnchangeSelectTypeUnivID(e)}
+                            options={itemTypeUni}
                           />
                         </small>
                       </div>
@@ -2878,24 +3707,24 @@ const handleCm3Change = (e) => { //3
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
-                            refs={{ ...register('QN_OCCUP_TYPE') }}
-                            error={errors.QN_OCCUP_TYPE?.message}
-                            defaultValue={occupid}
-                            value={occupid}
+                            refs={{ ...register('QN_CAUSE_EDU') }}
+                            error={errors.QN_CAUSE_EDU?.message}
+                            defaultValue={causeeduid}
+                            value={causeeduid}
                             placeHolder={'-เลือกสาเหตุ-'}
-                            onChange={(e) => OnchangeSelectOccupID(e)}
-                            options={itemsOcc}
+                            onChange={(e) => OnchangeSelectCauseEduID(e)}
+                            options={itemCauseEdu}
                           />
                         </small>
-                        {isShow ? (
+                        {isShowCauseeduIdtxt ? (
                           <small className={classes.typo}>
                             <TextField
-                              {...register('QN_OCCUP_TYPE_TXT')}
+                              {...register('QN_CAUSE_EDU_TXT')}
                               variant='outlined'
                               label='อื่นๆ ระบุ'
                               fullWidth
-                              error={!!errors.QN_OCCUP_TYPE_TXT}
-                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              error={!!errors.QN_CAUSE_EDU_TXT}
+                              helperText={errors.QN_CAUSE_EDU_TXT?.message}
                               InputProps={{
                                 readOnly: false,
                               }}
@@ -2913,24 +3742,24 @@ const handleCm3Change = (e) => { //3
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
-                            refs={{ ...register('QN_OCCUP_TYPE') }}
-                            error={errors.QN_OCCUP_TYPE?.message}
-                            defaultValue={occupid}
-                            value={occupid}
+                            refs={{ ...register('QN_PROB_EDU') }}
+                            error={errors.QN_PROB_EDU?.message}
+                            defaultValue={probeduid}
+                            value={probeduid}
                             placeHolder={'-เลือกสาเหตุ-'}
-                            onChange={(e) => OnchangeSelectOccupID(e)}
-                            options={itemsOcc}
+                            onChange={(e) => OnchangeSelectProbEduID(e)}
+                            options={itemProbEdu}
                           />
                         </small>
-                        {isShow ? (
+                        {isShowProbeduIdtxt ? (
                           <small className={classes.typo}>
                             <TextField
-                              {...register('QN_OCCUP_TYPE_TXT')}
+                              {...register('QN_PROB_EDU_TXT')}
                               variant='outlined'
                               label='อื่นๆ ระบุ'
                               fullWidth
-                              error={!!errors.QN_OCCUP_TYPE_TXT}
-                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              error={!!errors.QN_PROB_EDU_TXT}
+                              helperText={errors.QN_PROB_EDU_TXT?.message}
                               InputProps={{
                                 readOnly: false,
                               }}
@@ -2943,13 +3772,13 @@ const handleCm3Change = (e) => { //3
                   </Grid>
                 </Grid>
               ) : null}
-            
-                <Grid container spacing={0}>
-                  <Typography className={classes.typo} variant='h3' size='sm'>
-                    ตอนที่ 5 ข้อเสนอแนะ
-                  </Typography>
 
-                  <Grid container spacing={1}>
+              <Grid container spacing={0}>
+                <Typography className={classes.typo} variant='h3' size='sm'>
+                  ตอนที่ 5 ข้อเสนอแนะ
+                </Typography>
+
+                <Grid container spacing={1}>
                   <Grid item xs={12} sm={12}>
                     <div className='col-md-12'>
                       <label className='control-label'>
@@ -2962,8 +3791,13 @@ const handleCm3Change = (e) => { //3
                           <Grid item xs={12} sm={4}>
                             <div className='col-md-12'>
                               <FormControlLabel
-                                control={<Checkbox checked={progrom1state} onChange={handleCm1Change} />}
-                                label="ภาษาอังกฤษ"
+                                control={
+                                  <Checkbox
+                                    checked={progrom1state}
+                                    onChange={handleCm1Change}
+                                  />
+                                }
+                                label='ภาษาอังกฤษ'
                                 refs={{ ...register('QN_ADDPROGRAM1') }}
                                 error={errors.QN_ADDPROGRAM1?.message}
                               />
@@ -2972,8 +3806,13 @@ const handleCm3Change = (e) => { //3
                           <Grid item xs={12} sm={4}>
                             <div className='col-md-12'>
                               <FormControlLabel
-                                control={<Checkbox checked={progrom2state} onChange={handleCm2Change} />}
-                                label="คอมพิวเตอร์"
+                                control={
+                                  <Checkbox
+                                    checked={progrom2state}
+                                    onChange={handleCm2Change}
+                                  />
+                                }
+                                label='คอมพิวเตอร์'
                                 refs={{ ...register('QN_ADDPROGRAM2') }}
                                 error={errors.QN_ADDPROGRAM2?.message}
                               />
@@ -2982,143 +3821,251 @@ const handleCm3Change = (e) => { //3
                           <Grid item xs={12} sm={4}>
                             <div className='col-md-12'>
                               <FormControlLabel
-                                control={<Checkbox checked={progrom3state} onChange={handleCm3Change} />}
-                                label="บัญชี"
+                                control={
+                                  <Checkbox
+                                    checked={progrom3state}
+                                    onChange={handleCm3Change}
+                                  />
+                                }
+                                label='บัญชี'
                                 refs={{ ...register('QN_ADDPROGRAM3') }}
                                 error={errors.QN_ADDPROGRAM3?.message}
                               />
                             </div>
                           </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className='col-md-12'>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    checked={progrom4state}
+                                    onChange={handleCm4Change}
+                                  />
+                                }
+                                label='การใช้อินเตอร์เน็ต'
+                                refs={{ ...register('QN_ADDPROGRAM4') }}
+                                error={errors.QN_ADDPROGRAM4?.message}
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className='col-md-12'>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    checked={progrom5state}
+                                    onChange={handleCm5Change}
+                                  />
+                                }
+                                label='การฝึกปฏิบัติงานจริง'
+                                refs={{ ...register('QN_ADDPROGRAM5') }}
+                                error={errors.QN_ADDPROGRAM5?.message}
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className='col-md-12'>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    checked={progrom6state}
+                                    onChange={handleCm6Change}
+                                  />
+                                }
+                                label='เทคนิคการวิจัย'
+                                refs={{ ...register('QN_ADDPROGRAM6') }}
+                                error={errors.QN_ADDPROGRAM6?.message}
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className='col-md-12'>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    checked={progrom8state}
+                                    onChange={handleCm8Change}
+                                  />
+                                }
+                                label='ภาษาจีน'
+                                refs={{ ...register('QN_ADDPROGRAM8') }}
+                                error={errors.QN_ADDPROGRAM8?.message}
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className='col-md-12'>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    checked={progrom9state}
+                                    onChange={handleCm9Change}
+                                  />
+                                }
+                                label='ภาษาในอาเซียน'
+                                refs={{ ...register('QN_ADDPROGRAM9') }}
+                                error={errors.QN_ADDPROGRAM9?.message}
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className='col-md-12'>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    checked={progrom7state}
+                                    onChange={handleCm7Change}
+                                  />
+                                }
+                                label='อื่น ๆ'
+                                refs={{ ...register('QN_ADDPROGRAM7') }}
+                                error={errors.QN_ADDPROGRAM7?.message}
+                              />
+                              {isShowProgram7TxT ? (
+                                <small className={classes.typo}>
+                                  <TextField
+                                    {...register('QN_ADDPROGRAM7_TXT')}
+                                    variant='outlined'
+                                    label='ระบุเพิ่มเติม'
+                                    fullWidth
+                                    error={!!errors.QN_ADDPROGRAM7_TXT}
+                                    helperText={
+                                      errors.QN_ADDPROGRAM7_TXT?.message
+                                    }
+                                    InputProps={{
+                                      readOnly: false,
+                                    }}
+                                    size='small'
+                                  />
+                                </small>
+                              ) : null}
+                            </div>
+                          </Grid>
                         </Grid>
-
                       </small>
-
                     </div>
                   </Grid>
 
-                    <Grid item xs={12} sm={4}>
-                      <div className='col-md-12'>
-                        <label className='control-label'>
-                          2. ข้อเสนอแนะเกี่ยวกับหลักสูตรและสาขาวิชาที่เรียน{' '}
-                        </label>
-                        <small className={classes.typo}>
-                          <TextField
-                            {...register('TELEPHONEUPDATE')}
-                            variant='outlined'
-                            fullWidth
-                            error={!!errors.TELEPHONEUPDATE}
-                            helperText={errors.TELEPHONEUPDATE?.message}
-                            InputProps={{
-                              readOnly: false,
-                            }}
-                            size='small'
-                          />
-                        </small>
-                      </div>
-                    </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className='col-md-12'>
+                      <label className='control-label'>
+                        2. ข้อเสนอแนะเกี่ยวกับหลักสูตรและสาขาวิชาที่เรียน{' '}
+                      </label>
+                      <small className={classes.typo}>
+                        <TextField
+                          {...register('QN_COMMENT_PROGRAM')}
+                          variant='outlined'
+                          fullWidth
+                          error={!!errors.QN_COMMENT_PROGRAM}
+                          helperText={errors.QN_COMMENT_PROGRAM?.message}
+                          InputProps={{
+                            readOnly: false,
+                          }}
+                          size='small'
+                        />
+                      </small>
+                    </div>
+                  </Grid>
 
-                    <Grid item xs={12} sm={4}>
-                      <div className='col-md-12'>
-                        <label className='control-label'>
-                          3. ข้อเสนอแนะเกี่ยวกับการเรียนการสอน{' '}
-                        </label>
-                        <small className={classes.typo}>
-                          <TextField
-                            {...register('TELEPHONEUPDATE')}
-                            variant='outlined'
-                            fullWidth
-                            error={!!errors.TELEPHONEUPDATE}
-                            helperText={errors.TELEPHONEUPDATE?.message}
-                            InputProps={{
-                              readOnly: false,
-                            }}
-                            size='small'
-                          />
-                        </small>
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <div className='col-md-12'>
-                        <label className='control-label'>
-                          4. ข้อเสนอแนะเกี่ยวกับกิจกรรมพัฒนานักศึกษา{' '}
-                        </label>
-                        <small className={classes.typo}>
-                          <TextField
-                            {...register('TELEPHONEUPDATE')}
-                            variant='outlined'
-                            fullWidth
-                            error={!!errors.TELEPHONEUPDATE}
-                            helperText={errors.TELEPHONEUPDATE?.message}
-                            InputProps={{
-                              readOnly: false,
-                            }}
-                            size='small'
-                          />
-                        </small>
-                      </div>
-                    </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className='col-md-12'>
+                      <label className='control-label'>
+                        3. ข้อเสนอแนะเกี่ยวกับการเรียนการสอน{' '}
+                      </label>
+                      <small className={classes.typo}>
+                        <TextField
+                          {...register('QN_COMMENT_LEARN')}
+                          variant='outlined'
+                          fullWidth
+                          error={!!errors.QN_COMMENT_LEARN}
+                          helperText={errors.QN_COMMENT_LEARN?.message}
+                          InputProps={{
+                            readOnly: false,
+                          }}
+                          size='small'
+                        />
+                      </small>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className='col-md-12'>
+                      <label className='control-label'>
+                        4. ข้อเสนอแนะเกี่ยวกับกิจกรรมพัฒนานักศึกษา{' '}
+                      </label>
+                      <small className={classes.typo}>
+                        <TextField
+                          {...register('QN_COMMENT_ACTIVITY')}
+                          variant='outlined'
+                          fullWidth
+                          error={!!errors.QN_COMMENT_ACTIVITY}
+                          helperText={errors.QN_COMMENT_ACTIVITY?.message}
+                          InputProps={{
+                            readOnly: false,
+                          }}
+                          size='small'
+                        />
+                      </small>
+                    </div>
                   </Grid>
                 </Grid>
-            
+              </Grid>
 
-             
-                <Grid container spacing={0}>
-                  <Typography className={classes.typo} variant='h3' size='sm'>
-                    ตอนที่ 6 การรับรางวัล
-                  </Typography>
+              <Grid container spacing={0}>
+                <Typography className={classes.typo} variant='h3' size='sm'>
+                  ตอนที่ 6 การรับรางวัล
+                </Typography>
 
-                  <Grid container spacing={1}>
-                    <Grid item xs={12} sm={6}>
-                      <div className='col-md-12'>
-                        <label className='control-label'>
-                          เคยได้รับประกาศเกียรติคุณยกย่องในด้านใด หลังจบการศึกษา
-                          เคยรับรางวัล ดังนี้
-                        </label>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={6}>
+                    <div className='col-md-12'>
+                      <label className='control-label'>
+                        เคยได้รับประกาศเกียรติคุณยกย่องในด้านใด หลังจบการศึกษา
+                        เคยรับรางวัล ดังนี้
+                      </label>
+                      <small className={classes.typo}>
+                        <SelectProvince
+                          refs={{ ...register('PB_DIPLOMA') }}
+                          error={errors.PB_DIPLOMA?.message}
+                          defaultValue={diplomaid}
+                          value={diplomaid}
+                          placeHolder={'-เลือก-'}
+                          onChange={(e) => OnchangeSelectAwardID(e)}
+                          options={itemAwardID}
+                        />
+                      </small>
+                      {isdiplomaShow ? (
                         <small className={classes.typo}>
-                          <SelectProvince
-                            refs={{ ...register('PB_DIPLOMA') }}
-                            error={errors.PB_DIPLOMA?.message}
-                            defaultValue={diplomaid}
-                            value={diplomaid}
-                            placeHolder={'-เลือก-'}
-                            onChange={(e) => OnchangeSelectAwardID(e)}
-                            options={itemAwardID}
+                          <TextField
+                            {...register('PB_DIPLOMA_NAME_TXT')}
+                            variant='outlined'
+                            label='ชื่อรางวัล'
+                            fullWidth
+                            error={!!errors.PB_DIPLOMA_NAME_TXT}
+                            helperText={errors.PB_DIPLOMA_NAME_TXT?.message}
+                            InputProps={{
+                              readOnly: false,
+                            }}
+                            size='small'
+                          />
+
+                          <TextField
+                            {...register('PB_AGENCY_TXT')}
+                            variant='outlined'
+                            label='หน่วยงานที่มอบรางวัล'
+                            fullWidth
+                            error={!!errors.PB_AGENCY_TXT}
+                            helperText={errors.PB_AGENCY_TXT?.message}
+                            InputProps={{
+                              readOnly: false,
+                            }}
+                            size='small'
                           />
                         </small>
-                        {isdiplomaShow ? (
-                          <small className={classes.typo}>
-                            <TextField
-                              {...register('PB_DIPLOMA_NAME_TXT')}
-                              variant='outlined'
-                              label='ชื่อรางวัล'
-                              fullWidth
-                              error={!!errors.PB_DIPLOMA_NAME_TXT}
-                              helperText={errors.PB_DIPLOMA_NAME_TXT?.message}
-                              InputProps={{
-                                readOnly: false,
-                              }}
-                              size='small'
-                            />
-
-                            <TextField
-                              {...register('PB_AGENCY_TXT')}
-                              variant='outlined'
-                              label='หน่วยงานที่มอบรางวัล'
-                              fullWidth
-                              error={!!errors.PB_AGENCY_TXT}
-                              helperText={errors.PB_AGENCY_TXT?.message}
-                              InputProps={{
-                                readOnly: false,
-                              }}
-                              size='small'
-                            />
-                          </small>
-                        ) : null}
-                      </div>
-                    </Grid>
+                      ) : null}
+                    </div>
                   </Grid>
                 </Grid>
-              
+              </Grid>
 
               <TextField
                 {...register('GENDER_ID')}

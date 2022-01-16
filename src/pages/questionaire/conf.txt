@@ -97,3 +97,7 @@ GENDER_ID
 JOB_QN_PROVINCE_ID
 JOB_QN_DISTRICT_ID
 QN_STRATEGIC_ID
+
+
+
+ "homepage": "/webapps/jobv1/form",

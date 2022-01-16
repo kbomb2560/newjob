@@ -1,7 +1,6 @@
 {
   "name": "jobqn",
   "version": "0.1.0",
-  "homepage": "/webapps/jobv1/form",
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^2.11.0",
