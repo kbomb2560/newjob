@@ -79,9 +79,18 @@ QN_COMMENT_LEARN
 QN_COMMENT_ACTIVITY
 QN_DATE_UPDATE
 REF_QN_PROVINCE_ID
+
 PB_DIPLOMA
 PB_DIPLOMA_NAME_TXT
 PB_AGENCY_TXT
+
+  const [diplomaid, setDiplomaID] = useState('0');
+  const [diplomaTxT, setDiplomaTxT] = useState('');
+  const [isdiplomaShow, setIsdiplomaShow] = useState(false);
+  const [agencyTxT, setAgencyTxT] = useState('');
+  const [isagencyShow, setIsAgencyShow] = useState(false);
+  itemsAward
+
 INDUSTRY_TYPE1
 INDUSTRY_TYPE2
 GENDER_ID

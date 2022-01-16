@@ -13,6 +13,9 @@ import Controls from '../../components/Dialogs/controls/Controls';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormGroup from '@material-ui/core/FormGroup';
 //import Grid from "@material-ui/core/Grid";
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { makeStyles } from '@material-ui/core/styles';
@@ -118,6 +121,9 @@ const useStyles = makeStyles((theme) => ({
     //color: theme.palette.text.primary,
     color: '#8C2BFF',
   },
+  formControl: {
+    margin: theme.spacing(3),
+  },
 }));
 const WORK_CHECK_STATUS = Joi.any()
   .when('QN_WORK_STATUS', {
@@ -203,7 +209,7 @@ const dataStudents = Joi.object({
   STD_ID: Joi.string(),
   REF_QN_PROVINCE_ID: Joi.string()
     .regex(/^[1-99]/)
-    .required(),
+    .required().label('กรุณาเลือกจังหวัดภูมิลำเนา'),
   QN_MILITARY_STATUS: Joi.any().when('GENDER_ID', {
     is: '1',
     then: Joi.string()
@@ -213,7 +219,7 @@ const dataStudents = Joi.object({
   }),
   QN_ORDINATE_STATUS: Joi.any().when('GENDER_ID', {
     is: '1',
-    then: Joi.string().pattern(new RegExp('^[1-5]')).required(),
+    then: Joi.string().pattern(new RegExp('^[1-5]')).required().label('กรุณาเลือกสถานนักบวช'),
   }),
 
   QN_WORK_STATUS: Joi.string()
@@ -223,39 +229,38 @@ const dataStudents = Joi.object({
 
   //======--ส่วนที่ 1 --======//
   //ประเภทงานที่ทำ
-  QN_OCCUP_TYPE: WORK_CHECK_STATUS,
+  QN_OCCUP_TYPE: WORK_CHECK_STATUS.label('กรุณาเลือกประเภทงานที่ทำ'),
   QN_OCCUP_TYPE_TXT: Joi.any().when('QN_OCCUP_TYPE', {
     is: '00',
-    then: Joi.string().required(),
+    then: Joi.string().required().label('กรุณาระบุสาเหตุอื่น ๆ'),
   }),
   //========จบประเภทงานที่ทำ==========//
   //ความสามารถพิเศษ
-  QN_TALENT: WORK_CHECK_STATUS,
+  QN_TALENT: WORK_CHECK_STATUS.label('กรุณาเลือกความสามารถพิเศษ'),
   QN_TALENT_TXT: Joi.any().when('QN_TALENT', {
     is: '00',
-    then: Joi.string().required(),
+    then: Joi.string().required().label('กรุณาระบุความสามารถอื่น ๆ'),
   }),
   //========ความสามารถพิเศษ==========//
   //========จบประเภทงานที่ทำ==========//
   //หน่วยงาน
-  QN_WORK_NAME: WORK_CHECK_STATUS_STRING.default(null),
-  QN_WORK_ADD: WORK_CHECK_STATUS_STRING.default(null),
-  QN_WORK_MOO: WORK_CHECK_STATUS_NUMBER.default(null),
+  QN_WORK_NAME: WORK_CHECK_STATUS_STRING.label('ระบุชื่อสถานที่ทำงาน'),
+  QN_WORK_ADD: WORK_CHECK_STATUS_STRING.label('ระบุเลขที่ตั้ง'),
+  QN_WORK_MOO: WORK_CHECK_STATUS_NUMBER.allow('').label('ระบุหมู่'),
   QN_WORK_BUILDING: WORK_CHECK_STATUS_STRING.allow('')
-    .allow(null)
-    .default(null),
-  QN_WORK_SOI: WORK_CHECK_STATUS_STRING.allow('').allow(null).default(null),
-  QN_WORK_STREET: WORK_CHECK_STATUS_STRING.allow('').allow(null).default(null),
-  QN_WORK_ZIPCODE: WORK_CHECK_STATUS_NUMBER,
-  QN_WORK_TEL: WORK_CHECK_STATUS_STRING.allow('').allow(null).default(null),
-  QN_WORK_FAX: WORK_CHECK_STATUS_STRING.allow('').allow(null).default(null),
-  QN_WORK_EMAIL: WORK_CHECK_STATUS_STRING.allow('').allow(null).default(null),
-  QN_SALARY: WORK_CHECK_STATUS_NUMBER,
+    .allow(null).label('ระบุอาคาร/ตึก'),
+  QN_WORK_SOI: WORK_CHECK_STATUS_STRING.allow('').allow(null).label('ระบุตรอก/ซอย'),
+  QN_WORK_STREET: WORK_CHECK_STATUS_STRING.allow('').allow(null).label('ระบุถนน'),
+  QN_WORK_ZIPCODE: WORK_CHECK_STATUS_NUMBER.label('ระบุรหัสไปรษณีย์'),
+  QN_WORK_TEL: WORK_CHECK_STATUS_STRING.allow('').allow(null).label('ระบุเบอร์โทรศัพท์'),
+  QN_WORK_FAX: WORK_CHECK_STATUS_STRING.allow('').allow(null).label('ระบุเบอร์โทรสาร'),
+  QN_WORK_EMAIL: WORK_CHECK_STATUS_STRING.allow('').allow(null).label('ระบุอีเมล์'),
+  QN_SALARY: WORK_CHECK_STATUS_NUMBER.label('ระบุเงินเดือน'),
 
   //จังหวัดสถานที่ทำงาน
-  JOB_QN_PROVINCE_ID: WORK_CHECK_STATUS_STRING,
-  JOB_QN_DISTRICT_ID: WORK_CHECK_STATUS_STRING,
-  QN_WORK_TAMBON: WORK_CHECK_STATUS_STRING,
+  JOB_QN_PROVINCE_ID: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกจังหวัดสถานที่ทำงาน'),
+  JOB_QN_DISTRICT_ID: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกอำเภอสถานที่ทำงาน'),
+  QN_WORK_TAMBON: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกตำบลสถานที่ทำงาน'),
 
   //
   //QN_POS_ID: WORK_CHECK_STATUS,
@@ -266,21 +271,50 @@ const dataStudents = Joi.object({
   QN_POS_ID: WORK_CHECK_STATUS_STRING,
   //========ตำแหน่งงาน==========//
   //========ประเทศที่ทำงาน==========//
-  QN_WORK_NATION: WORK_CHECK_STATUS_STRING,
-  QN_WORKTYPE_ID: WORK_CHECK_STATUS_STRING,
-  QN_STRATEGIC_ID: WORK_CHECK_STATUS_STRING,
+  QN_WORK_NATION: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกประเทศที่ทำงาน'),
+  QN_WORKTYPE_ID: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกประเภทกิจการของที่ทำงาน'),
+  QN_STRATEGIC_ID: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกอุตสาหกรรมของสถานที่ทำงาน'),
 
-  QN_WORK_SATISFY: WORK_CHECK_STATUS_STRING,
+  QN_WORK_SATISFY: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกความพอใจต่องานทำ'),
   QN_WORK_SATISFY_TXT: Joi.any().when('QN_WORK_SATISFY', {
     is: '00',
-    then: Joi.string().required(),
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
   }),
   //==================//
-  QN_TIME_FINDWORK: WORK_CHECK_STATUS_STRING,
-  QN_MATCH_EDU: WORK_CHECK_STATUS_STRING,
-  QN_APPLY_EDU: WORK_CHECK_STATUS_STRING,
-  QN_REQUIRE_EDU: WORK_CHECK_STATUS_STRING,
+  QN_TIME_FINDWORK: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกระยะเวลาการได้งานทำ'),
+  QN_MATCH_EDU: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกลักษะงานที่ทำตรงกับสาขาหรือไม่'),
+  QN_APPLY_EDU: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกการประยุกต์ใช้กับงานที่ทำ'),
+  QN_REQUIRE_EDU: WORK_CHECK_STATUS_STRING.label('กรุณาเลือกความต้องการศึกษาต่อ'),
+  
+  PB_DIPLOMA: Joi.string().required().label('กรุณาเลือกข้อมูลการได้รับรางวัล'),
+  PB_DIPLOMA_NAME_TXT: Joi.any().when('PB_DIPLOMA', {
+    is: '1',
+    then: Joi.string().allow('').required(),
+    otherwise:Joi.string().required().label('ระบุชื่อรางวัล'),
+  }),
+  PB_AGENCY_TXT: Joi.any().when('PB_DIPLOMA', {
+    is: '1',
+    then: Joi.string().allow('').required(),
+    otherwise:Joi.string().required().label('ระบุหน่วยงานที่มอบรางวัล'),
+  }),
+  QN_ADDPROGRAM1: Joi.string().allow(''),
+  QN_ADDPROGRAM2: Joi.string().allow(''),
+  QN_ADDPROGRAM3: Joi.string().allow(''),
+  QN_ADDPROGRAM4: Joi.string().allow(''),
+  QN_ADDPROGRAM5: Joi.string().allow(''),
+  QN_ADDPROGRAM6: Joi.string().allow(''),
+  QN_ADDPROGRAM7: Joi.string().allow(''),
+  QN_ADDPROGRAM8: Joi.string().allow(''),
+  QN_ADDPROGRAM9: Joi.string().allow(''),
+  QN_ADDPROGRAM7_TXT: Joi.any().when('QN_ADDPROGRAM7', {
+    is: '1',
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
+  }),
+
 });
+
+
+
 
 const GraduateList = (props) => {
   //จังหวัด
@@ -313,7 +347,12 @@ const GraduateList = (props) => {
   //
   const [worktypeid, setWorkTypeID] = useState('0');
   const [strategicid, setStrategicID] = useState('0');
-
+//การรับรางวัล
+const [diplomaid, setDiplomaID] = useState('0');
+const [diplomaTxT, setDiplomaTxT] = useState('');
+const [isdiplomaShow, setIsdiplomaShow] = useState(false);
+const [agencyTxT, setAgencyTxT] = useState('');
+const [isagencyShow, setIsAgencyShow] = useState(false);
   //พึงพอใจงานที่ทำ
   const [satisfyid, setSatisfyID] = useState('0');
   const [satisfyidTxT, setSatisfyIDTxT] = useState('');
@@ -323,10 +362,27 @@ const GraduateList = (props) => {
   const [applyeduid, setApplyEduID] = useState('0');
   const [requireeduid, setRequireEduID] = useState('0');
 
+  //ข้อเสอนแนะ//
+//1.ควรเพิ่มรายวิชา
+  const [progrom1state, setProgram1Checked] = useState(false); //อังกฤษ
+  const [progrom2state, setProgram2Checked] = useState(false); //คอมพิวเตอร์
+  const [progrom3state, setProgram3Checked] = useState(false); //บัญชี
+  const [progrom4state, setProgram4Checked] = useState(false); //การใช้อินเตอร์เน็ต
+  const [progrom5state, setProgram5Checked] = useState(false); //การฝึกปฏิบัติ
+  const [progrom6state, setProgram6Checked] = useState(false); //เทคนิควิจัย
+  const [progrom7state, setProgram7Checked] = useState(false); //ระบุ
+  const [progrom8state, setProgram8Checked] = useState(false); //ภาษาจีน
+  const [progrom9state, setProgram9Checked] = useState(false); //ภาษาในอาเซียน
+  const [progrom7TxTstate, setProgram7TxT] = useState(false); //ข้อความที่ระบุ
+
   ///แสดงซ่อน การมีงานทำข้อ 1-2-5-6-7
   const [sShowJob12567, setIsShowJob12567] = useState(false);
   ///แสดงซ่อน การมีงานทำข้อ 3-4
   const [sShowJob34, setIsShowJob34] = useState(false);
+
+  ///แสดงซ่อน การศึกษาต่อ
+  const [isShowRequireEdu, setIsShowRequireEdu] = useState(false);  
+  //แสดงซ่อน ข้อเสนอแนะ
   //ซ่อนแสดงประเภทงานที่ทำ
   const [isShow, setIsShow] = useState(false);
   //ซ่อนแสดงความสามารถพิเศษ
@@ -530,7 +586,6 @@ const GraduateList = (props) => {
                 });
 
               ///
-
               //****จบการรรับค่า */
               /* 
               setSelectEditPosition({
@@ -542,6 +597,7 @@ const GraduateList = (props) => {
                 ],
               });
                */
+
               setMilitaryID(res.data.QuestionaireSTD.QN_MILITARY_STATUS);
               setOrdinateID(res.data.QuestionaireSTD.QN_ORDINATE_STATUS);
 
@@ -572,6 +628,7 @@ const GraduateList = (props) => {
                 res.data.QuestionaireSTD.QN_WORK_STATUS === '7'
               ) {
                 setIsShowJob12567(true); //แสดง TextBox
+                //setIsShowRequireEdu(true);
                 setIsShowJob34(false);
               } else {
                 setIsShowJob12567(false); //ซ่อน TextBox
@@ -600,6 +657,46 @@ const GraduateList = (props) => {
               setMatchEduID(res.data.QuestionaireSTD.QN_MATCH_EDU);
               setApplyEduID(res.data.QuestionaireSTD.QN_APPLY_EDU);
               setRequireEduID(res.data.QuestionaireSTD.QN_REQUIRE_EDU);
+
+              //ต้องการศึกษาต่อ
+              //setJobStatus(res.data.QuestionaireSTD.QN_WORK_STATUS);
+              if (
+                res.data.QuestionaireSTD.QN_REQUIRE_EDU === '1'
+              ) {
+                //setIsShowJob12567(true); //แสดง TextBox
+                //setIsShowJob34(false);
+                setIsShowRequireEdu(true);
+              } else {
+                //setIsShowJob12567(false); //ซ่อน TextBox
+                //setIsShowJob34(true);
+                setIsShowRequireEdu(false);
+              }
+
+
+//ตอนที่ 6 การรับรางวัล
+              setDiplomaID(res.data.QuestionaireSTD.PB_DIPLOMA);
+              setDiplomaTxT(res.data.QuestionaireSTD.PB_DIPLOMA_NAME_TXT);
+              setAgencyTxT(res.data.QuestionaireSTD.PB_AGENCY_TXT);
+              if (res.data.QuestionaireSTD.PB_DIPLOMA !== '1') {
+                setIsdiplomaShow(true); //แสดง TextBox
+              } else {
+                setIsdiplomaShow(false); //ซ่อน TextBox
+              }
+
+
+
+              /*
+              setAgencyTxT(res.data.QuestionaireSTD.PB_AGENCY_TXT);
+              if (res.data.QuestionaireSTD.PB_DIPLOMA !== '1') {
+                setIsAgencyShow(true); //แสดง TextBox
+              } else {
+                setIsAgencyShow(false); //ซ่อน TextBox
+              }
+              */
+//
+
+
+
               setValue('GENDER_ID', res.data.QuestionaireSTD.GENDER_ID);
               setValue(
                 'QN_MILITARY_STATUS',
@@ -646,6 +743,7 @@ const GraduateList = (props) => {
               //set ค่าที่บันทึกไว้แล้ว
               setValue('QN_WORK_NAME', res.data.QuestionaireSTD.QN_WORK_NAME);
               setValue('QN_WORK_ADD', res.data.QuestionaireSTD.QN_WORK_ADD);
+              setValue('QN_WORK_MOO', res.data.QuestionaireSTD.QN_WORK_MOO);
 
               setValue(
                 'QN_WORK_BUILDING',
@@ -691,6 +789,21 @@ const GraduateList = (props) => {
                 'QN_REQUIRE_EDU',
                 res.data.QuestionaireSTD.QN_REQUIRE_EDU
               );
+
+
+//การรับรางวัล
+setValue('PB_DIPLOMA', res.data.QuestionaireSTD.PB_DIPLOMA);
+setValue('PB_DIPLOMA_NAME_TXT', res.data.QuestionaireSTD.PB_DIPLOMA_NAME_TXT);
+setValue('PB_AGENCY_TXT', res.data.QuestionaireSTD.PB_AGENCY_TXT);
+
+setValue('QN_ADDPROGRAM1',res.data.QuestionaireSTD.QN_ADDPROGRAM1);
+if(res.data.QuestionaireSTD.QN_ADDPROGRAM1==='1'){
+  //setValue('QN_ADDPROGRAM1','1')
+  setProgram1Checked(true)
+}else{
+  //setValue('QN_ADDPROGRAM1','')
+  setProgram1Checked(false)
+}
               /*
               setrefProvinceID(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
               */
@@ -1320,7 +1433,41 @@ const GraduateList = (props) => {
     };
   }, []);
   //==================================
+  //====================================
+  ///PB_DIPLOMA //
+  const [loadingAwardID, setLoadingAwardID] = useState(true);
+  const [itemAwardID, setItemAwardID] = useState([
+    { label: 'Loading ...', value: '' },
+  ]);
 
+  useEffect(() => {
+    let unmountAwardID = false;
+    async function AwardID() {
+      const response = await axios.get(
+        'http://academic.pcru.ac.th/job-api/qn-award-end.php'
+      );
+      const body = await response.data.awardSTD;
+      //console.log("ccc> ", body);
+      if (!unmountAwardID) {
+        setItemAwardID(
+          body.map(({ a_id, a_name }) => ({
+            label: a_name,
+            value: a_id,
+          }))
+        );
+        setLoadingAwardID(false);
+      }
+    }
+    AwardID();
+    return () => {
+      unmountAwardID = true;
+    };
+  }, []);
+  //==================================
+  //console.log("data > ",data);
+  console.log("err=> ",errors)
+
+  //[กรณีกดปุ่มบันทึกข้อมูล]
   ///console.log((Date.now() + 48 * 60 * 60 * 1000))
   const handleSubmitAdd = async (data) => {
     //e.preventDefault();
@@ -1536,7 +1683,65 @@ const GraduateList = (props) => {
   const OnchangeSelectRequireEduID = (e) => {
     setValue('QN_REQUIRE_EDU', e.target.value);
     setRequireEduID(e.target.value);
+    if (
+      e.target.value === '1'
+    ) {
+      //setIsShowJob12567(true); //แสดง TextBox
+      //setIsShowJob34(false);
+      setIsShowRequireEdu(true);
+    } else {
+      //setIsShowJob12567(false); //ซ่อน TextBox
+      //setIsShowJob34(true);
+      setIsShowRequireEdu(false);
+    }
   };
+
+  //setAwardID
+  const OnchangeSelectAwardID = (e) => {
+    setValue('PB_DIPLOMA', e.target.value);
+    setDiplomaID(e.target.value);
+    if (e.target.value !== '1') {
+      setIsdiplomaShow(true); //แสดง TextBox
+      setIsAgencyShow(true); //แสดง TextBox
+    } else {
+      setValue('PB_DIPLOMA_NAME_TXT', ''); //กำหนดค่าว่าง
+      setValue('PB_AGENCY_TXT', ''); //กำหนดค่าว่าง
+      setIsdiplomaShow(false); //แสดง TextBox
+      setIsAgencyShow(false); //แสดง TextBox
+    }  
+  };
+
+
+///P1
+const handleCm1Change = (e) => { //1
+  //setCmState({ ...cmstate, [e.target.name]: e.target.checked });
+  setProgram1Checked(e.target.checked);
+  if(e.target.checked===true){
+    setValue('QN_ADDPROGRAM1','1')
+  }else{
+    setValue('QN_ADDPROGRAM1','')
+  }
+};
+const handleCm2Change = (e) => { //2
+  //setCmState({ ...cmstate, [e.target.name]: e.target.checked });
+  setProgram2Checked(e.target.checked);
+  if(e.target.checked===true){
+    setValue('QN_ADDPROGRAM2','1')
+  }else{
+    setValue('QN_ADDPROGRAM2','')
+  }
+};
+const handleCm3Change = (e) => { //3
+  //setCmState({ ...cmstate, [e.target.name]: e.target.checked });
+  setProgram3Checked(e.target.checked);
+  if(e.target.checked===true){
+    setValue('QN_ADDPROGRAM3','1')
+  }else{
+    setValue('QN_ADDPROGRAM3','')
+  }
+};
+
+
   let content = <Loading msg=' กำลังโหลด...' />;
 
   if (!isLoading) {
@@ -1919,15 +2124,6 @@ const GraduateList = (props) => {
                         </ListItem>
 
                         <small className={classes.typo}>
-                          {/* <SelectProvince
-                            refs={{ ...register("QN_TALENT") }}
-                            error={errors.QN_TALENT?.message}
-                            defaultValue={talentid}
-                            value={talentid}
-                            placeHolder={"-เลือกความสามารถพิเศษ-"}
-                            onChange={(e) => OnchangeSelectTalentID(e)}
-                            options={itemsTalent}
-                          /> */}
                           <SSelect
                             {...register('QN_POS_ID')}
                             error={errors.QN_POS_ID?.message}
@@ -2596,7 +2792,7 @@ const GraduateList = (props) => {
                   </Grid>
                 </Grid>
               ) : null}
-              {sShowJob34 ? (
+              {isShowRequireEdu ? (
                 <Grid container spacing={0}>
                   <Typography className={classes.typo} variant='h3' size='sm'>
                     ตอนที่ 4 การศึกษาต่อ
@@ -2606,7 +2802,7 @@ const GraduateList = (props) => {
                     <Grid item xs={12} sm={4}>
                       <div className='col-md-12'>
                         <label className='control-label'>
-                          ระดับการศึกษาที่ท่านต้องการศึกษาต่อ/กำลังศึกษาต่อ
+                          1. ระดับการศึกษาที่ท่านต้องการศึกษาต่อ/กำลังศึกษาต่อ
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
@@ -2625,7 +2821,7 @@ const GraduateList = (props) => {
                     <Grid item xs={12} sm={4}>
                       <div className='col-md-12'>
                         <label className='control-label'>
-                          สาขาวิชาที่ท่านต้องการศึกษา/กำลังศึกษาต่อ
+                          2. สาขาวิชาที่ท่านต้องการศึกษา/กำลังศึกษาต่อ
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
@@ -2660,7 +2856,7 @@ const GraduateList = (props) => {
                     <Grid item xs={12} sm={4}>
                       <div className='col-md-12'>
                         <label className='control-label'>
-                          ประเภทของสถาบันการศึกษา/มหาวิทยาลัยที่ท่านต้องการศึกษา/กำลังศึกษาต่อ
+                          3. ประเภทของสถาบันการศึกษา/มหาวิทยาลัยที่ท่านต้องการศึกษา/กำลังศึกษาต่อ
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
@@ -2678,7 +2874,7 @@ const GraduateList = (props) => {
                     <Grid item xs={12} sm={4}>
                       <div className='col-md-12'>
                         <label className='control-label'>
-                          เหตุผลที่ทำให้ท่านตัดสินใจศึกษาต่อ
+                          4. เหตุผลที่ทำให้ท่านตัดสินใจศึกษาต่อ
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
@@ -2713,7 +2909,7 @@ const GraduateList = (props) => {
                     <Grid item xs={12} sm={4}>
                       <div className='col-md-12'>
                         <label className='control-label'>
-                          ท่านมีปัญหาในการศึกษาต่อหรือไม่
+                          5. ท่านมีปัญหาในการศึกษาต่อหรือไม่
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
@@ -2747,17 +2943,17 @@ const GraduateList = (props) => {
                   </Grid>
                 </Grid>
               ) : null}
-              {sShowJob34 ? (
+            
                 <Grid container spacing={0}>
                   <Typography className={classes.typo} variant='h3' size='sm'>
                     ตอนที่ 5 ข้อเสนอแนะ
                   </Typography>
 
                   <Grid container spacing={1}>
-                    <Grid item xs={12} sm={4}>
+                    <Grid item xs={12} sm={12}>
                       <div className='col-md-12'>
                         <label className='control-label'>
-                          ท่านคิดว่าในหลักสูตรของสถาบัน
+                          1. ท่านคิดว่าในหลักสูตรของสถาบัน
                           ควรเพิ่มรายวิชาหรือความรู้เรื่องใดที่จะเอื้อประโยชน์ต่อการประกอบอาชีพของท่านได้มากยิ่งขึ้น
                           (เลือกได้มากกว่า 1 ข้อ)
                         </label>
@@ -2772,13 +2968,72 @@ const GraduateList = (props) => {
                             options={itemsOcc}
                           />
                         </small>
+                        <Grid item xs={12} sm={4}>
+                      <div className='col-md-12'>                        
+<small className={classes.typo}>
+
+<FormGroup>
+    <FormControlLabel
+      control={<Checkbox checked={progrom1state} onChange={handleCm1Change} />}
+      label="ภาษาอังกฤษ"
+      refs={{ ...register('QN_ADDPROGRAM1') }}
+        error={errors.QN_ADDPROGRAM1?.message}
+    />
+    <FormControlLabel
+      control={<Checkbox checked={progrom2state} onChange={handleCm2Change} />}
+      label="คอมพิวเตอร์"
+      refs={{ ...register('QN_ADDPROGRAM2') }}
+        error={errors.QN_ADDPROGRAM2?.message}
+    />
+    <FormControlLabel
+      control={<Checkbox checked={progrom3state} onChange={handleCm3Change} />}
+      label="บัญชี"
+      refs={{ ...register('QN_ADDPROGRAM3') }}
+        error={errors.QN_ADDPROGRAM3?.message}
+    />        
+</FormGroup>
+
+</small>
+
+                  </div>
+                  </Grid>   
+
+                  <Grid item xs={12} sm={4}>
+                      <div className='col-md-12'>                        
+<small className={classes.typo}>
+
+<FormGroup>
+    <FormControlLabel
+      control={<Checkbox checked={progrom1state} onChange={handleCm1Change} />}
+      label="ภาษาอังกฤษ"
+      refs={{ ...register('QN_ADDPROGRAM1') }}
+        error={errors.QN_ADDPROGRAM1?.message}
+    />
+    <FormControlLabel
+      control={<Checkbox checked={progrom2state} onChange={handleCm2Change} />}
+      label="คอมพิวเตอร์"
+      refs={{ ...register('QN_ADDPROGRAM2') }}
+        error={errors.QN_ADDPROGRAM2?.message}
+    />
+    <FormControlLabel
+      control={<Checkbox checked={progrom3state} onChange={handleCm3Change} />}
+      label="บัญชี"
+      refs={{ ...register('QN_ADDPROGRAM3') }}
+        error={errors.QN_ADDPROGRAM3?.message}
+    />        
+</FormGroup>
+</small>
+
+                  </div>
+                  </Grid>                   
+
                       </div>
                     </Grid>
 
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={4}>
                       <div className='col-md-12'>
                         <label className='control-label'>
-                          ข้อเสนอแนะเกี่ยวกับหลักสูตรและสาขาวิชาที่เรียน{' '}
+                          2. ข้อเสนอแนะเกี่ยวกับหลักสูตรและสาขาวิชาที่เรียน{' '}
                         </label>
                         <small className={classes.typo}>
                           <TextField
@@ -2796,10 +3051,10 @@ const GraduateList = (props) => {
                       </div>
                     </Grid>
 
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={4}>
                       <div className='col-md-12'>
                         <label className='control-label'>
-                          ข้อเสนอแนะเกี่ยวกับการเรียนการสอน{' '}
+                          3. ข้อเสนอแนะเกี่ยวกับการเรียนการสอน{' '}
                         </label>
                         <small className={classes.typo}>
                           <TextField
@@ -2816,10 +3071,10 @@ const GraduateList = (props) => {
                         </small>
                       </div>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={4}>
                       <div className='col-md-12'>
                         <label className='control-label'>
-                          ข้อเสนอแนะเกี่ยวกับกิจกรรมพัฒนานักศึกษา{' '}
+                          4. ข้อเสนอแนะเกี่ยวกับกิจกรรมพัฒนานักศึกษา{' '}
                         </label>
                         <small className={classes.typo}>
                           <TextField
@@ -2838,16 +3093,16 @@ const GraduateList = (props) => {
                     </Grid>
                   </Grid>
                 </Grid>
-              ) : null}
+            
 
-              {sShowJob34 ? (
+             
                 <Grid container spacing={0}>
                   <Typography className={classes.typo} variant='h3' size='sm'>
                     ตอนที่ 6 การรับรางวัล
                   </Typography>
 
                   <Grid container spacing={1}>
-                    <Grid item xs={12} sm={4}>
+                    <Grid item xs={12} sm={6}>
                       <div className='col-md-12'>
                         <label className='control-label'>
                           เคยได้รับประกาศเกียรติคุณยกย่องในด้านใด หลังจบการศึกษา
@@ -2855,24 +3110,24 @@ const GraduateList = (props) => {
                         </label>
                         <small className={classes.typo}>
                           <SelectProvince
-                            refs={{ ...register('QN_OCCUP_TYPE') }}
-                            error={errors.QN_OCCUP_TYPE?.message}
-                            defaultValue={occupid}
-                            value={occupid}
-                            placeHolder={'-เลือกสาเหตุ-'}
-                            onChange={(e) => OnchangeSelectOccupID(e)}
-                            options={itemsOcc}
+                            refs={{ ...register('PB_DIPLOMA') }}
+                            error={errors.PB_DIPLOMA?.message}
+                            defaultValue={diplomaid}
+                            value={diplomaid}
+                            placeHolder={'-เลือก-'}
+                            onChange={(e) => OnchangeSelectAwardID(e)}
+                            options={itemAwardID}
                           />
                         </small>
-                        {isShow ? (
+                        {isdiplomaShow ? (
                           <small className={classes.typo}>
                             <TextField
-                              {...register('QN_OCCUP_TYPE_TXT')}
+                              {...register('PB_DIPLOMA_NAME_TXT')}
                               variant='outlined'
                               label='ชื่อรางวัล'
                               fullWidth
-                              error={!!errors.QN_OCCUP_TYPE_TXT}
-                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              error={!!errors.PB_DIPLOMA_NAME_TXT}
+                              helperText={errors.PB_DIPLOMA_NAME_TXT?.message}
                               InputProps={{
                                 readOnly: false,
                               }}
@@ -2880,12 +3135,12 @@ const GraduateList = (props) => {
                             />
 
                             <TextField
-                              {...register('QN_OCCUP_TYPE_TXT')}
+                              {...register('PB_AGENCY_TXT')}
                               variant='outlined'
                               label='หน่วยงานที่มอบรางวัล'
                               fullWidth
-                              error={!!errors.QN_OCCUP_TYPE_TXT}
-                              helperText={errors.QN_OCCUP_TYPE_TXT?.message}
+                              error={!!errors.PB_AGENCY_TXT}
+                              helperText={errors.PB_AGENCY_TXT?.message}
                               InputProps={{
                                 readOnly: false,
                               }}
@@ -2897,7 +3152,7 @@ const GraduateList = (props) => {
                     </Grid>
                   </Grid>
                 </Grid>
-              ) : null}
+              
 
               <TextField
                 {...register('GENDER_ID')}
