@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Grid,
   CircularProgress,
@@ -10,17 +10,17 @@ import {
   Paper,
   Avatar,
   CssBaseline,
-} from "@material-ui/core";
-import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
-import { withRouter } from "react-router-dom";
+} from '@material-ui/core';
+import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
+import { withRouter } from 'react-router-dom';
 //import classnames from "classnames";
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
 // logo
 
 // context
-import { useUserDispatch, loginUser } from "../../context/UserContext";
+import { useUserDispatch, loginUser } from '../../context/UserContext';
 
 function Login(props) {
   var classes = useStyles();
@@ -36,16 +36,16 @@ function Login(props) {
   //var [loginValue, setLoginValue] = useState("admin@flatlogic.com"); //user email
   //var [passwordValue, setPasswordValue] = useState("password"); //password
 
-  var [loginValue, setLoginValue] = useState("571102057117"); //user รหัสนักศึกษา
-  var [passwordValue, setPasswordValue] = useState("06092535"); //password ววดดปปปป
+  var [loginValue, setLoginValue] = useState(''); //user รหัสนักศึกษา
+  var [passwordValue, setPasswordValue] = useState(''); //password ววดดปปปป
 
   return (
-    <Grid container component="main" className={classes.root}>
+    <Grid container component='main' className={classes.root}>
       <CssBaseline />
       <Container
         component={Paper}
         elevation={5}
-        maxWidth="xs"
+        maxWidth='xs'
         className={classes.container}
       >
         <div className={classes.div}>
@@ -54,17 +54,17 @@ function Login(props) {
           </Avatar>
 
           <React.Fragment>
-            <Typography variant="h1" className={classes.greeting}>
+            <Typography variant='h1' className={classes.greeting}>
               Login เข้าตอบแบบสอบถาม
             </Typography>
 
             <Fade in={error}>
-              <Typography color="secondary" className={classes.errorMessage}>
+              <Typography color='secondary' className={classes.errorMessage}>
                 รหัสนักศึกษา/รหัสผ่าน ไม่ถูกต้อง หรือไม่พบข้อมูลในระบบ
               </Typography>
             </Fade>
             <TextField
-              id="email"
+              id='email'
               InputProps={{
                 classes: {
                   underline: classes.textFieldUnderline,
@@ -73,14 +73,14 @@ function Login(props) {
               }}
               value={loginValue}
               onChange={(e) => setLoginValue(e.target.value)}
-              margin="normal"
-              placeholder="รหัสประจำตัวนักศึกษา"
-              type="email"
+              margin='normal'
+              placeholder='รหัสประจำตัวนักศึกษา'
+              type='email'
               inputProps={{ maxLength: 12 }}
               fullWidth
             />
             <TextField
-              id="password"
+              id='password'
               InputProps={{
                 classes: {
                   underline: classes.textFieldUnderline,
@@ -89,9 +89,9 @@ function Login(props) {
               }}
               value={passwordValue}
               onChange={(e) => setPasswordValue(e.target.value)}
-              margin="normal"
-              placeholder="วันเดือนปี(พ.ศ.)เกิด เช่น 26052527"
-              type="password"
+              margin='normal'
+              placeholder='วันเดือนปี(พ.ศ.)เกิด เช่น 26052527'
+              type='password'
               inputProps={{ maxLength: 8 }}
               fullWidth
             />
@@ -114,8 +114,8 @@ function Login(props) {
                     )
                   }
                   fullWidth
-                  variant="contained"
-                  color="secondary"
+                  variant='contained'
+                  color='secondary'
                   //size="large"
                   className={classes.button}
                 >
@@ -124,9 +124,14 @@ function Login(props) {
               )}
             </div>
           </React.Fragment>
-          <Typography color="secondary" className={classes.copyright}>
-            © 2014-{new Date().getFullYear()} , ภาวะการมีงานทำของบัณฑิต -
-            ม.รภ.พช.
+          <Typography color='secondary' className={classes.copyright}>
+            © 2021-{new Date().getFullYear()}
+            <span>
+              {' '}
+              ภาวะการมีงานทำของบัณฑิต
+              <br />
+              มหาวิทยาลัยราชภัฏเพชรบูรณ์
+            </span>
           </Typography>
         </div>
       </Container>

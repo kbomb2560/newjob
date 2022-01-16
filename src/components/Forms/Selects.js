@@ -1,11 +1,10 @@
-import React from "react";
+import React from 'react';
 import {
   FormControl,
-  InputLabel,
   Select as MuiSelect,
   MenuItem,
   FormHelperText,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
 export default function Select(props) {
   const {
@@ -19,7 +18,7 @@ export default function Select(props) {
   } = props;
 
   return (
-    <FormControl fullWidth {...(error && { error: true })} variant="outlined">
+    <FormControl fullWidth {...(error && { error: true })} variant='outlined'>
       <MuiSelect
         label={label}
         name={name}
@@ -33,7 +32,7 @@ export default function Select(props) {
             key={item.value}
             value={item.value}
             style={{
-              whiteSpace: "normal",
+              whiteSpace: 'normal',
               fontSize: 14,
             }}
           >

@@ -7,15 +7,15 @@ import Loading from '../../components/loading';
 
 //
 //dialogs//
-import { Grid, CircularProgress, Input, TextField } from '@material-ui/core';
+import { Grid, CircularProgress, TextField } from '@material-ui/core';
 import { Typography } from '../../components/Wrappers';
 import Controls from '../../components/Dialogs/controls/Controls';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
+// import FormHelperText from '@material-ui/core/FormHelperText';
+// import FormControl from '@material-ui/core/FormControl';
+// import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
+//import FormGroup from '@material-ui/core/FormGroup';
 //import Grid from "@material-ui/core/Grid";
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,33 +23,25 @@ import { makeStyles } from '@material-ui/core/styles';
 import SSelect from 'react-select';
 
 //import TextField from "@material-ui/core/TextField";
-import Autocomplete from '@material-ui/lab/Autocomplete';
+//import Autocomplete from '@material-ui/lab/Autocomplete';
 
-import Select from '@material-ui/core/Select';
+//import Select from '@material-ui/core/Select';
 
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
 import * as Joi from 'joi';
 
 import Paper from '@material-ui/core/Paper';
-import { listProvince } from '../../services/listEndPointService';
-import { listMilitary } from '../../services/listEndPointService';
-import { listOrdinate } from '../../services/listEndPointService';
-import { listWorkstatus } from '../../services/listEndPointService';
-import { listOccupType } from '../../services/listEndPointService';
+// import { listProvince } from '../../services/listEndPointService';
+// import { listMilitary } from '../../services/listEndPointService';
+// import { listOrdinate } from '../../services/listEndPointService';
+// import { listWorkstatus } from '../../services/listEndPointService';
+// import { listOccupType } from '../../services/listEndPointService';
 //import { exist } from 'joi';
 import Notification from '../../components/Dialogs/Notification';
 
 import SelectProvince from '../../components/Forms/Selects';
-import {
-  green,
-  orange,
-  red,
-  blue,
-  pink,
-  teal,
-  purple,
-} from '@material-ui/core/colors';
+import { green, orange, purple } from '@material-ui/core/colors';
 import Icon from '@material-ui/core/Icon';
 //pro
 //import DropDownProvinces from "./dropdownProvinces";
@@ -62,9 +54,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 import ListItemText from '@material-ui/core/ListItemText';
 
-import FolderIcon from '@material-ui/icons/Folder';
-import List from '@material-ui/core/List';
-import { tr } from 'date-fns/locale';
+// import FolderIcon from '@material-ui/icons/Folder';
+// import List from '@material-ui/core/List';
+// import { tr } from 'date-fns/locale';
 
 //*** */
 
@@ -208,6 +200,17 @@ const NOWORK_CHECK_STATUS_STRING = Joi.any()
     is: '4',
     then: Joi.string().required(),
   });
+const REQUIRE_PASS_SAVE = Joi.any()
+  .when('QN_WORK_STATUS', {
+    is: '2',
+    then: Joi.any().allow(''),
+    otherwise: Joi.string().required(),
+  })
+  .when('QN_WORK_STATUS', {
+    is: '4',
+    then: Joi.any().allow(''),
+    otherwise: Joi.string().required(),
+  });
 
 const WORK24_STATUS_NUMBER = Joi.any()
   .when('QN_WORK_STATUS', {
@@ -350,12 +353,7 @@ const dataStudents = Joi.object({
   QN_APPLY_EDU: WORK_CHECK_STATUS_STRING.label(
     'กรุณาเลือกการประยุกต์ใช้กับงานที่ทำ'
   ),
-  /*
-  QN_REQUIRE_EDU: WORK_CHECK_STATUS_STRING.label(
-    'กรุณาเลือกความต้องการศึกษาต่อ'
-  ),
-  */
-  QN_REQUIRE_EDU: WORK24_STATUS_NUMBER.label('กรุณาเลือกความต้องการศึกษาต่อ'),
+
   PB_DIPLOMA: Joi.string().required().label('กรุณาเลือกข้อมูลการได้รับรางวัล'),
   PB_DIPLOMA_NAME_TXT: Joi.any().when('PB_DIPLOMA', {
     is: '1',
@@ -383,7 +381,8 @@ const dataStudents = Joi.object({
   QN_COMMENT_PROGRAM: Joi.any().allow('').allow(null),
   QN_COMMENT_LEARN: Joi.any().allow('').allow(null),
   QN_COMMENT_ACTIVITY: Joi.any().allow('').allow(null),
-
+  /*
+  //QN_REQUIRE_EDU
   QN_LEVEL_EDU: WORKEDU_REQURIE_CHECK.label('ระบุระดับการศึกษา'), //ระดับการศึกษา
   QN_PROGRAM_EDU: WORKEDU_REQURIE_CHECK.label('กรุณาเลือก'),
   QN_PROGRAM_EDU_ID: Joi.any().when('QN_PROGRAM_EDU', {
@@ -397,6 +396,37 @@ const dataStudents = Joi.object({
     then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
   }),
   QN_PROB_EDU: WORKEDU_REQURIE_CHECK.required(),
+  QN_PROB_EDU_TXT: Joi.any().when('QN_PROB_EDU', {
+    is: '00',
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
+  }),
+*/
+  //QN_REQUIRE_EDU
+  /*
+  QN_REQUIRE_EDU: WORK_CHECK_STATUS_STRING.label(
+    'กรุณาเลือกความต้องการศึกษาต่อ'
+  ),
+  */
+  //QN_REQUIRE_EDU: WORK24_STATUS_NUMBER.label('กรุณาเลือกความต้องการศึกษาต่อ'),
+  /*
+  QN_REQUIRE_EDU: Joi.string()
+    .required()
+    .label('กรุณาเลือกความต้องการศึกษาต่อ'),
+*/
+  QN_REQUIRE_EDU: REQUIRE_PASS_SAVE,
+  QN_LEVEL_EDU: WORKEDU_REQURIE_CHECK.label('กรุณาเลือกข้อมูล'), //ระดับการศึกษา
+  QN_PROGRAM_EDU: WORKEDU_REQURIE_CHECK.label('กรุณาเลือก'),
+  QN_PROGRAM_EDU_ID: Joi.any().when('QN_PROGRAM_EDU', {
+    is: '2',
+    then: Joi.string().required().label('ระบุข้อมูลสาขาวิชาอื่น ๆ'),
+  }),
+  QN_TYPE_UNIV: WORKEDU_REQURIE_CHECK.label('กรุณาเลือกข้อมูล'),
+  QN_CAUSE_EDU: WORKEDU_REQURIE_CHECK.label('กรุณาเลือกข้อมูล'),
+  QN_CAUSE_EDU_TXT: Joi.any().when('QN_CAUSE_EDU', {
+    is: '0',
+    then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
+  }),
+  QN_PROB_EDU: WORKEDU_REQURIE_CHECK.label('กรุณาเลือกข้อมูล'),
   QN_PROB_EDU_TXT: Joi.any().when('QN_PROB_EDU', {
     is: '00',
     then: Joi.string().required().label('ระบุข้อมูลอื่น ๆ'),
@@ -629,7 +659,7 @@ const GraduateList = (props) => {
           } else {
             //username ผิด
             //password ผิด
-            console.log('wrong username');
+            //console.log('wrong username');
             //dispatch({ type: "LOGIN_FAILURE" });
             //setError(true);
             //setIsLoading(false);
@@ -766,6 +796,7 @@ const GraduateList = (props) => {
                 setIsShowTalent(false); //ซ่อน TextBox
               }
               //สถานะการมีงานทำ
+              setRequireEduID(res.data.QuestionaireSTD.QN_REQUIRE_EDU);
               setJobStatus(res.data.QuestionaireSTD.QN_WORK_STATUS);
               if (
                 res.data.QuestionaireSTD.QN_WORK_STATUS === '1' ||
@@ -776,25 +807,34 @@ const GraduateList = (props) => {
               ) {
                 if (res.data.QuestionaireSTD.QN_WORK_STATUS === '2') {
                   setIsShowJob12567(true); //แสดง TextBox
-                  setIsShowRequireEdu(true);
-                  setIsShowJob34(false);
-                } else {
-                  setIsShowJob12567(true); //แสดง TextBox
                   setIsShowRequireEdu(false);
+                  setIsShowJob34(false);
+                }
+                if (res.data.QuestionaireSTD.QN_WORK_STATUS !== '2') {
+                  setIsShowJob12567(true); //แสดง TextBox
+                  setIsShowRequireEdu(true);
                   setIsShowJob34(false);
                 }
               } else {
                 if (res.data.QuestionaireSTD.QN_WORK_STATUS === '4') {
-                  setIsShowRequireEdu(true);
+                  setIsShowRequireEdu(false);
                   setIsShowJob12567(false); //ซ่อน TextBox
                   setIsShowJob34(true);
-                } else {
-                  setIsShowRequireEdu(false);
+                }
+                if (res.data.QuestionaireSTD.QN_WORK_STATUS !== '4') {
+                  setIsShowRequireEdu(true);
                   setIsShowJob12567(false); //ซ่อน TextBox
                   setIsShowJob34(true);
                 }
               }
 
+              if (res.data.QuestionaireSTD.QN_REQUIRE_EDU === '1') {
+                setisShowRequireEdu24(true);
+                setIsShowRequireEdu(true);
+              } else {
+                setisShowRequireEdu24(true);
+                setIsShowRequireEdu(false);
+              }
               setWorkNationID(res.data.QuestionaireSTD.QN_WORK_NATION);
 
               setJobProvid(res.data.QuestionaireSTD.JOB_QN_PROVINCE_ID);
@@ -816,20 +856,7 @@ const GraduateList = (props) => {
               setTimeFindWorkID(res.data.QuestionaireSTD.QN_TIME_FINDWORK);
               setMatchEduID(res.data.QuestionaireSTD.QN_MATCH_EDU);
               setApplyEduID(res.data.QuestionaireSTD.QN_APPLY_EDU);
-              setRequireEduID(res.data.QuestionaireSTD.QN_REQUIRE_EDU);
 
-              //ต้องการศึกษาต่อ
-
-              //setJobStatus(res.data.QuestionaireSTD.QN_WORK_STATUS);
-              if (res.data.QuestionaireSTD.QN_REQUIRE_EDU === '1') {
-                //setIsShowJob12567(true); //แสดง TextBox
-                //setIsShowJob34(false);
-                setIsShowRequireEdu(true);
-              } else {
-                //setIsShowJob12567(false); //ซ่อน TextBox
-                //setIsShowJob34(true);
-                setIsShowRequireEdu(false);
-              }
               //ระดับการศึกษา
               setLevelEduID(res.data.QuestionaireSTD.QN_LEVEL_EDU);
               setProgramEduID(res.data.QuestionaireSTD.QN_PROGRAM_EDU);
@@ -981,6 +1008,50 @@ const GraduateList = (props) => {
                 setIsShowProbEduIDTxT(false); //ซ่อน TextBox
               }
               //setAgencyTxT(res.data.QuestionaireSTD.PB_AGENCY_TXT);
+              //ยังไม่ได้งาน
+              setCauseNoWorkID(res.data.QuestionaireSTD.QN_CAUSE_NOWORK);
+              setValue(
+                'QN_CAUSE_NOWORK',
+                res.data.QuestionaireSTD.QN_CAUSE_NOWORK
+              );
+              setValue(
+                'QN_CAUSE_NOWORK_TXT',
+                res.data.QuestionaireSTD.QN_CAUSE_NOWORK_TXT
+              );
+              if (res.data.QuestionaireSTD.QN_CAUSE_NOWORK === '0') {
+                setIsShowCauseNoWorkTxT(true); //แสดง TextBox
+              } else {
+                setIsShowCauseNoWorkTxT(false); //ซ่อน TextBox
+              }
+
+              setProbFindWorkID(res.data.QuestionaireSTD.QN_PROB_FINDWORK);
+              setValue(
+                'QN_PROB_FINDWORK',
+                res.data.QuestionaireSTD.QN_PROB_FINDWORK
+              );
+              setValue(
+                'QN_PROB_FINDWORK_TXT',
+                res.data.QuestionaireSTD.QN_PROB_FINDWORK_TXT
+              );
+              if (res.data.QuestionaireSTD.QN_PROB_FINDWORK === '00') {
+                setIsShowProbFindWorkTxT(true); //แสดง TextBox
+              } else {
+                setIsShowProbFindWorkTxT(false); //ซ่อน TextBox
+              }
+
+              setInterWorkNeedID(res.data.QuestionaireSTD.QN_WORKNEED_ID);
+              setValue(
+                'QN_WORKNEED_ID',
+                res.data.QuestionaireSTD.QN_WORKNEED_ID
+              );
+
+              if (res.data.QuestionaireSTD.QN_WORKNEED_ID === '02') {
+                setIsShowInter(true); //แสดง TextBox การทำงานต่างประเทศ
+              } else {
+                //setInterWorkNeedID('0');
+                setIsShowInter(false); //แสดง TextBox ทำงานภายในประเทศ ค่าที่เกี่ยวข้องต้องเป็นค่าว่าง
+              }
+              ///
 
               setValue(
                 'QN_WORKNEED_POSITION',
@@ -1085,6 +1156,7 @@ const GraduateList = (props) => {
               } else {
                 setProgram9Checked(false);
               }
+              //
 
               //cm
               setValue(
@@ -1100,6 +1172,19 @@ const GraduateList = (props) => {
                 res.data.QuestionaireSTD.QN_COMMENT_ACTIVITY
               );
 
+              setWorkNeedNationID(res.data.QuestionaireSTD.QN_WORKNEED_NATION);
+
+              setValue(
+                'QN_WORKNEED_NATION',
+                res.data.QuestionaireSTD.QN_WORKNEED_NATION
+              );
+              setDisclosureID(
+                res.data.QuestionaireSTD.QN_DISCLOSURE_AGREEMENT_ID
+              );
+              setValue(
+                'QN_DISCLOSURE_AGREEMENT_ID',
+                res.data.QuestionaireSTD.QN_DISCLOSURE_AGREEMENT_ID
+              );
               /*
               setrefProvinceID(res.data.QuestionaireSTD.REF_QN_PROVINCE_ID);
               */
@@ -1459,8 +1544,8 @@ const GraduateList = (props) => {
         `http://academic.pcru.ac.th/job-api/district-end.php?provincecode=${jobprovid}`
       );
       const body = await response.data.districtSTD;
-      console.log('ccc> ', jobprovid);
-      if (jobprovid != '0' && jobprovid != '') {
+      //console.log('ccc> ', jobprovid);
+      if (jobprovid !== '0' && jobprovid !== '') {
         if (!unmountedJobsDistrict) {
           setItemsJobsDistrict(
             body.map(({ DISTRICT_ID, DISTRICT_NAME_TH }) => ({
@@ -1494,7 +1579,7 @@ const GraduateList = (props) => {
       );
       const body = await response.data.subdistrictSTD;
       //console.log("ccc> ", body);
-      if (jobprovid != '0' && jobprovid != '') {
+      if (jobprovid !== '0' && jobprovid !== '') {
         if (!unmountedJobSubDistrict) {
           setItemsJobSubDistrict(
             body.map(({ SUB_DISTRICT_ID, SUB_DISTRICT_NAME_TH }) => ({
@@ -2105,18 +2190,18 @@ const GraduateList = (props) => {
   //==
 
   //console.log("data > ",data);
-  console.log('err=> ', errors);
+  //console.log('err=> ', errors);
 
   //[กรณีกดปุ่มบันทึกข้อมูล]
   ///console.log((Date.now() + 48 * 60 * 60 * 1000))
   const handleSubmitAdd = async (data) => {
     //e.preventDefault();
-    console.log(data);
+    //console.log(data);
     //setIsAddLoading(true);
     //reset();
     //return;
     try {
-      console.log(data);
+      //console.log(data);
       //const result = await axios.post(`end-point`,values);
       const result = await axios.post(
         `http://academic.pcru.ac.th/job-api/qn-add-end.php`,
@@ -2147,7 +2232,7 @@ const GraduateList = (props) => {
         //reset form
       }
     } catch (error) {
-      console.log('error');
+      //console.log('error');
       setNotify({
         isOpen: true,
         message: 'การบันทึกข้อมูลผิดพลาดกรุณาติดต่อผู้ดูแลระบบ',
@@ -2198,6 +2283,7 @@ const GraduateList = (props) => {
       if (e.target.value === '2') {
         setisShowRequireEdu24(false);
         setIsShowRequireEdu(true);
+        setValue('QN_REQUIRE_EDU', '');
       }
       //setIsShowRequireEdu(true);
       setOccupID(e.target.value);
@@ -2272,6 +2358,7 @@ const GraduateList = (props) => {
       if (e.target.value === '4') {
         setisShowRequireEdu24(false);
         setIsShowRequireEdu(true);
+        setValue('QN_REQUIRE_EDU', '');
       }
     }
   };
@@ -2376,7 +2463,9 @@ const GraduateList = (props) => {
       //setIsShowJob34(true);
       setIsShowRequireEdu(false);
       //setLevelEduID('0');
+      setValue('QN_PROGRAM_EDU', '');
       setValue('QN_LEVEL_EDU', '');
+      setValue('QN_TYPE_UNIV', '');
     }
   };
 
@@ -2492,10 +2581,10 @@ const GraduateList = (props) => {
     } else {
       //setInterWorkNeedID('0');
       setIsShowInter(false); //แสดง TextBox ทำงานภายในประเทศ ค่าที่เกี่ยวข้องต้องเป็นค่าว่าง
-      setValue('QN_WORKNEED_NATION', '');
-      setValue('QN_WORKNEED_POSITION', '');
-      setValue('QN_SKILL_DEVELOPMENT', '');
-      setValue('QN_DISCLOSURE_AGREEMENT_ID', '');
+      //   setValue('QN_WORKNEED_NATION', '');
+      //   setValue('QN_WORKNEED_POSITION', '');
+      //   setValue('QN_SKILL_DEVELOPMENT', '');
+      //   setValue('QN_DISCLOSURE_AGREEMENT_ID', '');
       /* ว่าง
 QN_WORKNEED_NATION
 QN_WORKNEED_POSITION
