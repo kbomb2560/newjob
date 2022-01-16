@@ -44,16 +44,30 @@ function Layout(props) {
       >
         <div className={classes.fakeToolbar} />
         <Switch>
-          <Route path="/app/job" component={Job} />
-          <Route path="/app/notifications" component={Notifications} />
+          <Route path={`${process.env.PUBLIC_URL}/app/job`} component={Job} />
+          <Route
+            path={`${process.env.PUBLIC_URL}/app/notifications`}
+            component={Notifications}
+          />
           <Route
             exact
-            path="/app/ui"
-            render={() => <Redirect to="/app/ui/icons" />}
+            path={`${process.env.PUBLIC_URL}/app/ui`}
+            render={() => (
+              <Redirect to={`${process.env.PUBLIC_URL}/app/ui/icons`} />
+            )}
           />
-          <Route path="/app/ui/maps" component={Maps} />
-          <Route path="/app/ui/icons" component={Icons} />
-          <Route path="/app/ui/charts" component={Charts} />
+          <Route
+            path={`${process.env.PUBLIC_URL}/app/ui/maps`}
+            component={Maps}
+          />
+          <Route
+            path={`${process.env.PUBLIC_URL}/app/ui/icons`}
+            component={Icons}
+          />
+          <Route
+            path={`${process.env.PUBLIC_URL}/app/ui/charts`}
+            component={Charts}
+          />
         </Switch>
         <Box
           mt={5}
