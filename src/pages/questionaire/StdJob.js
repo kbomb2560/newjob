@@ -2950,85 +2950,51 @@ const handleCm3Change = (e) => { //3
                   </Typography>
 
                   <Grid container spacing={1}>
-                    <Grid item xs={12} sm={12}>
-                      <div className='col-md-12'>
-                        <label className='control-label'>
-                          1. ท่านคิดว่าในหลักสูตรของสถาบัน
-                          ควรเพิ่มรายวิชาหรือความรู้เรื่องใดที่จะเอื้อประโยชน์ต่อการประกอบอาชีพของท่านได้มากยิ่งขึ้น
-                          (เลือกได้มากกว่า 1 ข้อ)
-                        </label>
-                        <small className={classes.typo}>
-                          <SelectProvince
-                            refs={{ ...register('QN_OCCUP_TYPE') }}
-                            error={errors.QN_OCCUP_TYPE?.message}
-                            defaultValue={occupid}
-                            value={occupid}
-                            placeHolder={'-เลือกสาเหตุ-'}
-                            onChange={(e) => OnchangeSelectOccupID(e)}
-                            options={itemsOcc}
-                          />
-                        </small>
-                        <Grid item xs={12} sm={4}>
-                      <div className='col-md-12'>                        
-<small className={classes.typo}>
+                  <Grid item xs={12} sm={12}>
+                    <div className='col-md-12'>
+                      <label className='control-label'>
+                        1. ท่านคิดว่าในหลักสูตรของสถาบัน
+                        ควรเพิ่มรายวิชาหรือความรู้เรื่องใดที่จะเอื้อประโยชน์ต่อการประกอบอาชีพของท่านได้มากยิ่งขึ้น
+                        (เลือกได้มากกว่า 1 ข้อ)
+                      </label>
+                      <small className={classes.typo}>
+                        <Grid container spacing={1}>
+                          <Grid item xs={12} sm={4}>
+                            <div className='col-md-12'>
+                              <FormControlLabel
+                                control={<Checkbox checked={progrom1state} onChange={handleCm1Change} />}
+                                label="ภาษาอังกฤษ"
+                                refs={{ ...register('QN_ADDPROGRAM1') }}
+                                error={errors.QN_ADDPROGRAM1?.message}
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className='col-md-12'>
+                              <FormControlLabel
+                                control={<Checkbox checked={progrom2state} onChange={handleCm2Change} />}
+                                label="คอมพิวเตอร์"
+                                refs={{ ...register('QN_ADDPROGRAM2') }}
+                                error={errors.QN_ADDPROGRAM2?.message}
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className='col-md-12'>
+                              <FormControlLabel
+                                control={<Checkbox checked={progrom3state} onChange={handleCm3Change} />}
+                                label="บัญชี"
+                                refs={{ ...register('QN_ADDPROGRAM3') }}
+                                error={errors.QN_ADDPROGRAM3?.message}
+                              />
+                            </div>
+                          </Grid>
+                        </Grid>
 
-<FormGroup>
-    <FormControlLabel
-      control={<Checkbox checked={progrom1state} onChange={handleCm1Change} />}
-      label="ภาษาอังกฤษ"
-      refs={{ ...register('QN_ADDPROGRAM1') }}
-        error={errors.QN_ADDPROGRAM1?.message}
-    />
-    <FormControlLabel
-      control={<Checkbox checked={progrom2state} onChange={handleCm2Change} />}
-      label="คอมพิวเตอร์"
-      refs={{ ...register('QN_ADDPROGRAM2') }}
-        error={errors.QN_ADDPROGRAM2?.message}
-    />
-    <FormControlLabel
-      control={<Checkbox checked={progrom3state} onChange={handleCm3Change} />}
-      label="บัญชี"
-      refs={{ ...register('QN_ADDPROGRAM3') }}
-        error={errors.QN_ADDPROGRAM3?.message}
-    />        
-</FormGroup>
+                      </small>
 
-</small>
-
-                  </div>
-                  </Grid>   
-
-                  <Grid item xs={12} sm={4}>
-                      <div className='col-md-12'>                        
-<small className={classes.typo}>
-
-<FormGroup>
-    <FormControlLabel
-      control={<Checkbox checked={progrom1state} onChange={handleCm1Change} />}
-      label="ภาษาอังกฤษ"
-      refs={{ ...register('QN_ADDPROGRAM1') }}
-        error={errors.QN_ADDPROGRAM1?.message}
-    />
-    <FormControlLabel
-      control={<Checkbox checked={progrom2state} onChange={handleCm2Change} />}
-      label="คอมพิวเตอร์"
-      refs={{ ...register('QN_ADDPROGRAM2') }}
-        error={errors.QN_ADDPROGRAM2?.message}
-    />
-    <FormControlLabel
-      control={<Checkbox checked={progrom3state} onChange={handleCm3Change} />}
-      label="บัญชี"
-      refs={{ ...register('QN_ADDPROGRAM3') }}
-        error={errors.QN_ADDPROGRAM3?.message}
-    />        
-</FormGroup>
-</small>
-
-                  </div>
-                  </Grid>                   
-
-                      </div>
-                    </Grid>
+                    </div>
+                  </Grid>
 
                     <Grid item xs={12} sm={4}>
                       <div className='col-md-12'>
