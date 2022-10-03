@@ -1348,7 +1348,7 @@ const GraduateList = (props) => {
 
   return (
     <>
-      <PageTitle title='แบบสอบถามภาวะการมีงานทำของบัณฑิต ปีการศึกษา 2564 (บัณฑิตที่จบปีการศึกษา 2563)' />
+      <PageTitle title='แบบสอบถามภาวะการมีงานทำของบัณฑิต ปีการศึกษา 2565 (บัณฑิตที่จบปีการศึกษา 2564)' />
       <Paper className={classes.paper}>
         <Col xl='12'>
           <Card>
