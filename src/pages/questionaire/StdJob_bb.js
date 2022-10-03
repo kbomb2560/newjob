@@ -170,7 +170,7 @@ const GraduateList = (props) => {
     //var studentsFullname = studentsData.LAST_NAME;
     //console.log(studentsData); //line std_code
     setIsLoading(true);
-    const BASE_URL = "http://academic.pcru.ac.th/job-api/std-detail-end.php";
+    const BASE_URL = "https://academic.pcru.ac.th/job-api/std-detail-end.php";
     try {
       //setError(false);
       //setIsLoading(true);
@@ -259,7 +259,7 @@ const GraduateList = (props) => {
     //const user = rememberMe ? localStorage.getItem("dataStudent") : "";
     var studentsDataQN = JSON.parse(rememberMeX);
     const BASE_URL_QN =
-      "http://academic.pcru.ac.th/job-api/qn-checkstd-end.php";
+      "https://academic.pcru.ac.th/job-api/qn-checkstd-end.php";
     try {
       //setError(false);
       //setIsLoading(true);
@@ -334,7 +334,7 @@ const GraduateList = (props) => {
     let unmounted = false;
     async function getCharacters() {
       const response = await axios.get(
-        "http://academic.pcru.ac.th/job-api/provinces-end.php"
+        "https://academic.pcru.ac.th/job-api/provinces-end.php"
       );
       const body = await response.json();
       console.log("oo=>", body);
@@ -363,7 +363,7 @@ const GraduateList = (props) => {
 
   const fetchDataProvince = async () => {
     const res = await axios.get(
-      "http://academic.pcru.ac.th/job-api/provinces-end.php"
+      "https://academic.pcru.ac.th/job-api/provinces-end.php"
     );
     return res.data;
   };
@@ -509,7 +509,7 @@ const GraduateList = (props) => {
       console.log(data);
       //const result = await axios.post(`end-point`,values);
       const result = await axios.post(
-        `http://academic.pcru.ac.th/job-api/qn-add-end.php`,
+        `https://academic.pcru.ac.th/job-api/qn-add-end.php`,
         data,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

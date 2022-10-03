@@ -179,7 +179,7 @@ const StudentsList = (props) => {
     setIsLoading(true);
     try {
       const res = await axios.get(
-        `http://academic.pcru.ac.th/dev/students-list.php`,
+        `https://academic.pcru.ac.th/dev/students-list.php`,
       );
       const data = await res.data; //รับข้อมูลแล้ว
       //   .then((response) => {

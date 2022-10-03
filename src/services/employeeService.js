@@ -64,7 +64,7 @@ export function getAllEmployees() {
 
 export const getAllStudent = async () => {
   //setLoading(true);
-  let result = await axios.get("http://academic.pcru.ac.th/api/all-rule.php");
+  let result = await axios.get("https://academic.pcru.ac.th/api/all-rule.php");
   let data = await result.data;
   let dataStudents = JSON.parse(data.rules);
   //console.log("xxx -> " + JSON.stringify(dataStudents));
@@ -81,8 +81,8 @@ export const getAllStudent = async () => {
 export function getAllStudent() {
   const config = {
     //BASE_URL: "http://172.16.23.23/php-api",
-    BASE_URL: "http://academic.pcru.ac.th/api",
-    http://academic.pcru.ac.th/api/all-news.php?tp=1
+    BASE_URL: "https://academic.pcru.ac.th/api",
+    https://academic.pcru.ac.th/api/all-news.php?tp=1
   };
 }
 */
@@ -101,7 +101,7 @@ export default class getAllStudents extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://academic.pcru.ac.th/api/all-news.php?tp=1`)
+      .get(`https://academic.pcru.ac.th/api/all-news.php?tp=1`)
       .then((res) => {
         const data = res.data;
         this.setState({ data });
@@ -118,7 +118,7 @@ export default class getAllStudents extends React.Component {
 /*
 export function getAllStudents() {
  
-  axios("http://academic.pcru.ac.th/api/all-news.php?tp=1")
+  axios("https://academic.pcru.ac.th/api/all-news.php?tp=1")
     .then(function (axiosResponse) {
       let data = JSON.parse(axiosResponse.data.response);
       console.log("actionUser: ", data);

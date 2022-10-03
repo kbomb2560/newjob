@@ -264,7 +264,7 @@ const GraduateList = (props) => {
     //var studentsFullname = studentsData.LAST_NAME;
     //console.log(studentsData); //line std_code
     setIsLoading(true);
-    const BASE_URL = 'http://academic.pcru.ac.th/job-api/std-detail-end.php';
+    const BASE_URL = 'https://academic.pcru.ac.th/job-api/std-detail-end.php';
     try {
       //setError(false);
       //setIsLoading(true);
@@ -356,7 +356,7 @@ const GraduateList = (props) => {
     //const user = rememberMe ? localStorage.getItem("dataStudent") : "";
     var studentsDataQN = JSON.parse(rememberMeX);
     const BASE_URL_QN =
-      'http://academic.pcru.ac.th/job-api/qn-checkstd-end.php';
+      'https://academic.pcru.ac.th/job-api/qn-checkstd-end.php';
     try {
       //setError(false);
       //setIsLoading(true);
@@ -499,7 +499,7 @@ const GraduateList = (props) => {
     let unmounted = false;
     async function getProvinceID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/provinces-end.php'
+        'https://academic.pcru.ac.th/job-api/provinces-end.php'
       );
       const body = await response.data.provinceSTD;
       //console.log("ccc> ", body);
@@ -532,7 +532,7 @@ const GraduateList = (props) => {
     let unmountedMili = false;
     async function MilitaryID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/military-status-end.php'
+        'https://academic.pcru.ac.th/job-api/military-status-end.php'
       );
       const body = await response.data.MilitarySTD;
       //console.log("ccc> ", body);
@@ -563,7 +563,7 @@ const GraduateList = (props) => {
     let unmountedOrdi = false;
     async function OrdinateID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/ordinate-status-end.php'
+        'https://academic.pcru.ac.th/job-api/ordinate-status-end.php'
       );
       const body = await response.data.OrdinateSTD;
       //console.log("ccc> ", body);
@@ -594,7 +594,7 @@ const GraduateList = (props) => {
     let unmountedJob = false;
     async function JobStatusID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/work-status-end.php'
+        'https://academic.pcru.ac.th/job-api/work-status-end.php'
       );
       const body = await response.data.WorkstatusSTD;
       //console.log("ccc> ", body);
@@ -625,7 +625,7 @@ const GraduateList = (props) => {
     let unmountedOcc = false;
     async function OccupID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/occup-type-end.php'
+        'https://academic.pcru.ac.th/job-api/occup-type-end.php'
       );
       const body = await response.data.OccuptypeSTD;
       //console.log("ccc> ", body);
@@ -656,7 +656,7 @@ const GraduateList = (props) => {
     let unmountedTalent = false;
     async function TalentID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-talent-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-talent-end.php'
       );
       const body = await response.data.TalentSTD;
       //console.log("ccc> ", body);
@@ -818,7 +818,7 @@ const GraduateList = (props) => {
       console.log(data);
       //const result = await axios.post(`end-point`,values);
       const result = await axios.post(
-        `http://academic.pcru.ac.th/job-api/qn-add-end.php`,
+        `https://academic.pcru.ac.th/job-api/qn-add-end.php`,
         data,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );

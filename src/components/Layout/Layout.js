@@ -79,7 +79,7 @@ function Layout(props) {
           <div>
             <Link
               color={"primary"}
-              href={"http://academic.pcru.ac.th"}
+              href={"https://academic.pcru.ac.th"}
               target={"_blank"}
               className={classes.link}
             >

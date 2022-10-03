@@ -19,7 +19,7 @@ const getAllStudent = (props) => {
     setIsLoading(true);
     try {
       const res = await axios.get(
-        `http://academic.pcru.ac.th/api/all-rule.php`,
+        `https://academic.pcru.ac.th/api/all-rule.php`,
       );
       const data = await res.data; //รับข้อมูลแล้ว
       //   .then((response) => {

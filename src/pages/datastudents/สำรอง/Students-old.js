@@ -162,7 +162,7 @@ function Students(props) {
     setIsLoading(true);
     try {
       const res = await axios.get(
-        `http://academic.pcru.ac.th/api/all-news.php?tp=1`,
+        `https://academic.pcru.ac.th/api/all-news.php?tp=1`,
       );
       const data = await res.data;
       setData(data.news); //รับค่า result

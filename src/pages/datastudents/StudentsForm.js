@@ -97,7 +97,7 @@ export default function EmployeeForm(props) {
     setIsLoading(true);
     axios
       .get(
-        `http://academic.pcru.ac.th/dev/student-detail-end.php?stdcode=${props.StudentCode}`,
+        `https://academic.pcru.ac.th/dev/student-detail-end.php?stdcode=${props.StudentCode}`,
       )
       .then((res) => {
         if (res.data.status === true) {
@@ -209,7 +209,7 @@ export default function EmployeeForm(props) {
       console.log(data);
       //const result = await axios.post(`end-point`,values);
       const result = await axios.post(
-        `http://academic.pcru.ac.th/dev/student-add.php`,
+        `https://academic.pcru.ac.th/dev/student-add.php`,
         data,
       );
       if (result) {

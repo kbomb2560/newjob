@@ -604,7 +604,7 @@ const GraduateList = (props) => {
     //var studentsFullname = studentsData.LAST_NAME;
     //console.log(studentsData); //line std_code
     setIsLoading(true);
-    const BASE_URL = 'http://academic.pcru.ac.th/job-api/std-detail-end.php';
+    const BASE_URL = 'https://academic.pcru.ac.th/job-api/std-detail-end.php';
     try {
       //setError(false);
       //setIsLoading(true);
@@ -711,7 +711,7 @@ const GraduateList = (props) => {
     //const user = rememberMe ? localStorage.getItem("dataStudent") : "";
     var studentsDataQN = JSON.parse(rememberMeX);
     const BASE_URL_QN =
-      'http://academic.pcru.ac.th/job-api/qn-checkstd-end.php';
+      'https://academic.pcru.ac.th/job-api/qn-checkstd-end.php';
     try {
       //setError(false);
       //setIsLoading(true);
@@ -735,7 +735,7 @@ const GraduateList = (props) => {
               /****ทดสอบรับค่า */
               //QN_POS_ID
               axios
-                .get(`http://academic.pcru.ac.th/job-api/qn-position-end.php`)
+                .get(`https://academic.pcru.ac.th/job-api/qn-position-end.php`)
                 .then(function (presponse) {
                   const pbody = presponse.data.position_careerSTD;
 
@@ -1245,7 +1245,7 @@ const GraduateList = (props) => {
     let unmounted = false;
     async function getProvinceID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/provinces-end.php'
+        'https://academic.pcru.ac.th/job-api/provinces-end.php'
       );
       const body = await response.data.provinceSTD;
       //console.log("ccc> ", body);
@@ -1277,7 +1277,7 @@ const GraduateList = (props) => {
     let unmountedMili = false;
     async function MilitaryID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/military-status-end.php'
+        'https://academic.pcru.ac.th/job-api/military-status-end.php'
       );
       const body = await response.data.MilitarySTD;
       //console.log("ccc> ", body);
@@ -1308,7 +1308,7 @@ const GraduateList = (props) => {
     let unmountedOrdi = false;
     async function OrdinateID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/ordinate-status-end.php'
+        'https://academic.pcru.ac.th/job-api/ordinate-status-end.php'
       );
       const body = await response.data.OrdinateSTD;
       //console.log("ccc> ", body);
@@ -1339,7 +1339,7 @@ const GraduateList = (props) => {
     let unmountedJob = false;
     async function JobStatusID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/work-status-end.php'
+        'https://academic.pcru.ac.th/job-api/work-status-end.php'
       );
       const body = await response.data.WorkstatusSTD;
       //console.log("ccc> ", body);
@@ -1370,7 +1370,7 @@ const GraduateList = (props) => {
     let unmountedOcc = false;
     async function OccupID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/occup-type-end.php'
+        'https://academic.pcru.ac.th/job-api/occup-type-end.php'
       );
       const body = await response.data.OccuptypeSTD;
       //console.log("ccc> ", body);
@@ -1401,7 +1401,7 @@ const GraduateList = (props) => {
     let unmountedTalent = false;
     async function TalentID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-talent-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-talent-end.php'
       );
       const body = await response.data.TalentSTD;
       //console.log("ccc> ", body);
@@ -1432,7 +1432,7 @@ const GraduateList = (props) => {
     let unmountedPositionCr = false;
     async function PositionCrID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-position-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-position-end.php'
       );
       const body = await response.data.position_careerSTD;
       //console.log("ccc> ", body);
@@ -1463,7 +1463,7 @@ const GraduateList = (props) => {
     let unmountedWorkNation = false;
     async function WorkNationID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-ref-nation-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-ref-nation-end.php'
       );
       const body = await response.data.worknationSTD;
       //console.log("ccc> ", body);
@@ -1511,7 +1511,7 @@ const GraduateList = (props) => {
     let unmountedJobsProvince = false;
     async function getJobProvinceID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/provinces-end.php'
+        'https://academic.pcru.ac.th/job-api/provinces-end.php'
       );
       const body = await response.data.provinceSTD;
       //console.log("ccc> ", body);
@@ -1541,7 +1541,7 @@ const GraduateList = (props) => {
     let unmountedJobsDistrict = false;
     async function getJobDistrictID() {
       const response = await axios.get(
-        `http://academic.pcru.ac.th/job-api/district-end.php?provincecode=${jobprovid}`
+        `https://academic.pcru.ac.th/job-api/district-end.php?provincecode=${jobprovid}`
       );
       const body = await response.data.districtSTD;
       //console.log('ccc> ', jobprovid);
@@ -1575,7 +1575,7 @@ const GraduateList = (props) => {
     let unmountedJobSubDistrict = false;
     async function getJobSubDistrictID() {
       const response = await axios.get(
-        `http://academic.pcru.ac.th/job-api/sub-district-end.php?districtcode=${jobdistid}`
+        `https://academic.pcru.ac.th/job-api/sub-district-end.php?districtcode=${jobdistid}`
       );
       const body = await response.data.subdistrictSTD;
       //console.log("ccc> ", body);
@@ -1609,7 +1609,7 @@ const GraduateList = (props) => {
     let unmountedWorkTypeID = false;
     async function WorkTypeID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-worktype-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-worktype-end.php'
       );
       const body = await response.data.WorkTypeSTD;
       //console.log("ccc> ", body);
@@ -1641,7 +1641,7 @@ const GraduateList = (props) => {
     let unmountedStrategicID = false;
     async function StrategicID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-strategic-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-strategic-end.php'
       );
       const body = await response.data.StrategicSTD;
       //console.log("ccc> ", body);
@@ -1671,7 +1671,7 @@ const GraduateList = (props) => {
     let unmountedSatisfyID = false;
     async function SatisfyID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-worksatisfy-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-worksatisfy-end.php'
       );
       const body = await response.data.worksatisfySTD;
       //console.log("ccc> ", body);
@@ -1703,7 +1703,7 @@ const GraduateList = (props) => {
     let unmountedTimeFindWorkID = false;
     async function TimeFindWorkID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-timefindwork-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-timefindwork-end.php'
       );
       const body = await response.data.timefindworkSTD;
       //console.log("ccc> ", body);
@@ -1733,7 +1733,7 @@ const GraduateList = (props) => {
     let unmountedTimeMatchEduID = false;
     async function MatchEduID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-matchedu-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-matchedu-end.php'
       );
       const body = await response.data.matcheduSTD;
       //console.log("ccc> ", body);
@@ -1763,7 +1763,7 @@ const GraduateList = (props) => {
     let unmountedTimeApplyEduID = false;
     async function ApplyEduID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-applyedu-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-applyedu-end.php'
       );
       const body = await response.data.applyeduSTD;
       //console.log("ccc> ", body);
@@ -1794,7 +1794,7 @@ const GraduateList = (props) => {
     let unmountRequireEduID = false;
     async function RequireEduID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-eduneed-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-eduneed-end.php'
       );
       const body = await response.data.eduneedSTD;
       //console.log("ccc> ", body);
@@ -1825,7 +1825,7 @@ const GraduateList = (props) => {
     let unmountAwardID = false;
     async function AwardID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-award-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-award-end.php'
       );
       const body = await response.data.awardSTD;
       //console.log("ccc> ", body);
@@ -1856,7 +1856,7 @@ const GraduateList = (props) => {
     let unmountLevelEduID = false;
     async function LevelEduID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-lev-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-lev-end.php'
       );
       const body = await response.data.edulevSTD;
       //console.log("ccc> ", body);
@@ -1886,7 +1886,7 @@ const GraduateList = (props) => {
     let unmountProgramEdu = false;
     async function ProgramEdu() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-programeduid-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-programeduid-end.php'
       );
       const body = await response.data.programeduidSTD;
       //console.log("ccc> ", body);
@@ -1916,7 +1916,7 @@ const GraduateList = (props) => {
     let unmountProgramEduEID = false;
     async function ProgramEduEID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-programedu-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-programedu-end.php'
       );
       const body = await response.data.programeduSTD;
       //console.log("ccc> ", body);
@@ -1947,7 +1947,7 @@ const GraduateList = (props) => {
     let unmountTypeUni = false;
     async function TypeUni() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-typeuniv-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-typeuniv-end.php'
       );
       const body = await response.data.typeunivSTD;
       //console.log("ccc> ", body);
@@ -1977,7 +1977,7 @@ const GraduateList = (props) => {
     let unmountCauseEdu = false;
     async function CauseEdu() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-cause-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-cause-end.php'
       );
       const body = await response.data.causeeduSTD;
       //console.log("ccc> ", body);
@@ -2007,7 +2007,7 @@ const GraduateList = (props) => {
     let unmountProbEdu = false;
     async function ProbEdu() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-probedu-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-probedu-end.php'
       );
       const body = await response.data.probeduSTD;
       //console.log("ccc> ", body);
@@ -2039,7 +2039,7 @@ const GraduateList = (props) => {
     let unmountCauseNoWork = false;
     async function CauseNoWork() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-causenowork-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-causenowork-end.php'
       );
       const body = await response.data.causenoworkSTD;
       //console.log("ccc> ", body);
@@ -2071,7 +2071,7 @@ const GraduateList = (props) => {
     let unmountProbFindWork = false;
     async function ProbFindWork() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-probfindwork-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-probfindwork-end.php'
       );
       const body = await response.data.probfindworkSTD;
       //console.log("ccc> ", body);
@@ -2102,7 +2102,7 @@ const GraduateList = (props) => {
     let unmountInterWorkNeed = false;
     async function InterWorkNeed() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-workneed-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-workneed-end.php'
       );
       const body = await response.data.workneedSTD;
       //console.log("ccc> ", body);
@@ -2133,7 +2133,7 @@ const GraduateList = (props) => {
     let unmountedWorkNationNeed = false;
     async function WorkNationIDNeed() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-neednation-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-neednation-end.php'
       );
       const body = await response.data.worknationSTD;
       //console.log("ccc> ", body);
@@ -2165,7 +2165,7 @@ const GraduateList = (props) => {
     let unmountedDisclosure = false;
     async function DisclosureID() {
       const response = await axios.get(
-        'http://academic.pcru.ac.th/job-api/qn-disclosure-end.php'
+        'https://academic.pcru.ac.th/job-api/qn-disclosure-end.php'
       );
       const body = await response.data.disclosureSTD;
       //console.log("ccc> ", body);
@@ -2204,7 +2204,7 @@ const GraduateList = (props) => {
       //console.log(data);
       //const result = await axios.post(`end-point`,values);
       const result = await axios.post(
-        `http://academic.pcru.ac.th/job-api/qn-add-end.php`,
+        `https://academic.pcru.ac.th/job-api/qn-add-end.php`,
         data,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
