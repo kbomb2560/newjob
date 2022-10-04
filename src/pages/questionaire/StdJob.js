@@ -5,6 +5,15 @@ import { Col, Card, CardBody } from 'reactstrap';
 
 import Loading from '../../components/loading';
 
+import { useUserDispatch, signOut } from "../../context/UserContext";
+
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 //
 //dialogs//
 import { Grid, CircularProgress, TextField } from '@material-ui/core';
@@ -122,31 +131,31 @@ const WORK_CHECK_STATUS = Joi.any()
   .when('QN_WORK_STATUS', {
     is: '1',
     then: Joi.string()
-      .regex(/^[00-05]/)
+      .regex(/^[00-99]/)
       .required(),
   })
   .when('QN_WORK_STATUS', {
     is: '2',
     then: Joi.string()
-      .regex(/^[00-05]/)
+      .regex(/^[00-99]/)
       .required(),
   })
   .when('QN_WORK_STATUS', {
     is: '5',
     then: Joi.string()
-      .regex(/^[00-05]/)
+      .regex(/^[00-99]/)
       .required(),
   })
   .when('QN_WORK_STATUS', {
     is: '6',
     then: Joi.string()
-      .regex(/^[00-05]/)
+      .regex(/^[00-99]/)
       .required(),
   })
   .when('QN_WORK_STATUS', {
     is: '7',
     then: Joi.string()
-      .regex(/^[00-05]/)
+      .regex(/^[00-99]/)
       .required(),
   });
 const WORK_CHECK_STATUS_STRING = Joi.any()
@@ -462,6 +471,9 @@ const dataStudents = Joi.object({
 });
 
 const GraduateList = (props) => {
+  var userDispatch = useUserDispatch();
+  const [dlgopen, setDlgOpen] = useState(false);
+  const [errdlgopen, setErrDlgOpen] = useState(false);
   //จังหวัด
   const [provid, setProvid] = useState('0');
   //เกณฑ์ทหาร
@@ -2216,6 +2228,7 @@ const GraduateList = (props) => {
             message: 'บันทึกข้อมูลเรียบร้อยแล้ว',
             type: 'success',
           });
+          setDlgOpen(true);
           //setIsAddLoading(false);
           //แจ้งบันทึก
           //
@@ -2238,6 +2251,7 @@ const GraduateList = (props) => {
         message: 'การบันทึกข้อมูลผิดพลาดกรุณาติดต่อผู้ดูแลระบบ',
         type: 'warning',
       });
+      setErrDlgOpen(true);
       //setIsAddLoading(false);
       //loading false
       //error true
@@ -2684,7 +2698,12 @@ QN_DISCLOSURE_AGREEMENT_ID
       setValue('QN_ADDPROGRAM9', '');
     }
   };
-
+  const handleDlgClose = () => {
+    setDlgOpen(false);
+  };
+  const handleErrDlgClose = () => {
+    setErrDlgOpen(false);
+  };  
   let content = <Loading msg=' กำลังโหลด...' />;
 
   if (!isLoading) {
@@ -4230,6 +4249,53 @@ QN_DISCLOSURE_AGREEMENT_ID
         </Col>
       </Paper>
       <Notification notify={notify} setNotify={setNotify} />
+      <Dialog
+        open={dlgopen}
+        onClose={handleDlgClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title" >{"ตอบแบบสอบถามเรียบร้อยแล้ว"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description" color="secondary">
+          ขอขอบคุณที่ท่านให้ความร่วมมือในการตอบแบบสอบถามฯ ในครั้งนี้
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => signOut(userDispatch, props.history)} variant="contained" color="secondary" autoFocus>
+            ออกจากระบบ
+          </Button>          
+          <Button onClick={handleDlgClose} variant="contained" color="primary">
+            แก้ไขข้อมูล
+          </Button>
+
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={errdlgopen}
+        onClose={handleErrDlgClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"เกิดข้อผิดพลาด"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          การบันทึกข้อมูลผิดพลาดกรุณาติดต่อผู้ดูแลระบบ
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => signOut(userDispatch, props.history)} variant="contained" color="secondary" autoFocus>
+            ออกจากระบบ
+          </Button>          
+          <Button onClick={handleErrDlgClose} variant="contained" color="primary">
+            แก้ไขข้อมูล
+          </Button>
+
+        </DialogActions>
+      </Dialog>
+
+
     </>
   );
 };
