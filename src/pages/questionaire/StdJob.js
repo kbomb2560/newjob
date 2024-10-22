@@ -591,6 +591,9 @@ const GraduateList = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isAddLoading, setIsAddLoading] = useState(false);
+  const [titleSTD_YEAR, setTitleSTD_YEAR] = useState('');
+  const [titleQA_YEAR, setTitleQA_YEAR] = useState('');
+
 
   const {
     register,
@@ -651,7 +654,11 @@ const GraduateList = (props) => {
               //-- set ค่าให้กับตัวแปร Joi --//
               setGenderCk(response.data.bunditSTD.GENDER_ID);
               //setValue("STD_CODE", response.data.bunditSTD.STD_ID);
+              setTitleSTD_YEAR(response.data.bunditSTD.YEAR);
+              //setValue('QA_YEAR', response.data.bunditSTD.YEAR+1);
+              setTitleQA_YEAR(parseInt(response.data.bunditSTD.YEAR, 10) + 1);
               setValue('STD_ID', response.data.bunditSTD.STD_ID);
+
               setValue('CITIZEN_ID', response.data.bunditSTD.CITIZEN_ID);
               setValue('UNIV_ID', response.data.bunditSTD.UNIV_ID);
               setValue('GENDER_ID', response.data.bunditSTD.GENDER_ID);
@@ -4236,7 +4243,7 @@ QN_DISCLOSURE_AGREEMENT_ID
 
   return (
     <>
-      <PageTitle title='แบบสอบถามภาวะการมีงานทำของบัณฑิต ปีการศึกษา 2565 (บัณฑิตที่จบปีการศึกษา 2564)' />
+      <PageTitle title={`แบบสอบถามภาวะการมีงานทำของบัณฑิต ปีการศึกษา ${titleQA_YEAR} (บัณฑิตที่จบปีการศึกษา ${titleSTD_YEAR})`} />
       <Paper className={classes.paper}>
         <Col xl='12'>
           <Card>
